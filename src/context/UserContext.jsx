@@ -16,7 +16,13 @@ const UserProvider = ({ children }) => {
     }
     const fetchUser = async () => {
       if (!token) {
-        console.error("Token non disponible");
+        console.log(" _   _      _ _    ");
+console.log("| | | | ___| | | ___    ");
+console.log("| |_| |/ _ \\ | |/ _ \\  ");
+console.log("|  _  |  __/ | | (_) |  ");
+console.log("|_| |_|\\___|_|_|\\___/  ");
+
+
         return;
       }
 

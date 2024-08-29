@@ -1,10 +1,10 @@
-import { useContext } from "react";
+/*import { useContext } from "react";
 import axios from "../../config/axiosConfig";
 import { AuthContext } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";*/
 
 const Logout = () => {
-  const { logout } = useContext(AuthContext);
+  /*const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -17,10 +17,9 @@ const Logout = () => {
     } catch (error) {
       console.error("Logout failed", error);
     }
-  };
-
+  };*/
   return (
-    <button
+    /* <button
       onClick={(e) => {
         e.preventDefault();
         handleLogout();
@@ -28,7 +27,8 @@ const Logout = () => {
       className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
     >
       Se déconnecter
-    </button>
+    </button>*/
+    <div></div>
   );
 };
 

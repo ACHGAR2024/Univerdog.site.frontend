@@ -2,15 +2,20 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import DarkModeToggle from "./DarkModeToggle";
-
-const Nav = ({ isAuthenticated, handleLogout }) => {
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+const Nav = ({ isAuthenticated }) => {
   const [showMenu, setShowMenu] = useState(false);
   const location = useLocation();
-
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
-
+  const handleLogout = () => {
+    logout(navigate);
+  };
   const closeMenu = () => {
     setShowMenu(false);
   };

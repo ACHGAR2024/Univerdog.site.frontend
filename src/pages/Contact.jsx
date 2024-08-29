@@ -1,86 +1,80 @@
 function Contact() {
   return (
     <header
-      className="flex w-full flex-col h-screen justify-center items-center poetsen-one-regular"
-      style={{
-        backgroundImage: `url('/src/images/dog-contact.webp')`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-      }}
+      className="flex w-full flex-col h-screen justify-center items-center poetsen-one-regular bg-cover bg-no-repeat dark:bg-gray-900"
+      style={{ backgroundImage: `url('/src/images/dog-contact.webp')` }}
     >
-      {/* Container for the contact form */}
-      <div className="w-full max-w-sm">
-        {" "}
-        {/* Contact form title */}
-        <h2 className="text-white text-lg font-bold mb-2">Contactez-nous</h2>
-        {/* Contact form */}
-        <form className="bg-black shadow-md rounded px-4 pt-2 pb-2 mb-4 text-sm bg-opacity-60">
-          {/* Name label and input */}
-          <label
-            htmlFor="name"
-            className="block mt-2 text-white text-xs font-bold mb-1"
-          >
-            Nom
-          </label>
-          <input
-            id="name"
-            type="text"
-            autoComplete="off"
-            className="shadow appearance-none border rounded w-full py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-          />
-
-          {/* Email label and input */}
-          <label
-            htmlFor="email_contact"
-            className="block mt-2 text-white text-xs font-bold mb-1"
-          >
-            Email
-          </label>
-          <input
-            id="email_contact"
-            type="email"
-            autoComplete="off"
-            className="shadow appearance-none border rounded w-full py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-          />
-
-          {/* Subject label and input */}
-          <label
-            htmlFor="subject"
-            className="block mt-2 text-white text-xs font-bold mb-1"
-          >
-            Sujet
-          </label>
-          <input
-            id="subject"
-            type="text"
-            autoComplete="off"
-            className="shadow appearance-none border rounded w-full py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-          />
-
-          {/* Message label and textarea */}
-          <label
-            htmlFor="message"
-            className="block mt-2 text-white text-xs font-bold mb-1"
-          >
-            Message
-          </label>
-          <textarea
-            id="message"
-            rows="4"
-            className="shadow appearance-none border rounded w-full py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-          ></textarea>
-
-          {/* Submit button */}
-          <div className="text-right mt-2">
+      <div className="flex flex-col items-center justify-center h-screen">
+        <form
+          className="w-96 max-w-md mx-auto bg-black shadow-md rounded-md px-4 pt-4 pb-4 text-sm bg-opacity-60 dark:bg-gray-800 dark:text-white"
+        >
+          <h2 className="text-white text-lg font-bold mb-4 dark:text-white">
+            Contactez-nous
+          </h2>
+          <div className="mb-4">
+            <label
+              htmlFor="name"
+              className="block text-gray-200 dark:text-gray-300"
+            >
+              Nom
+            </label>
+            <input
+              id="name"
+              type="text"
+              autoComplete="off"
+              className="form-control pl-2 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="email_contact"
+              className="block text-gray-200 dark:text-gray-300"
+            >
+              Email
+            </label>
+            <input
+              id="email_contact"
+              type="email"
+              autoComplete="off"
+              className="form-control pl-2 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="subject"
+              className="block text-gray-200 dark:text-gray-300"
+            >
+              Sujet
+            </label>
+            <input
+              id="subject"
+              type="text"
+              autoComplete="off"
+              className="form-control pl-2 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="message"
+              className="block text-gray-200 dark:text-gray-300"
+            >
+              Message
+            </label>
+            <textarea
+              id="message"
+              rows="4"
+              className="form-control pl-2 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            ></textarea>
+          </div>
+          <div className="text-center">
             <button
               type="submit"
-              className="bg-orange_univerdog hover:bg-jaune_univerdog_01 hover:text-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded w-full"
             >
               Envoyer
             </button>
           </div>
         </form>
-        {/* Alternative contact information */}
       </div>
     </header>
   );

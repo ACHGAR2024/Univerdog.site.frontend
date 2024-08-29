@@ -6,7 +6,8 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState(null);
-  // get token from local storage
+
+  // Récupération du token dans le local storage
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -14,21 +15,24 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
     }
   }, []);
-  // login and logout functions
+
+  // Fonctions de login et logout
   const login = (token) => {
     setToken(token);
     setIsAuthenticated(true);
     localStorage.setItem("token", token);
   };
 
-  const logout = () => {
+  const logout = (navigate) => {
     setToken(null);
     setIsAuthenticated(false);
     localStorage.removeItem("token");
+    if (navigate) {
+      navigate("/"); // Redirection après déconnexion
+    }
   };
 
   return (
-    // auth context provider
     <AuthContext.Provider value={{ isAuthenticated, token, login, logout }}>
       {children}
     </AuthContext.Provider>

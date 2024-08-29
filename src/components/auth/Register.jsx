@@ -30,7 +30,7 @@ const Register = () => {
 
       const response = await axios.post("/register", data);
       localStorage.setItem("token", response.data.access_token);
-      setMessage("User registered successfully!");
+      setMessage("Utilisateur enregistré avec succès !");
       setErrorMessage("");
 
       navigate("/login"); // Redirection vers la page de login après l'inscription réussie
@@ -39,129 +39,127 @@ const Register = () => {
       if (error.response && error.response.data) {
         const errorData = error.response.data;
         if (errorData.role) {
-          setErrorMessage("The role field is required.");
+          setErrorMessage("Le champ role est requis.");
         } else {
-          setErrorMessage("Registration failed. Please try again.");
+          setErrorMessage("L'inscription a échoué. Veuillez réessayer.");
         }
       } else {
-        setErrorMessage("Registration failed. Please try again.");
+        setErrorMessage("L'inscription a échoué. Veuillez réessayer.");
       }
-      console.error("There was an error!", error);
+      console.error("Il y a eu une erreur !", error);
     }
   };
 
   return (
     <header
-    className="flex w-full flex-col h-screen justify-center items-center poetsen-one-regular bg-cover bg-no-repeat"
-    style={{ backgroundImage: `url('/src/images/dog-inscription.jpg')` }}
-  >
-    <div className="flex flex-col items-center justify-center h-screen ">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="max-w-md mx-auto bg-black shadow-md rounded-md px-4 pt-4 pb-4   text-sm bg-opacity-60"
-      >
-       
-
-        <input
-          name="name"
-          type="text"
-          {...register("name", { required: true })}
-          placeholder="Name"
-          className="mb-4 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full"
-        />
-        {errors.name && (
-          <span className="text-red-500">Ce champ est requis</span>
-        )}
-
-        <div className="input-group mb-4 relative">
-          <span className="input-group-addon absolute inset-y-0 left-0 flex items-center pl-3">
-            <i className="fa fa-envelope-o fa-fw pr-1 dark:text-gray-900"></i>
-          </span>
-          <input
-            name="email"
-            type="email"
-            {...register("email", { required: true })}
-            placeholder="Email"
-            className="form-control pl-10 p-2 rounded-md w-full"
-          />
-        </div>
-        {errors.email && (
-          <span className="text-red-500">Ce champ est requis</span>
-        )}
-
-        <div className="input-group mb-4 relative">
-          <span className="input-group-addon absolute inset-y-0 left-0 flex items-center pl-3">
-            <i className="fa fa-key fa-fw pr-1 dark:text-gray-900"></i>
-          </span>
-          <input
-            name="password"
-            type={showPassword ? "text" : "password"}
-            {...register("password", { required: true })}
-            placeholder="Password"
-            className="form-control pl-10 p-2 rounded-md w-full"
-          />
-          <span
-            className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-            onClick={togglePasswordVisibility}
-          >
-            <i
-              className={`fa ${
-                showPassword
-                  ? "fa-eye-slash dark:text-gray-900"
-                  : "fa-eye dark:text-gray-900"
-              }`}
-            ></i>
-          </span>
-        </div>
-        {errors.password && (
-          <span className="text-red-500">Ce champ est requis</span>
-        )}
-
-        <div className="input-group mb-4 relative">
-          <span className="input-group-addon absolute inset-y-0 left-0 flex items-center pl-3">
-            <i className="fa fa-key fa-fw pr-1"></i>
-          </span>
-          <input
-            name="password_confirmation"
-            type={showPasswordConfirmation ? "text" : "password"}
-            {...register("password_confirmation", { required: true })}
-            placeholder="Confirm Password"
-            className="form-control pl-10 p-2 rounded-md w-full dark:bg-slate-600 bg-gray-500 dark:text-gray-100 text-gray-100"
-          />
-          <span
-            className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-            onClick={togglePasswordConfirmationVisibility}
-          >
-            <i
-              className={`fa ${
-                showPasswordConfirmation ? "fa-eye-slash" : "fa-eye"
-              }`}
-            ></i>
-          </span>
-        </div>
-        {errors.password_confirmation && (
-          <span className="text-red-500">Ce champ est requis</span>
-        )}
-
-        {/* Champ 'role' invisible avec valeur par défaut */}
-        <input
-          type="hidden"
-          name="role"
-          value="user"
-          {...register("role", { required: true })}
-        />
-
-        <button
-          type="submit"
-          className="bg-red-500 hover:bg-red-600 text-white  font-bold py-2 px-4 rounded w-full"
+      className="flex w-full flex-col h-screen justify-center items-center poetsen-one-regular bg-cover bg-no-repeat dark:bg-gray-900"
+      style={{ backgroundImage: `url('/src/images/dog-inscription.jpg')` }}
+    >
+      <div className=" flex flex-col items-center justify-center h-screen">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-96 max-w-md mx-auto bg-black shadow-md rounded-md px-4 pt-4 pb-4 text-sm bg-opacity-60 dark:bg-gray-800 dark:text-white"
         >
-          Enregistrer
-        </button>
+          <input
+            name="name"
+            type="text"
+            {...register("name", { required: true })}
+            placeholder="Nom"
+            className="mb-4 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          />
+          {errors.name && (
+            <span className="text-red-500 dark:text-red-400">Ce champ est requis</span>
+          )}
 
-        {message && <p className="text-green-500">{message}</p>}
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-      </form>
-    </div>
+          <div className="input-group mb-4 relative">
+            <span className="input-group-addon absolute inset-y-0 left-0 flex items-center pl-3">
+              <i className="fa fa-envelope-o fa-fw pr-1 dark:text-gray-900"></i>
+            </span>
+            <input
+              name="email"
+              type="email"
+              {...register("email", { required: true })}
+              placeholder="Email"
+              className="form-control pl-10 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+          </div>
+          {errors.email && (
+            <span className="text-red-500 dark:text-red-400">Ce champ est requis</span>
+          )}
+
+          <div className="input-group mb-4 relative">
+            <span className="input-group-addon absolute inset-y-0 left-0 flex items-center pl-3">
+              <i className="fa fa-key fa-fw pr-1 dark:text-gray-900"></i>
+            </span>
+            <input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              {...register("password", { required: true })}
+              placeholder="Mot de passe"
+              className="form-control pl-10 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+            <span
+              className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+              onClick={togglePasswordVisibility}
+            >
+              <i
+                className={`fa ${
+                  showPassword
+                    ? "fa-eye-slash dark:text-gray-900"
+                    : "fa-eye dark:text-gray-900"
+                }`}
+              ></i>
+            </span>
+          </div>
+          {errors.password && (
+            <span className="text-red-500 dark:text-red-400">Ce champ est requis</span>
+          )}
+
+          <div className="input-group mb-4 relative">
+            <span className="input-group-addon absolute inset-y-0 left-0 flex items-center pl-3">
+              <i className="fa fa-key fa-fw pr-1"></i>
+            </span>
+            <input
+              name="password_confirmation"
+              type={showPasswordConfirmation ? "text" : "password"}
+              {...register("password_confirmation", { required: true })}
+              placeholder="Confirmer le mot de passe"
+              className="form-control pl-10 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+            <span
+              className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+              onClick={togglePasswordConfirmationVisibility}
+            >
+              <i
+                className={`fa ${
+                  showPasswordConfirmation ? "fa-eye-slash" : "fa-eye"
+                }`}
+              ></i>
+            </span>
+          </div>
+          {errors.password_confirmation && (
+            <span className="text-red-500 dark:text-red-400">Ce champ est requis</span>
+          )}
+
+          {/* Champ 'role' invisible avec valeur par défaut */}
+          <input
+            type="hidden"
+            name="role"
+            value="user"
+            {...register("role", { required: true })}
+          />
+
+          <button
+            type="submit"
+            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded w-full"
+          >
+            S&#39;enregistrer
+          </button>
+
+          {message && <p className="text-green-500 dark:text-green-400">{message}</p>}
+          {errorMessage && <p className="text-red-500 dark:text-red-400">{errorMessage}</p>}
+        </form>
+      </div>
     </header>
   );
 };

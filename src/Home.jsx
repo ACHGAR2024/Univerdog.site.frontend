@@ -99,158 +99,171 @@ const Home = () => {
   const { isAuthenticated, login, logout } = useContext(AuthContext);
 
   return (
-    <Router>
-      <Nav isAuthenticated={isAuthenticated} handleLogout={logout} />
-      <PageWrapper>
-        <Routes>
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
+    <>
+      <Router>
+        <Nav isAuthenticated={isAuthenticated} handleLogout={logout} />
+        <PageWrapper>
+          <Routes>
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
 
-          <Route path="/inscription" element={<Inscription />} />
-          <Route path="/forgotpw" element={<Forgotpw />} />
-          <Route path="/resetpw" element={<Resetpw />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy" element={<Privacy />} />
+            <Route path="/inscription" element={<Inscription />} />
+            <Route path="/forgotpw" element={<Forgotpw />} />
+            <Route path="/resetpw" element={<Resetpw />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
 
-          {/* Public Routes */}
-          <Route path="/" element={<HomeContent />} />
-          <Route path="/google_profil" element={<ProfilGoogle />} />
-          <Route path="/aide" element={<Aide />} />
-          <Route path="/carte-places" element={<CartePlaces />} />
-          <Route path="/lieux-places" element={<LieuPlacesRecherche />} />
-          <Route path="/carte" element={<Carte />} />
-          <Route path="/lieux-lyon" element={<LieuxLyon />} />
-          <Route path="/restaurants" element={<Restaurants />} />
-          <Route path="/musees" element={<Musees />} />
-          <Route path="/evenements" element={<Evenements />} />
-          <Route path="/places-reservations" element={<PlacesReservations />} />
-
-          {/* Protected Routes */}
-          <Route path="/rechercher-place" element={<RechercherPlace />} />
-          <Route path="/fiche-place/:id" element={<FichePlace />} />
-
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/dash" element={<Dash />} />
-          <Route path="/auth/google" element={<GoogleCallback />} />
-
-          {/* Authentication Routes */}
-          {!isAuthenticated && (
-            <Route path="/register" element={<Register />} />
-          )}
-          <Route
-            path="/login"
-            element={
-              !isAuthenticated ? (
-                <Login onLogin={login} />
-              ) : (
-                <Navigate to="/dashboard" />
-              )
-            }
-          />
-          <Route path="/Logout" element={<Navigate to="/" />} />
-
-          {/* Dashboard Routes */}
-          <Route
-            path="/dashboard"
-            element={
-              !isAuthenticated ? (
-                <Navigate to="/dashboard" />
-              ) : (
-                <PrivateRoute element={Dashboard} />
-              )
-            }
-          />
-          <Route
-            path="/deposer_place"
-            element={
-              !isAuthenticated ? (
-                <Navigate to="/deposer_place" />
-              ) : (
-                <PrivateRoute element={DeposerPlace} />
-              )
-            }
-          />
-          <Route
-            path="/deposer_categorie"
-            element={
-              !isAuthenticated ? (
-                <Navigate to="/deposer_categorie" />
-              ) : (
-                <PrivateRoute element={DeposerCategorie} />
-              )
-            }
-          />
-          <Route
-            path="/messages-management"
-            element={
-              !isAuthenticated ? (
-                <Navigate to="/messages-management" />
-              ) : (
-                <PrivateRoute element={MessagesManagement} />
-              )
-            }
-          />
-          <Route
-            path="/profil-user-update"
-            element={
-              !isAuthenticated ? (
-                <Navigate to="/profil-user-update" />
-              ) : (
-                <PrivateRoute element={UserProfileUpdate} />
-              )
-            }
-          />
-
-          {/* Place Management Routes */}
-          {isAuthenticated && (
-            <Route path="/edit-place/:id" element={<EditPlace />} />
-          )}
-          {isAuthenticated && (
-            <Route path="/delete-place/:id" element={<DeletePlace />} />
-          )}
-          {isAuthenticated && (
-            <Route path="/edit-categorie/:id" element={<EditCategorie />} />
-          )}
-          {isAuthenticated && (
-            <Route path="/delete-categorie/:id" element={<DeleteCategorie />} />
-          )}
-          {isAuthenticated && (
+            {/* Public Routes */}
+            <Route path="/" element={<HomeContent />} />
+            <Route path="/google_profil" element={<ProfilGoogle />} />
+            <Route path="/aide" element={<Aide />} />
+            <Route path="/carte-places" element={<CartePlaces />} />
+            <Route path="/lieux-places" element={<LieuPlacesRecherche />} />
+            <Route path="/carte" element={<Carte />} />
+            <Route path="/lieux-lyon" element={<LieuxLyon />} />
+            <Route path="/restaurants" element={<Restaurants />} />
+            <Route path="/musees" element={<Musees />} />
+            <Route path="/evenements" element={<Evenements />} />
             <Route
-              path="/ajout-photos-place/:id"
-              element={<AddPhotosPlace />}
+              path="/places-reservations"
+              element={<PlacesReservations />}
             />
-          )}
-          {isAuthenticated && (
-            <Route path="/places/:id/photos" element={<PhotoManager />} />
-          )}
 
-          {isAuthenticated && (
-            <Route path="/reservations" element={<ListeReservationsAdmin />} />
-          )}
-          {isAuthenticated && (
-            <Route
-              path="/reservations-new"
-              element={<ReservationForm isEditing={false} />}
-            />
-          )}
-          {isAuthenticated && (
-            <Route
-              path="/edit-reservation/:id"
-              element={<ReservationForm isEditing={true} />}
-            />
-          )}
+            {/* Protected Routes */}
+            <Route path="/rechercher-place" element={<RechercherPlace />} />
+            <Route path="/fiche-place/:id" element={<FichePlace />} />
 
-          {isAuthenticated && <Route path="/events" element={<ListEvents />} />}
-          {isAuthenticated && (
-            <Route path="/event-new" element={<EventForm />} />
-          )}
-          {isAuthenticated && (
-            <Route path="/edit-event/:id" element={<EditEvent />} />
-          )}
-        </Routes>
-      </PageWrapper>
-      <Footer />
-    </Router>
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/dash" element={<Dash />} />
+            <Route path="/auth/google" element={<GoogleCallback />} />
+
+            {/* Authentication Routes */}
+            {!isAuthenticated && (
+              <Route path="/register" element={<Register />} />
+            )}
+            <Route
+              path="/login"
+              element={
+                !isAuthenticated ? (
+                  <Login onLogin={login} />
+                ) : (
+                  <Navigate to="/dashboard" />
+                )
+              }
+            />
+            <Route path="/Logout" element={<Navigate to="/" />} />
+
+            {/* Dashboard Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                !isAuthenticated ? (
+                  <Navigate to="/dashboard" />
+                ) : (
+                  <PrivateRoute element={Dashboard} />
+                )
+              }
+            />
+            <Route
+              path="/deposer_place"
+              element={
+                !isAuthenticated ? (
+                  <Navigate to="/deposer_place" />
+                ) : (
+                  <PrivateRoute element={DeposerPlace} />
+                )
+              }
+            />
+            <Route
+              path="/deposer_categorie"
+              element={
+                !isAuthenticated ? (
+                  <Navigate to="/deposer_categorie" />
+                ) : (
+                  <PrivateRoute element={DeposerCategorie} />
+                )
+              }
+            />
+            <Route
+              path="/messages-management"
+              element={
+                !isAuthenticated ? (
+                  <Navigate to="/messages-management" />
+                ) : (
+                  <PrivateRoute element={MessagesManagement} />
+                )
+              }
+            />
+            <Route
+              path="/profil-user-update"
+              element={
+                !isAuthenticated ? (
+                  <Navigate to="/profil-user-update" />
+                ) : (
+                  <PrivateRoute element={UserProfileUpdate} />
+                )
+              }
+            />
+
+            {/* Place Management Routes */}
+            {isAuthenticated && (
+              <Route path="/edit-place/:id" element={<EditPlace />} />
+            )}
+            {isAuthenticated && (
+              <Route path="/delete-place/:id" element={<DeletePlace />} />
+            )}
+            {isAuthenticated && (
+              <Route path="/edit-categorie/:id" element={<EditCategorie />} />
+            )}
+            {isAuthenticated && (
+              <Route
+                path="/delete-categorie/:id"
+                element={<DeleteCategorie />}
+              />
+            )}
+            {isAuthenticated && (
+              <Route
+                path="/ajout-photos-place/:id"
+                element={<AddPhotosPlace />}
+              />
+            )}
+            {isAuthenticated && (
+              <Route path="/places/:id/photos" element={<PhotoManager />} />
+            )}
+
+            {isAuthenticated && (
+              <Route
+                path="/reservations"
+                element={<ListeReservationsAdmin />}
+              />
+            )}
+            {isAuthenticated && (
+              <Route
+                path="/reservations-new"
+                element={<ReservationForm isEditing={false} />}
+              />
+            )}
+            {isAuthenticated && (
+              <Route
+                path="/edit-reservation/:id"
+                element={<ReservationForm isEditing={true} />}
+              />
+            )}
+
+            {isAuthenticated && (
+              <Route path="/events" element={<ListEvents />} />
+            )}
+            {isAuthenticated && (
+              <Route path="/event-new" element={<EventForm />} />
+            )}
+            {isAuthenticated && (
+              <Route path="/edit-event/:id" element={<EditEvent />} />
+            )}
+          </Routes>
+        </PageWrapper>
+        <Footer />
+      </Router>
+    </>
   );
 };
 // ** Main App Component **
