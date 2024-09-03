@@ -75,11 +75,10 @@ body {
   /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;*/
-    font-family: "Poetsen One", sans-serif;
+  font-family: "Poetsen One", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 
 .nav-active {
   border-bottom: 4px solid orange;
@@ -110,4 +109,15 @@ body {
 }
 .animate-slideIn {
   animation: slideIn 0.5s ease-out;
+}
+
+.nav-link {
+  display: block;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  padding: 10px 0;
+  transition: color 0.3s ease-in-out;
+  text-align: left;
+  padding-left: 20px;
 }

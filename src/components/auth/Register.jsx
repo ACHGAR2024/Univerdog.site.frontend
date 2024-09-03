@@ -96,6 +96,8 @@ const Register = () => {
               type={showPassword ? "text" : "password"}
               {...register("password", { required: true })}
               placeholder="Mot de passe"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$"
+              title="8 caractères minimum, une majuscule, un caractère spécial, un chiffre et une lettre."
               className="form-control pl-10 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
             <span

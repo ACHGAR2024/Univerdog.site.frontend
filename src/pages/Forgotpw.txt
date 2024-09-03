@@ -7,20 +7,14 @@ function Forgotpw() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true); // Afficher l'indicateur de chargement
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/forgotpw/" + email
-      );
-      //alert("Email de réinitialisation envoyé, valable pour 60 minutes.");
-      console.log(response.data); // Afficher les données de la réponse
-      setMessage(
-        response.data.message ||
-          "Un email de réinitialisation de mot de passe a été envoyé. valable pour 60 minutes."
-      );
+      const response = await axios.post('http://127.0.0.1:8000/api/forgotpw/'+ email);
+      alert('Email de réinitialisation envoyé');
+      setMessage(response.data.message || "Un email de réinitialisation de mot de passe a été envoyé.");
       setErrorMessage("");
       // Redirection ou affichage d'un message de confirmation
     } catch (error) {
@@ -29,21 +23,15 @@ function Forgotpw() {
         switch (error.response.status) {
           case 422: // Validation error (ex: email invalide)
             setErrorMessage(error.response.data.errors.email[0]);
-            console.error(error);
             break;
           case 404: // Email non trouvé
             setErrorMessage("Aucun compte trouvé avec cet email.");
-            console.error(error);
             break;
           default:
-            setErrorMessage(
-              "Une erreur est survenue. Veuillez réessayer plus tard."
-            );
+            setErrorMessage("Une erreur est survenue. Veuillez réessayer plus tard.");
         }
       } else {
-        setErrorMessage(
-          "Une erreur est survenue. Veuillez réessayer plus tard."
-        );
+        setErrorMessage("Une erreur est survenue. Veuillez réessayer plus tard.");
       }
       console.error(error);
     } finally {
@@ -96,15 +84,7 @@ function Forgotpw() {
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded w-full"
               disabled={isLoading}
             >
-              {isLoading ? (
-                <img
-                  src="/src/images/icons8-sablier.gif"
-                  alt="Loading"
-                  className="w-6 h-6 inline-block"
-                />
-              ) : (
-                "Envoyer"
-              )}
+              Envoyer
             </button>
           </div>
           {message && (

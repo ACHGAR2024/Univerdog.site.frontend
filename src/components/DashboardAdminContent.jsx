@@ -30,6 +30,8 @@ const DashboardCard = ({ title, value, icon, color }) => (
 );
 
 const QuickActions = () => (
+  <>
+  
   <div
     id="quick-actions"
     className="mt-8 bg-white rounded-lg shadow-md p-6 animate-slideIn pt-8 w-screen md:w-2/4 lg:w-3/4 xl:w-3/4"
@@ -77,6 +79,7 @@ const QuickActions = () => (
       </a>
     </div>
   </div>
+  </>
 );
 
 const DashboardAdminContent = () => {
@@ -149,71 +152,58 @@ const DashboardAdminContent = () => {
   }, [token]);
 
   return (
+    <>
+    <div className="w-full h-24 bg-black -mt-24 "></div>
     <div className="flex h-screen bg-gray-100 dark:bg-slate-900 ">
       {/* Sidebar */}
       <aside className="hidden md:block bg-gray-900 text-white w-64 min-h-screen p-4 transition-all duration-300">
-        <nav className="space-y-4 mt-14 w-64 h-screen">
-          <div className="flex items-center justify-between ">
-            <button className="md:hidden text-white focus:outline-none">
-              <i className="fas fa-times"></i>
-            </button>
-          </div>
+  <nav className="space-y-4 mt-14 w-64 h-screen">
+    <div className="flex items-center justify-between ">
+      <button className="md:hidden text-white focus:outline-none">
+        <i className="fas fa-times"></i>
+      </button>
+    </div>
 
-          <a
-            href="#quick-actions"
-            className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-          >
-            <i className="fa fa-magic fa-fw pr-1"></i> Actions rapides
-          </a>
-          <a
-            href="#signalements"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-          >
-            <i className="fa fa-bell fa-fw pr-1"></i> Signalements
-          </a>
-          <a
-            href="#utilisateurs"
-            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-          >
-            <i className="fa fa-users fa-fw pr-1"></i> Utilisateurs
-          </a>
-          <a
-            href="#categories"
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-          >
-            <i className="fa fa-list fa-fw pr-1"></i> Gestion Catégories
-          </a>
-          <a
-            href="#places"
-            className="bg-cyan-700 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-          >
-            <i className="fa fa-address-book fa-fw pr-1"></i> Liste places
-          </a>
-          <a
-            href="#events"
-            className="bg-sky-800 hover:bg-sky-900 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-          >
-            <i className="fa fa-sitemap fa-fw pr-1"></i> Liste Evénements
-          </a>
-          <a
-            href="#reservations"
-            className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-          >
-            <i className="fa fa-address-book fa-fw pr-1"></i> Liste lieux de Reservations
-          </a>
-          <a
-            href="#animation"
-            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-          >
-            <i className="fa fa-clock fa-fw pr-1"></i> Quitter
-          </a>
-        </nav>
-      </aside>
+    <a href="#quick-actions" className="nav-link bg-orange-500">
+      <i className="fa fa-magic fa-fw pr-1"></i> Actions rapides
+    </a>
+
+    <a href="#signalements" className="nav-link bg-blue-500">
+      <i className="fa fa-bell fa-fw pr-1"></i> Signalements
+    </a>
+
+    <a href="#utilisateurs" className="nav-link bg-gray-500">
+      <i className="fa fa-users fa-fw pr-1"></i> Utilisateurs
+    </a>
+
+    <a href="#categories" className="nav-link bg-red-500">
+      <i className="fa fa-list fa-fw pr-1"></i> Gestion Catégories
+    </a>
+
+    <a href="#places" className="nav-link bg-cyan-700">
+      <i className="fa fa-address-book fa-fw pr-1"></i> Liste places
+    </a>
+
+    <a href="#events" className="nav-link bg-sky-800">
+      <i className="fa fa-sitemap fa-fw pr-1"></i> Liste Evénements
+    </a>
+
+    <a href="#reservations" className="nav-link bg-sky-500">
+      <i className="fa fa-address-book fa-fw pr-1"></i> Liste lieux de Reservations
+    </a>
+
+    <a href="#animation" className="nav-link bg-gray-500">
+      <i className="fa fa-clock fa-fw pr-1"></i> Quitter
+    </a>
+  </nav>
+</aside>
+
+
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden sm:pl-8 lg:pl-8 xl:pl-8 dark:bg-slate-900">
-        <div className="h-32">
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-white pt-12 pl-3">Tableau de bord</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white pt-2 pb-4 pl-3">Tableau de bord</h1>
           </div>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 pt-5 dark:bg-slate-900">
           <div className="dark:bg-slate-900 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:w-2/4 lg:w-3/4 xl:w-3/4">
@@ -258,6 +248,7 @@ const DashboardAdminContent = () => {
         </main>
       </div>
     </div>
+    </>
   );
 };
 
