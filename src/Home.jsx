@@ -16,8 +16,8 @@ import "./index.css";
 
 // ** Component Imports **
 // Layout Components
-import Nav from "./components/Nav";
-import Footer from "./components/Footer";
+import Nav from "./components/nav_footer/Nav";
+import Footer from "./components/nav_footer/Footer";
 
 // Authentication Components
 import Register from "./components/auth/Register";
@@ -36,7 +36,7 @@ import EventForm from "./components/EventForm";
 import EditEvent from "./components/EditEvent";
 
 // Page Components
-import HomeContent from "./pages/HomeContent";
+import HomeContent from "./pages/public/HomeContent";
 import Dashboard from "./pages/Dashboard";
 import RechercherPlace from "./pages/RechercherPlace";
 import DeposerPlace from "./pages/DeposerPlace";
@@ -63,18 +63,20 @@ import { DarkModeProvider } from "./context/DarkModeContext";
 
 // ** Main Application Component **
 
-import About from "./pages/About";
-import Contact from "./pages/Contact";
+import About from "./pages/public/About";
+import Contact from "./pages/public/Contact";
 import Inscription from "./pages/Inscription";
 import Forgotpw from "./pages/Forgotpw";
 import Resetpw from "./pages/Resetpw";
-import Terms from "./pages/Terms";
-import Privacy from "./pages/Privacy";
+import Terms from "./pages/public/Terms";
+import Privacy from "./pages/public/Privacy";
 import ProfilGoogle from "./components/ProfilGoogle";
 
-import SignIn from "./pages/SignIn";
+import SignIn from "./pages/auth/SignIn";
 import GoogleCallback from "./pages/GoogleCallback";
 import Dash from "./pages/Dash";
+import DashDog from "./pages/DashDog";
+//import DashboardContent from "components/dashboard_comp/DashboardContent";
 
 function PageWrapper({ children }) {
   return (
@@ -101,7 +103,9 @@ const Home = () => {
   return (
     <>
       <Router>
-        <Nav isAuthenticated={isAuthenticated} handleLogout={logout} />
+        {!window.location.pathname.includes("/dashboard") && (
+          <Nav isAuthenticated={isAuthenticated} handleLogout={logout} />
+        )}
         <PageWrapper>
           <Routes>
             <Route path="/about" element={<About />} />
@@ -115,6 +119,7 @@ const Home = () => {
 
             {/* Public Routes */}
             <Route path="/" element={<HomeContent />} />
+            <Route path="/dashdog " element={<DashDog />} />
             <Route path="/google_profil" element={<ProfilGoogle />} />
             <Route path="/aide" element={<Aide />} />
             <Route path="/carte-places" element={<CartePlaces />} />
@@ -261,7 +266,7 @@ const Home = () => {
             )}
           </Routes>
         </PageWrapper>
-        <Footer />
+        {!window.location.pathname.includes("/dashboard") && <Footer />}
       </Router>
     </>
   );
@@ -272,7 +277,11 @@ const App = () => (
     <AuthProvider>
       <UserProvider>
         <DarkModeProvider>
-          <Home />
+        
+             
+              <Home />
+           
+         
         </DarkModeProvider>
       </UserProvider>
     </AuthProvider>
