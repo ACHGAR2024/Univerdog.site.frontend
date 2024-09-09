@@ -41,7 +41,7 @@ const QuickActions = () => (
     <h2 className="text-2xl font-bold mb-4 dark:text-black">Actions rapides</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <a
-        href="/deposer_place"
+        href="/dogs"
         className="bg-blue-500 hover:bg-blue-600  font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
       >
         <i className="fa fa-plus-circle fa-fw pr-1"></i> Ajouter un chien
@@ -176,7 +176,7 @@ const UserDashboard = () => {
   return (
     <>
     <React.Fragment>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 ">
         <a href="#mesplaces">
           <DashboardCard
             title="Mes chiens"

@@ -16,7 +16,7 @@ const DarkModeToggle = () => {
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
-      document.body.classList.add("dark");
+      document.body.classList.add("dark:bg-gray-900");
     } else {
       document.documentElement.classList.remove("dark");
       document.body.classList.remove("dark");

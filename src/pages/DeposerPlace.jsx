@@ -61,6 +61,7 @@ const DeposerPlace = () => {
           `https://api-adresse.data.gouv.fr/search/?q=${searchQuery}&limit=1`
         );
         setSuggestedCities(response.data.features || []);
+        console.log("data adresse", response.data.features);
       } catch (error) {
         console.error("Erreur lors de la recherche adresse", error);
       }
@@ -88,7 +89,7 @@ const DeposerPlace = () => {
       formDataToSend.append("latitude", formData.latitude);
       formDataToSend.append("longitude", formData.longitude);
       formDataToSend.append("type", formData.type);
-      formDataToSend.append("user_id", useridrecup.id); // Utilisation de `myIdUser`
+      formDataToSend.append("user_id", useridrecup.id); // Utilisation de `myIdUser`   
 
       const currentDate = new Date()
         .toISOString()

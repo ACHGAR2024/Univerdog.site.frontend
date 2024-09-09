@@ -1,5 +1,24 @@
+import Nav from "../../components/nav_footer/Nav";
+import Footer from "../../components/nav_footer/Footer";
+import { useState, useEffect } from "react";
 function Privacy() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Remplacez ceci par votre logique réelle d'authentification
+    const userIsAuthenticated = false; // Changez en fonction de votre logique
+    setIsAuthenticated(userIsAuthenticated);
+  }, []);
+
+  const handleLogout = () => {
+    // Implémentez la logique de déconnexion ici
+    setIsAuthenticated(false);
+    // Ajoutez la logique de déconnexion réelle si nécessaire
+  };
   return (
+    <>
+       <Nav isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
+
     <header
       className="pt-16 flex w-full flex-col justify-center items-center poetsen-one-regular bg-gray-700 text-white dark:bg-black dark:text-dark_text"
       id="privacy"
@@ -101,6 +120,9 @@ function Privacy() {
         </div>
       </div>
     </header>
+
+      <Footer />
+    </>
   );
 }
 

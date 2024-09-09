@@ -58,7 +58,7 @@ const DeposerCategorie = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-20 mb-72">
+    <div className="container mx-auto px-4 py-8 mt-20 mb-72   ">
       <h1 className="text-3xl font-bold mb-8 text-black">
         Déposer une Categorie
       </h1>

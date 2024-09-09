@@ -18,6 +18,10 @@ import Notiflix from "notiflix";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 
+const generateSecureQRCodeURL = (dogId) => {
+  const dogIdcrypted = (dogId * 3456).toString();
+  return `http://localhost:5174/dog/${dogIdcrypted}`;
+};
 const API_URL = "http://127.0.0.1:8000/api/dogs-photos";
 const DOGS_API_URL = "http://127.0.0.1:8000/api/dogs";
 
@@ -66,11 +70,12 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
 
   useEffect(() => {
     if (showQR) {
+      const qrCodeURL = generateSecureQRCodeURL(dog.id);
       const canvas = document.getElementById(`qr-${dog.id}`);
       if (canvas) {
         QRCode.toCanvas(
           canvas,
-          `https://univerdog.com/dog/${dog.id}`,
+          qrCodeURL,
           { width: 128, height: 128 },
           (error) => {
             if (error)
@@ -86,14 +91,22 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
     const birthDateObj = new Date(birthDate);
     let age = today.getFullYear() - birthDateObj.getFullYear();
     const m = today.getMonth() - birthDateObj.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDateObj.getDate())) {
+    const d = today.getDate() - birthDateObj.getDate();
+    if (m < 0 || (m === 0 && d < 0)) {
       age--;
     }
-    return age;
-  };
 
+    let months;
+    if (m < 0) {
+      months = 12 + m;
+    } else {
+      months = m;
+    }
+
+    return `${age} ans et ${months} mois`;
+  };
   const handleShare = () => {
-    const qrCodeURL = `https://univerdog.com/dog/${dog.id}`;
+    const qrCodeURL = generateSecureQRCodeURL(dog.id);
     if (navigator.share) {
       navigator
         .share({
@@ -168,25 +181,24 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
             <strong>Race:</strong> {dog.breed}
           </p>
           <p className="text-gray-600 mb-4">
-            <strong>Âge:</strong> {calculateAge(dog.birth_date)} ans
+            <strong>Date de naissance :</strong> {new Date(dog.birth_date).toLocaleDateString("fr-FR")}
+          </p>
+          <p className="text-gray-600 mb-4">
+            <strong>Âge:</strong> {calculateAge(dog.birth_date)}
           </p>
           <p className="text-gray-600 mb-2">
             <strong>Poids:</strong> {dog.weight} kg
           </p>
           <p className="text-gray-600 mb-4">
-            <strong>Sexe:</strong> {dog.sex}
+            <strong>Sexe:</strong> {dog.sex === "male" ? "Mâle" : dog.sex}
           </p>
           <p className="text-gray-600 mb-2">
             <strong>Informations médicales:</strong> {dog.medical_info}
           </p>
-          <p className="text-gray-600 mb-4">
-            <strong>User ID:</strong> {dog.user_id}
-          </p>
-          <p className="text-gray-600 mb-2">
-            <strong>QR code:</strong> {dog.qr_code}
-          </p>
+          
+          
 
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-4 p-8">
             <button
               onClick={() => onEdit(dog)}
               className="text-blue-600 hover:text-blue-800 flex items-center"
@@ -199,7 +211,8 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
             >
               <FaTrashAlt className="mr-2" /> Supprimer
             </button>
-          </div>
+           
+          </div> 
           <button
             onClick={() => setShowQR(!showQR)}
             className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full mb-2 flex items-center justify-center"
@@ -217,11 +230,26 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
           </button>
 
           {showQR && (
-            <div ref={qrCodeRef}>
-              <canvas
-                id={`qr-${dog.id}`}
-                className="qr-code mt-4 flex justify-center"
-              ></canvas>
+            <>
+              <div ref={qrCodeRef}>
+                <div className="my-4 text-left">
+                  <h2 className="text-xl font-bold mb-2">Code QR</h2>
+                  <h3 className="text-lg">
+                    Voici toutes les informations sur ma chienne{" "}
+                    <span className="font-bold">
+                      {dog.name_dog.toUpperCase()}
+                    </span>
+                  </h3>
+                  <h4 className="text-lg">
+                    n&apos;hésitez pas à les consulter !
+                  </h4>
+                 
+                </div>
+                <canvas
+                  id={`qr-${dog.id}`}
+                  className="qr-code mt-4 flex justify-center"
+                ></canvas>
+              </div>
               <div className="flex justify-center mt-2">
                 <button
                   onClick={handleShare}
@@ -235,8 +263,22 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
                 >
                   <FaFilePdf className="mr-2" /> Télécharger PDF
                 </button>
+                
               </div>
-            </div>
+              <div className="flex justify-center mt-2">
+              <p className="mt-2">
+                    <a
+                      href={generateSecureQRCodeURL(dog.id)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      {dog.sex === "Femelle"
+                        ? "Clique ici pour accéder à toutes les informations sur ma chienne "
+                        : "Clique ici pour accéder à toutes les informations sur mon chien "}
+                      {dog.name_dog.toUpperCase()} !
+                    </a>
+                  </p>
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -244,13 +286,11 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
   );
 };
 
-
-
 DogCard.propTypes = {
   dog: PropTypes.object.isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  photoUpdateKey: PropTypes.number.isRequired, 
+  photoUpdateKey: PropTypes.number.isRequired,
 };
 
 const ProfilsDogs = () => {
@@ -268,7 +308,7 @@ const ProfilsDogs = () => {
     weight: "",
     sex: "",
     medical_info: "",
-    qr_code: `https://univerdog.site/api/dog/${user.id}`,
+    qr_code:"",
     user_id: user.id,
   });
   const [selectedDog, setSelectedDog] = useState(null);
@@ -392,7 +432,7 @@ const ProfilsDogs = () => {
 
           const formData = new FormData();
           formData.append("photo_name_dog", selectedFile);
-          formData.append("dog_id", selectedDog.id); 
+          formData.append("dog_id", selectedDog.id);
           formData.append("_method", "PUT");
           console.log("FormData created for photo update:", formData);
 
@@ -492,7 +532,7 @@ const ProfilsDogs = () => {
       const updatedDogsResponse = await fetch(DOGS_API_URL);
       const updatedDogsData = await updatedDogsResponse.json();
       console.log("Updated dog list response:", updatedDogsData);
-      setPhotoUpdateKey(Date.now()); 
+      setPhotoUpdateKey(Date.now());
       const filteredDogs = updatedDogsData.filter(
         (dog) => dog.user_id === user.id
       );
@@ -509,7 +549,7 @@ const ProfilsDogs = () => {
         weight: "",
         sex: "",
         medical_info: "",
-        qr_code: `https://univerdog.site/api/dog/${user.id}`,
+        qr_code: generateSecureQRCodeURL(selectedDog.id),
         user_id: user.id,
       });
       setSelectedDog(null);
@@ -587,7 +627,7 @@ const ProfilsDogs = () => {
                   qr_code: `https://univerdog.site/api/dog/${user.id}`,
                   user_id: user.id,
                 });
-              }} 
+              }}
               className="text-3xl pr-5 text-red-700 absolute top-2 right-2  hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-400"
             >
               ×
@@ -698,7 +738,7 @@ const ProfilsDogs = () => {
                   >
                     <option value="">Choisir un sexe</option>
                     <option value="male">Mâle</option>
-                    <option value="female">Femelle</option>
+                    <option value="Femelle">Femelle</option>
                   </select>
                 </div>
 

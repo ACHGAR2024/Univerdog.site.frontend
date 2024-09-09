@@ -1,11 +1,41 @@
-
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const VoyagesChiens = () => {
+  const [voyages, setVoyages] = useState([]);
+
+  useEffect(() => {
+    const fetchVoyages = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/events');
+        console.log('Response data:', response.data);
+  
+        // Access the 'events' array within the response data
+        if (Array.isArray(response.data.events)) {
+          const filteredVoyages = response.data.events.filter(
+            (event) => event.type_event === 'voyage'
+          );
+          setVoyages(filteredVoyages);
+        } else {
+          console.error('API response.data.events is not an array:', response.data);
+          // Handle the error appropriately
+        }
+      } catch (error) {
+        console.error('Error fetching voyages:', error);
+        // Handle the error appropriately
+      }
+    };
+  
+    fetchVoyages();
+  }, []);
+
   return (
     <div>
+
+
       <h2 className="text-3xl font-bold mb-6 ml-10 flex items-center ">
         <i className="fa-solid fa-suitcase w-6 h-6 mr-2 text-orange-500  "></i>
-        &nbsp; Voyages pour Chiens
+        &nbsp; Voyages avec Chien
       </h2>
       
       <div className="dashboard-card mb-6 p-6 shadow-lg rounded-lg">
@@ -15,37 +45,36 @@ const VoyagesChiens = () => {
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 dark:text-black">
-          <div className="bg-white p-4 rounded-lg shadow transform hover:scale-105 transition-transform duration-300 ease-in-out">
-            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Plage Canine" className="w-full h-40 object-cover rounded-lg mb-4" />
-           
-            <h4 className="font-bold mb-2  ">Week-end à la plage</h4>
-            <p className="text-sm text-gray-600 mb-2">Profitez d&apos;un week-end en bord de mer avec votre compagnon à quatre pattes.</p>
-            <p className="text-sm font-bold mb-2"><i className="fa-solid fa-calendar-days mr-2"></i>Date: 15-17 Juillet 2023</p>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full flex items-center justify-center">
-              <i className="fa-solid fa-calendar-check mr-2"></i>
-              Réserver
-            </button>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow transform hover:scale-105 transition-transform duration-300 ease-in-out">
-            <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Montagne Canine" className="w-full h-40 object-cover rounded-lg mb-4" />
-            <h4 className="font-bold mb-2">Randonnée en montagne</h4>
-            <p className="text-sm text-gray-600 mb-2">Une escapade en montagne pour les chiens sportifs et leurs maîtres.</p>
-            <p className="text-sm font-bold mb-2"><i className="fa-solid fa-calendar-days mr-2"></i>Date: 5-7 Août 2023</p>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full flex items-center justify-center">
-              <i className="fa-solid fa-calendar-check mr-2"></i>
-              Réserver
-            </button>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow transform hover:scale-105 transition-transform duration-300 ease-in-out">
-          <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Plage Canine" className="w-full h-40 object-cover rounded-lg mb-4" />
-            <h4 className="font-bold mb-2">Camping nature</h4>
-            <p className="text-sm text-gray-600 mb-2">Un séjour en pleine nature pour se reconnecter avec votre chien.</p>
-            <p className="text-sm font-bold mb-2"><i className="fa-solid fa-calendar-days mr-2"></i>Date: 22-24 Septembre 2023</p>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full flex items-center justify-center">
-              <i className="fa-solid fa-calendar-check mr-2"></i>
-              Réserver
-            </button>
-          </div>
+          {voyages.map((voyage) => (
+            <div
+              key={voyage.id}
+              className="bg-white p-4 rounded-lg shadow transform hover:scale-105 transition-transform duration-300 ease-in-out"
+            >
+              <img
+                src={voyage.photo_event}
+                alt={voyage.title_event}
+                className="w-full h-40 object-cover rounded-lg mb-4"
+              />
+              <h4 className="font-bold mb-2">{voyage.title_event}</h4>
+              <p className="text-sm text-gray-600 mb-2">
+                {voyage.content_event}
+              </p>
+              <p className="text-sm font-bold mb-2">
+                <i className="fa-solid fa-calendar-days mr-2"></i>
+                Date: {new Date(voyage.event_date).toLocaleDateString('fr-FR', { year: 'numeric', month: '2-digit', day: '2-digit' })} - {new Date(voyage.event_end_date).toLocaleDateString('fr-FR', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+              </p>
+              <p className="text-sm font-bold mb-2">
+                <i className="fa-solid fa-euro-sign mr-2"></i>
+                Prix: {voyage.price_event}
+              </p>
+              <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full flex items-center justify-center">
+                <a href={voyage.link_event} target="_blank" rel="noopener noreferrer">
+                <i className="fa-solid fa-calendar-check mr-2"></i>
+                Réserver
+                </a>
+              </button>
+            </div>
+          ))}
         </div>
       </div>
       

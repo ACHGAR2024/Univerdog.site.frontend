@@ -1,24 +1,40 @@
+// src/pages/public/HomeContent.jsx
+
 import { useState, useEffect } from "react";
 import { Carousel } from "flowbite-react";
-// Assurez-vous d'importer Link si vous l'utilisez
+import Nav from "../../components/nav_footer/Nav";
+import Footer from "../../components/nav_footer/Footer";
 
 function HomeContent() {
   const [showModal, setShowModal] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const consent = localStorage.getItem("cookieConsent");
     if (!consent) {
       setShowModal(true);
     }
+    // Simuler l'état d'authentification
+    // Remplacez ceci par votre logique d'authentification réelle
+    const userIsAuthenticated = false; // Changez en fonction de votre logique
+    setIsAuthenticated(userIsAuthenticated);
   }, []);
 
+  const handleLogout = () => {
+    // Implémentez la logique de déconnexion ici
+    setIsAuthenticated(false);
+    // Ajoutez la logique de déconnexion réelle si nécessaire
+  };
   const handleConsent = () => {
-    localStorage.setItem("cookieConsent", "true");
+    // Add your logic here for handling consent
+    // For example, you can set the consent in localStorage and hide the modal
+    localStorage.setItem("cookieConsent", "accepted");
     setShowModal(false);
   };
 
   return (
     <>
+      <Nav isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
       {/* Cookie Consent Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
@@ -72,8 +88,7 @@ function HomeContent() {
             </a>
           </div>
 
-          {/* Carousel  Div*/}
-
+          {/* Carousel Div */}
           <div className="order-2 md:order-none w-full p-0 xl:pr-72">
             <div className="xs:w-80 w-96 h-72 sm:h-72 xl:h-72 2xl:h-72 mx-auto md:ml-15 xl:ml-44 lg:ml-30 ">
               <Carousel
@@ -164,6 +179,8 @@ function HomeContent() {
           </div>
         </section>
       </header>
+
+      <Footer />
     </>
   );
 }

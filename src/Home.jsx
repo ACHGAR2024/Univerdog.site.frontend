@@ -16,14 +16,15 @@ import "./index.css";
 
 // ** Component Imports **
 // Layout Components
-import Nav from "./components/nav_footer/Nav";
-import Footer from "./components/nav_footer/Footer";
+//import Nav from "./components/nav_footer/Nav";
+//import Footer from "./components/nav_footer/Footer";
 
 // Authentication Components
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import UserProfileUpdate from "./components/auth/UserProfileUpdate";
+import ProProfileUpdate from "./components/auth/ProProfileUpdate";
 
 // Place Management Components
 import EditPlace from "./components/EditPlace";
@@ -41,20 +42,26 @@ import Dashboard from "./pages/Dashboard";
 import RechercherPlace from "./pages/RechercherPlace";
 import DeposerPlace from "./pages/DeposerPlace";
 import DeposerCategorie from "./pages/DeposerCategorie";
+import DeposerSpecialty from "./pages/DeposerSpecialty";
+import DeposerProfessional from "./pages/DeposerProfessional";
 import MessagesManagement from "./pages/MessagesManagement";
 import FichePlace from "./pages/FichePlace";
 import Aide from "./pages/Aide";
-import CartePlaces from "./pages/CartePlaces";
+import Aide_pro from "./pages/Aide_pro";
+
 import LieuPlacesRecherche from "./pages/LieuPlacesRecherche";
-import AddPhotosPlace from "./pages/AddPhotosPlace";
-import ListeReservationsAdmin from "./pages/ListeReservationsAdmin";
-import ListEvents from "./pages/ListEvents";
-import Carte from "./pages/Carte";
+
+import PlacesReservations from "./pages/PlacesReservations";
+
+import ListeReservationsAdmin from "./components/dashboard_comp/pageadmin/ListeReservationsAdmin";
+import ListEvents from "./components/dashboard_comp/pageadmin/ListEvents";
+
+
 import LieuxLyon from "./pages/LieuxLyon";
 import Restaurants from "./pages/Restaurants";
 import Musees from "./pages/Musees";
 import Evenements from "./pages/Evenements";
-import PlacesReservations from "./pages/PlacesReservations";
+import AddPhotosPlace from "./pages/AddPhotosPlace";
 
 // ** Context Imports **
 import { AuthProvider, AuthContext } from "./context/AuthContext";
@@ -64,6 +71,7 @@ import { DarkModeProvider } from "./context/DarkModeContext";
 // ** Main Application Component **
 
 import About from "./pages/public/About";
+import RegisterForm from "./pages/RegisterForm";
 import Contact from "./pages/public/Contact";
 import Inscription from "./pages/Inscription";
 import Forgotpw from "./pages/Forgotpw";
@@ -77,6 +85,12 @@ import GoogleCallback from "./pages/GoogleCallback";
 import Dash from "./pages/Dash";
 import DashDog from "./pages/DashDog";
 //import DashboardContent from "components/dashboard_comp/DashboardContent";
+import DogDetails from "./components/dashboard_comp/pagesuser/DogDetails";
+import ProfilsDogs from "./components/dashboard_comp/pagesuser/ProfilsDogs";
+import CartePlaces from "./components/dashboard_comp/pagesuser/CartePlaces";
+import Carte from "./components/dashboard_comp/pagesuser/Carte";
+import DeposerLieuPro from "./components/dashboard_comp/pagespro/DeposerLieuPro";
+import EditProfessional from "./components/EditProfessional";
 
 function PageWrapper({ children }) {
   return (
@@ -98,18 +112,22 @@ PageWrapper.propTypes = {
 
 // ** Main Application Component **
 const Home = () => {
-  const { isAuthenticated, login, logout } = useContext(AuthContext);
+  const { isAuthenticated, login } = useContext(AuthContext);
+  {
+    /*, logout*/
+  }
 
   return (
     <>
       <Router>
-        {!window.location.pathname.includes("/dashboard") && (
+        {/*{!window.location.pathname.includes("/dashboard") && (
           <Nav isAuthenticated={isAuthenticated} handleLogout={logout} />
-        )}
+        )}*/}
         <PageWrapper>
           <Routes>
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/registerform" element={<RegisterForm />} />
 
             <Route path="/inscription" element={<Inscription />} />
             <Route path="/forgotpw" element={<Forgotpw />} />
@@ -122,6 +140,7 @@ const Home = () => {
             <Route path="/dashdog " element={<DashDog />} />
             <Route path="/google_profil" element={<ProfilGoogle />} />
             <Route path="/aide" element={<Aide />} />
+            <Route path="/aide_pro" element={<Aide_pro />} />
             <Route path="/carte-places" element={<CartePlaces />} />
             <Route path="/lieux-places" element={<LieuPlacesRecherche />} />
             <Route path="/carte" element={<Carte />} />
@@ -129,6 +148,8 @@ const Home = () => {
             <Route path="/restaurants" element={<Restaurants />} />
             <Route path="/musees" element={<Musees />} />
             <Route path="/evenements" element={<Evenements />} />
+            <Route path="/dog/:dogIdcrypted" element={<DogDetails />} />
+
             <Route
               path="/places-reservations"
               element={<PlacesReservations />}
@@ -180,12 +201,44 @@ const Home = () => {
               }
             />
             <Route
+              path="/deposer_lieu_pro"
+              element={
+                !isAuthenticated ? (
+                  <Navigate to="/deposer_lieu_pro" />
+                ) : (
+                  <PrivateRoute element={DeposerLieuPro} />
+                )
+              }
+            />
+            <Route
               path="/deposer_categorie"
               element={
                 !isAuthenticated ? (
                   <Navigate to="/deposer_categorie" />
                 ) : (
                   <PrivateRoute element={DeposerCategorie} />
+                )
+              }
+            />
+            <Route
+              path="/deposer_professional"
+              element={
+                !isAuthenticated ? (
+                  <Navigate to="/deposer_professional" />
+                ) : (
+                  <PrivateRoute element={DeposerProfessional} />
+                )
+              }
+            />
+            
+
+            <Route
+              path="/deposer_specialite"
+              element={
+                !isAuthenticated ? (
+                  <Navigate to="/deposer_specialite" />
+                ) : (
+                  <PrivateRoute element={DeposerSpecialty} />
                 )
               }
             />
@@ -209,10 +262,23 @@ const Home = () => {
                 )
               }
             />
+            <Route
+              path="/profil-pro-update"
+              element={
+                !isAuthenticated ? (
+                  <Navigate to="/profil-pro-update" />
+                ) : (
+                  <PrivateRoute element={ProProfileUpdate} />
+                )
+              }
+            />
 
             {/* Place Management Routes */}
             {isAuthenticated && (
               <Route path="/edit-place/:id" element={<EditPlace />} />
+            )}
+            {isAuthenticated && (
+              <Route path="/edit-professional/:id" element={<EditProfessional />} />
             )}
             {isAuthenticated && (
               <Route path="/delete-place/:id" element={<DeletePlace />} />
@@ -235,7 +301,7 @@ const Home = () => {
             {isAuthenticated && (
               <Route path="/places/:id/photos" element={<PhotoManager />} />
             )}
-
+<Route path="/places/:id/photos" element={<PhotoManager />} />
             {isAuthenticated && (
               <Route
                 path="/reservations"
@@ -264,9 +330,12 @@ const Home = () => {
             {isAuthenticated && (
               <Route path="/edit-event/:id" element={<EditEvent />} />
             )}
+            {isAuthenticated && (
+              <Route path="/dogs" element={<ProfilsDogs />} />
+            )}
           </Routes>
         </PageWrapper>
-        {!window.location.pathname.includes("/dashboard") && <Footer />}
+        {/*{!window.location.pathname.includes("/dashboard") && <Footer />}*/}
       </Router>
     </>
   );
@@ -277,11 +346,7 @@ const App = () => (
     <AuthProvider>
       <UserProvider>
         <DarkModeProvider>
-        
-             
-              <Home />
-           
-         
+          <Home />
         </DarkModeProvider>
       </UserProvider>
     </AuthProvider>

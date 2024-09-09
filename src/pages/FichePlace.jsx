@@ -212,11 +212,19 @@ const FichePlace = () => {
     popupAnchor: [10, 5],
   });
   return (
-    <div className="container mx-auto px-4  py-12 mt-16 mb-40 z-40 ">
+    <div className="container mx-auto px-4  py-12  mb-40 z-40 ">
       <div className="bg-white shadow-lg rounded-lg overflow-hidden animate-fadeIn pt-12">
         <div className="md:flex">
           <div className="md:w-1/2 p-4">
-            <div className="relative h-96 mb-20">
+            <div className="relative h-96 mb-10">
+              {photos.length == 0 ? ( 
+                <img 
+                  className="w-full h-full object-cover rounded-lg animate-fadeIn"
+                  src={`http://127.0.0.1:8000${photo}`}
+                  alt={title}
+                
+                />
+              ) : (
               <Slider {...settings}>
                 <div key="0" className="relative h-96 mb-4">
                   <img
@@ -235,8 +243,9 @@ const FichePlace = () => {
                   </div>
                 ))}
               </Slider>
+              )}
             </div>
-            <div className="mb-52">
+            <div className="mb-32">
               <h3 className="text-xl font-semibold mb-2 text-red-600">
                 <i className="fas fa-map-marker-alt mr-2"></i>Localisation
               </h3>
@@ -288,7 +297,7 @@ const FichePlace = () => {
                 <i className={`fas fa-${type} mr-2`}></i>
                 {title}
               </h2>
-              <div className="mb-6">
+              <div className="mb-6"   >
                 <StarRatings
                   rating={averageRating}
                   starRatedColor="#FFC107"
@@ -307,39 +316,33 @@ const FichePlace = () => {
 
               <div className="mb-6">
                 <h3 className="text-xl font-semibold mb-2 text-red-600">
-                  <i className="far fa-clock mr-2"></i>Horaires de visite
+                  <i className="far fa-clock mr-2"></i>Horaires
                 </h3>
                 <p className="text-gray-600">
-                  <i className="fas fa-sun text-yellow-500 mr-2"></i>Accessible
-                  selon les horaires
+                  <i className="fas fa-clock text-yellow-500 mr-2"></i>Accessible
+                   selon les horaires fixer
+                  par le responsable
                 </p>
-                <p className="text-gray-600">
-                  <i className="fas fa-users text-blue-500 mr-2"></i>Visites
-                  guidées disponibles sur réservation
-                </p>
+                
               </div>
               <div className="mb-6">
                 <h3 className="text-xl font-semibold mb-2 text-red-600">
                   <i className="fas fa-euro-sign mr-2"></i>Tarifs
                 </h3>
+                
                 <p className="text-gray-600">
-                  <i className="fas fa-walking text-green-500 mr-2"></i>Accès
-                  gratuit au lieu
-                </p>
-                <p className="text-gray-600">
-                  <i className="fas fa-map-signs text-purple-500 mr-2"></i>
-                  Visite : à partir de{" "}
+                  <i className="fas fa-credit-card text-purple-500 mr-2"></i>
+                 à partir de{" "}
                   <TarifsComponent tarifs={price.toString()} /> par personne
                 </p>
               </div>
               <div className="flex space-x-4">
                 <a
-                  href={`/places-reservations?event=16`}
+                  href={`/dashboard`}
                   className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
                 >
                   <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                    <i className="fas fa-ticket-alt mr-2"></i>Réserver une
-                    visite
+                    <i className="fas fa-ticket-alt mr-2"></i>Prendre un RDV
                   </button>
                 </a>
               </div>

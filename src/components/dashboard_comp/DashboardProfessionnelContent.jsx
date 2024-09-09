@@ -1,236 +1,179 @@
-import React from "react";
-import { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useContext } from "react";
+import PropTypes from "prop-types";
 import { AuthContext } from "../../context/AuthContext";
 import { UserContext } from "../../context/UserContext";
-import PropTypes from "prop-types";
-import ListeReservationsAdmin from "../../pages/ListeReservationsAdmin";
-import ListEvents from "../../pages/ListEvents";
+import SidebarPro from "./SidebarPro";
+import MonProfilPro from "./pagespro/MonProfilPro";
+import ProDashboard from "./pagespro/ProDashboard";
+import DogsPro from "./pagespro/DogsPro";
+import AppointmentsPro from "./pagespro/AppointmentsPro";
+import TimeCalandarPro from "./pagespro/TimeCalandarPro";
+import AppointmentsManagerPro from "./pagespro/AppointmentsManagerPro";
+import DarkModeToggle from "../DarkModeToggle";
+import axios from "axios";
 
-const DashboardCard = ({ title, icon, value, color }) => (
-  <div
-    className={`bg-white rounded-lg shadow-md p-6 ${color} animate-slideIn hover:shadow-lg transition-shadow duration-300`}
-  >
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm font-medium text-gray-500 uppercase">{title}</p>
-        <p className="mt-1 text-3xl font-semibold">{value}</p>
-      </div>
-      <div
-        className={`p-3 rounded-full ${color
-          .replace("text-", "bg-")
-          .replace("600", "100")}`}
-      >
-        <i className={`${icon} fa-2x ${color}`}></i>
-      </div>
-    </div>
-  </div>
-);
+const BASE_URL = "http://127.0.0.1:8000/api/appointments_pro";
+const professionalId = 7; // à ajuster dynamiquement si besoin
 
-const QuickActions = () => (
-  <div className="mt-8 bg-white rounded-lg shadow-md p-6 animate-slideIn">
-    <h2 className="text-2xl font-bold mb-4">Actions rapides</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <a
-        href="#events"
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-      >
-        <i className="fa fa-plus-circle fa-fw pr-1"></i> Nouveau Evènement
-      </a>
-      <a
-        href="/reservations-new"
-        className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-      >
-        <i className="fa fa-question-circle fa-fw pr-1"></i> Nouveau lieu de
-        réservation
-      </a>
-      <a
-        href="/messages-management"
-        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-      >
-        <i className="fa fa-envelope fa-fw pr-1"></i> Voir les messages
-      </a>
-      <a
-        href="/profil-user-update"
-        className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
-      >
-        <i className="fa fa-cog fa-fw pr-1"></i> Paramètres
-      </a>
-    </div>
-  </div>
-);
-
-const UserDashboard = () => {
-  const [countPlaces, setCountPlaces] = useState(0);
-  const [countMessages, setCountMessages] = useState(0);
-  const [favoriteCount, setFavoriteCount] = useState(0);
-  const [reportCount, setReportCount] = useState(0);
-
-  const { token } = useContext(AuthContext);
+const DashboardContent = () => {
+  const [appointments, setAppointments] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentSection, setCurrentSection] = useState("ProDashboard");
+  const [appointmentsAwaiting, setAppointmentsAwaiting] = useState(0); // Pour stocker le nombre de RDV en attente
+  const { logout } = useContext(AuthContext);
   const user = useContext(UserContext);
 
-  useEffect(() => {
-    const fetchPlaceCount = async () => {
-      if (!user || !user.id) return;
+  // Fonction pour récupérer les rendez-vous
+  const fetchAppointments = async (professionalId) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/${professionalId}`);
+      const appointmentsData = response.data;
 
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/api/places", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+      // Filtrer et compter les rendez-vous en attente
+      const awaitingCount = appointmentsData.filter(
+        (appointment) => appointment.status === "En attente"
+      ).length;
 
-        const userPlaces = response.data.places.filter(
-          (place) => place.user_id === user.id
-        );
-
-        setCountPlaces(userPlaces.length);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des places", error);
-      }
-    };
-
-    fetchPlaceCount();
-  }, [token, user]);
+      setAppointments(appointmentsData); // Stocker tous les rendez-vous
+      setAppointmentsAwaiting(awaitingCount); // Stocker le nombre de RDV en attente
+    } catch (error) {
+      console.error("Erreur lors de la récupération des rendez-vous:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchMessagesCount = async () => {
-      if (!user || !user.id) return;
+    fetchAppointments(professionalId);
+  }, []); // Exécuter la récupération des RDV au chargement du composant
 
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/api/messages", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const handleLogout = () => {
+    logout();
+    window.location.href = "/";
+    console.log(appointments);
+  };
 
-        ////console.log('Response Data:', response.data);
-        ////console.log('User id:', user.id);
-
-        // Récupérer toutes les places pour cet utilisateur
-        const placesResponse = await axios.get(
-          "http://127.0.0.1:8000/api/places",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          }
-        );
-
-        const userPlaces = placesResponse.data.places.filter(
-          (place) => place.user_id === user.id
-        );
-
-        //console.log('User Places:', userPlaces);
-
-        const userMessages = response.data.filter((message) =>
-          userPlaces.some((place) => message.place_id === place.id)
-        );
-
-        //console.log('Filtered Messages:', userMessages);
-
-        setCountMessages(userMessages.length);
-
-        // Filtrer les messages favoris
-        const userFavoriteMessages = userMessages.filter(
-          (message) => message.is_favorite === 1
-        );
-
-        // Compter le nombre de messages favoris
-        setFavoriteCount(userFavoriteMessages.length);
-
-        // Filtrer les messages signaleés
-        const userReportedMessages = userMessages.filter(
-          (message) => message.is_report === 1
-        );
-
-        // Compter le nombre de messages signaleés
-        setReportCount(userReportedMessages.length);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des messages", error);
-        if (error.response) {
-          console.error("Erreur:", error.response.data);
-        }
-      }
-    };
-
-    fetchMessagesCount();
-  }, [token, user]);
+  const renderContent = () => {
+    switch (currentSection) {
+      case "ProDashboard":
+        return <ProDashboard />;
+      case "MonProfilPro":
+        return <MonProfilPro />;
+      case "DogsPro":
+        return <DogsPro />;
+      case "AppointmentsManagerPro":
+        return <AppointmentsManagerPro />;
+      case "TimeCalandarPro":
+        return <TimeCalandarPro />;
+      case "AppointmentsPro":
+        return <AppointmentsPro />;
+      default:
+        return <ProDashboard />;
+    }
+  };
 
   return (
     <React.Fragment>
-      <div className="container mx-auto px-4 py-8 animate-fadeIn">
-        <h1 className="text-3xl font-bold mb-8">
-          Dashboard Agent de tourisme{" "}
-        </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <a href="#mesplaces">
-            <DashboardCard
-              title="Mes Places"
-              icon="fa fa-bolt"
-              value={countPlaces}
-              color="text-blue-600"
-            />
-          </a>
-          <DashboardCard
-            title="Messages"
-            icon="fa fa-envelope"
-            value={countMessages}
-            color="text-green-600"
-          />
-          <DashboardCard
-            title="Favoris"
-            icon="fa fa-star"
-            value={favoriteCount}
-            color="text-yellow-400"
-          />
-          <DashboardCard
-            title="Signalements"
-            icon="fa fa-flag"
-            value={reportCount}
-            color="text-red-600"
-          />
-        </div>
-        <QuickActions />
-        <ListEvents />
-        <ListeReservationsAdmin />
+      <SidebarPro
+        isOpen={sidebarOpen}
+        toggleSidebar={toggleSidebar}
+        setCurrentSection={setCurrentSection}
+        currentSection={currentSection}
+      />
+      <div className="relative mb-8 ">
+        <button
+          onClick={toggleSidebar}
+          className={`toggle-btn ${
+            sidebarOpen ? "toggle-btn-open" : ""
+          } bg-white p-2 rounded-full shadow-md hover: focus:outline-none`}
+        >
+          <i
+            className={`fas ${
+              sidebarOpen ? "fa-times" : "fa-bars"
+            } text-xl text-black`}
+          ></i>
+        </button>
+        <main
+          className={`flex-1 p-6 main-content dark:bg-slate-900   ${
+            sidebarOpen ? "main-content-shifted" : ""
+          }`}
+        >
+          <header className="flex justify-between items-center mb-8 dark:text-white">
+            <h1 className="text-2xl font-bold pl-8 mr-2">
+              Dashboard Professionnelle
+            </h1>
+            <div className="flex items-center">
+              <button className="relative hover: transition duration-200">
+                <span className="bg-amber-400 text-black px-2 py-1 rounded-full text-xs absolute  opacity-90">
+                  {appointmentsAwaiting}
+                </span>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+              </button>
+              <button
+                className="ml-4 hover:scale-125 transition duration-200"
+                onClick={() => setCurrentSection("MonProfilPro")}
+              >
+                <img
+                  src={
+                    user.image === null
+                      ? "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                      : user.image
+                      ? `http://127.0.0.1:8000${user.image}`
+                      : user.avatar
+                  }
+                  alt="User avatar"
+                  className="w-8 h-8 rounded-full"
+                />
+              </button>
+              <div className="ml-4">
+                <DarkModeToggle />
+              </div>
+              <button onClick={handleLogout} className="ml-4">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+              </button>
+            </div>
+          </header>
+
+          {/* Contenu principal */}
+          {renderContent()}
+        </main>
       </div>
     </React.Fragment>
   );
 };
 
-const DashboardProfessionnelContent = () => {
-  return (
-    <React.Fragment>
-      <main className="min-h-screen mb-16">
-        <UserDashboard />
-      </main>
-    </React.Fragment>
-  );
-};
-
-DashboardProfessionnelContent.propTypes = {
+DashboardContent.propTypes = {
   token: PropTypes.string.isRequired,
   user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
     email: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired,
-    prenom: PropTypes.string.isRequired,
-    role: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     photo: PropTypes.string,
   }).isRequired,
 };
-DashboardCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  color: PropTypes.string.isRequired,
-};
 
-export default DashboardProfessionnelContent;
+export default DashboardContent;

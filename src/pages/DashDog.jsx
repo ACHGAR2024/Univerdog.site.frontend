@@ -125,7 +125,7 @@ const DashDog = () => {
     <div className="flex">
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
 
-      <main className="flex-1 p-6 md:ml-64">
+      <main className="flex-1 p-6 md:ml-64 ">
         <header className="flex justify-between items-center mb-8">
           <button className="md:hidden" onClick={toggleSidebar}>
             <svg

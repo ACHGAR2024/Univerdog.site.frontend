@@ -53,18 +53,18 @@ const ConseilsIA = () => {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold mb-6 ml-10 flex items-center">
+      <h2 className="text-xl font-bold mb-6 ml-10 flex items-center">
         <i className="fa-solid fa-robot w-6 h-6 mr-2 text-orange-500"></i>
         &nbsp; Conseils avec IA
       </h2>
       <div className="dashboard-card p-6 shadow-lg rounded-lg overflow-hidden transform  transition-transform duration-300 ease-in-out">
-        <h3 className="text-xl font-bold mb-4 flex items-center dark:text-black">
+        <h3 className="text-md font-bold mb-4 flex items-center dark:text-black">
           <i className="fa-solid fa-question-circle mr-2"></i>
           Posez votre question à notre IA spécialisée
         </h3>
         <form onSubmit={handleSubmit}>
           <textarea
-            className="w-full p-2 border rounded mb-4 dark:text-black"
+            className="text-xs w-full p-2 border rounded mb-2 dark:text-black"
             rows="4"
             placeholder="Exemple : Comment apprendre à mon chien à ne pas tirer en laisse ?"
             value={question}
@@ -72,13 +72,13 @@ const ConseilsIA = () => {
           />
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center"
+            className="bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-600 flex items-center justify-center"
             disabled={loading} // Désactiver le bouton pendant le chargement
           >
-            <i className="fa-solid fa-paper-plane mr-2"></i>
+            <i className="fa-solid fa-paper-plane "></i>
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center"
+              className="text-xs bg-blue-500 text-white px-2  rounded hover:bg-blue-600 flex items-center justify-center"
               disabled={loading}
               style={{
                 pointerEvents: loading ? "none" : "auto",
@@ -86,7 +86,7 @@ const ConseilsIA = () => {
               }}
             >
               {loading ? (
-                <div className="bg-orange-500 inline-block w-4 h-4 border-b-2 border-gray-900 rounded-full animate-spin"></div>
+                <div className="bg-orange-500 inline-block w-2 h-2 border-b-2 border-gray-900 rounded-full animate-spin"></div>
               ) : (
                 "Obtenir un conseil"
               )}
@@ -94,14 +94,14 @@ const ConseilsIA = () => {
           </button>
           <button
             type="button"
-            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded mt-4"
+            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded mt-2"
             onClick={() => setQuestion("")}
           >
             <i className="fa-solid fa-arrow-rotate-left mr-2"></i>
             Nouvelle question
           </button>
         </form>
-        <div className={response === "La réponse de l’IA s’affichera ici après avoir posé votre question." ? "mt-6 bg-slate-200 p-4 rounded-lg text-gray-700" : "mt-6 bg-red-200 p-4 rounded-lg text-gray-700"}>
+        <div className={response === "La réponse de l’IA s’affichera ici après avoir posé votre question." ? "mt-4 bg-slate-200 p-4 rounded-lg text-gray-700" : "mt-4 bg-red-200 p-4 rounded-lg text-gray-700"}>
           <h4 className="font-bold flex items-center mb-4">
             <i className="fa-solid fa-lightbulb mr-2 "></i>
             Réponse de l’IA :

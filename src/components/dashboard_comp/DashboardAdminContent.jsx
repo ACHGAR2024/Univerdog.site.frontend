@@ -1,94 +1,99 @@
+import React from "react";
 import "chart.js/auto";
-import ListePlacesAdmin from "../../pages/ListePlacesAdmin";
-import ListeCategories from "../../pages/ListeCategories";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import Signalement from "../../components/Signalement";
-import UtilisateursAdmin from "./../auth/UtilisateursAdmin";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 import { UserContext } from "../../context/UserContext";
-import ListeReservationsAdmin from "../../pages/ListeReservationsAdmin";
-import ListEvents from "../../pages/ListEvents";
-import { useNavigate } from "react-router-dom";
+import DarkModeToggle from "./../DarkModeToggle";
+
+import Signalement from "./pageadmin/Signalement";
+
+import ListePlacesAdmin from "./pageadmin/ListePlacesAdmin";
+import ListeCategories from "./pageadmin/ListeCategories";
+import ListeReservationsAdmin from "./pageadmin/ListeReservationsAdmin";
+import ListEvents from "./pageadmin/ListEvents";
+
+import UtilisateursAdmin from "./../auth/UtilisateursAdmin";
+import ProductList from "./pageadmin/ProductList";
 
 const DashboardCard = ({ title, value, icon, color }) => (
-  <div className={`bg-white rounded-lg shadow-md p-4 ${color} animate-slideIn`}>
+  <div
+    className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 ${color} animate-slideIn`}
+  >
     <div className="flex items-center justify-between">
       <div>
-        <p className="text-sm font-medium text-gray-500 uppercase">{title}</p>
-        <p className="mt-2 text-lg font-semibold">{value}</p>
+        <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">
+          {title}
+        </p>
+        <p className="mt-2 text-lg font-semibold text-gray-900 dark:text-white">
+          {value}
+        </p>
       </div>
-      <div
-        className={`p-2 rounded-full ${color
-          .replace("text-", "bg-")
-          .replace("600", "100")}`}
-      >
-        <i className={`${icon} ${color}`}></i>
+      <div className={`p-2 rounded-full bg-${color}-100 dark:bg-${color}-900`}>
+        <i className={`${icon} text-${color}-600 dark:text-${color}-400`}></i>
       </div>
     </div>
   </div>
 );
 
 const QuickActions = () => (
-  <>
-  
   <div
     id="quick-actions"
-    className="mt-8 bg-white rounded-lg shadow-md p-6 animate-slideIn pt-8 w-screen md:w-2/4 lg:w-3/4 xl:w-3/4"
+    className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 animate-slideIn pt-8 w-full md:w-2/4 lg:w-3/4 xl:w-3/4"
   >
-    <h2 className="text-2xl font-bold mb-4 dark:text-gray-800">Actions rapides</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ">
+    <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+      Actions rapides
+    </h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <a
         href="/messages-management"
-        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
+        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center flex items-center justify-center"
       >
-        <i className="fa fa-envelope fa-fw pr-1"></i> Voir mes messages
+        <i className="fas fa-envelope mr-2"></i> Voir mes messages
       </a>
       <a
         href="/deposer_categorie"
-        className="bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
+        className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center flex items-center justify-center"
       >
-        <i className="fa fa-plus-circle fa-fw pr-1"></i> Nouvelle catégorie
+        <i className="fas fa-plus-circle mr-2"></i> Nouvelle catégorie
+      </a>
+      <a
+        href="/deposer_specialite"
+        className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center flex items-center justify-center"
+      >
+        <i className="fas fa-plus-circle mr-2"></i> Nouvelle spécialité
       </a>
       <a
         href="/deposer_place"
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
+        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center flex items-center justify-center"
       >
-        <i className="fa fa-plus-circle fa-fw pr-1"></i> Nouvelle place
+        <i className="fas fa-plus-circle mr-2"></i> Nouvelle place
       </a>
       <a
         href="/reservations-new"
-        className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
+        className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center flex items-center justify-center"
       >
-        <i className="fa fa-plus-circle fa-fw pr-1"></i> Nouveau lieu de
-        réservation
+        <i className="fas fa-plus-circle mr-2"></i> Nouveau lieu de réservation
       </a>
-
       <a
         href="/profil-user-update"
-        className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
+        className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center flex items-center justify-center"
       >
-        <i className="fa fa-cog fa-fw pr-1"></i> Paramètres
+        <i className="fas fa-cog mr-2"></i> Paramètres
       </a>
-
       <a
         href="/"
-        className="bg-sky-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
+        className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center flex items-center justify-center"
       >
-        <i className="fa fa-sign-out  "></i> Page d&#39;accueil
+        <i className="fas fa-home mr-2"></i> Page d&apos;accueil
       </a>
     </div>
   </div>
-  </>
 );
-const toggleSidebar = () => {
-  // code to toggle the sidebar visibility
-  // for example:
-  const sidebar = document.querySelector('.sidebar');
-  sidebar.classList.toggle('hidden');
-};
 const DashboardAdminContent = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [countPlaces, setCountPlaces] = useState(0);
   const [countMessages, setCountMessages] = useState(0);
   const [favoriteCount, setFavoriteCount] = useState(0);
@@ -119,7 +124,6 @@ const DashboardAdminContent = () => {
     fetchPlaceCount();
   }, [token, user]);
 
-  // Fetch total count of messages and calculate favorites and reports
   useEffect(() => {
     const fetchMessagesCount = async () => {
       try {
@@ -133,14 +137,12 @@ const DashboardAdminContent = () => {
 
         setCountMessages(response.data.length);
 
-        // Filter the favorite messages
         const userFavoriteMessages = response.data.filter(
           (message) => message.is_favorite === 1
         );
 
         setFavoriteCount(userFavoriteMessages.length);
 
-        // Filter the reported messages
         const userReportedMessages = response.data.filter(
           (message) => message.is_report === 1
         );
@@ -156,103 +158,160 @@ const DashboardAdminContent = () => {
 
     fetchMessagesCount();
   }, [token]);
+
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const handleLogout = () => {
     logout(navigate);
   };
+
+  React.useEffect(() => {
+    const sidebar = document.getElementById("sidebar");
+    const menuTexts = document.querySelectorAll(".menu-text");
+    const logo = document.querySelector(".logo");
+    const logoText = document.querySelector(".logo-text");
+
+    if (isSidebarOpen) {
+      sidebar.style.width = "256px";
+      menuTexts.forEach((text) => (text.style.display = "inline"));
+      logo.style.display = "block";
+      logoText.style.display = "block";
+    } else {
+      sidebar.style.width = "80px";
+      sidebar.style.transition = "width 0.3s ease-in-out";
+      sidebar.style.paddingTop = "40px";
+      sidebar.style.paddingRight = "60px";
+      menuTexts.forEach((text) => (text.style.display = "none"));
+      logo.style.display = "none";
+      logoText.style.display = "none";
+    }
+  }, [isSidebarOpen]);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <>
-    <div className="w-full h-24 bg-black -mt-24 "></div>
-    <div className="flex h-screen bg-gray-100 dark:bg-slate-900 ">
+    <div className="flex h-screen bg-gray-100  ">
       {/* Sidebar */}
-      <aside className="hidden md:block bg-gray-900 text-white w-64 min-h-screen p-4 transition-all duration-300">
-  <nav className="space-y-4 mt-14 w-64 h-screen">
-    <div className="flex items-center justify-between ">
-      <button className="md:hidden text-white focus:outline-none">
-        <i className="fas fa-times"></i>
-      </button>
-    </div>
+      <aside
+        id="sidebar"
+        className=" sidebar fixed top-0 left-0 h-full bg-gray-800 text-white transition-all duration-300 "
+      >
+        <div className="mt-5 pl-6">
+          
+          <h2 className="text-xl font-bold text-white text-center mb-6 logo-text">
+            <img
+            src="src/images/logo.png"
+            alt="UniverDog Logo"
+            className="w-28  mx-auto rounded-full mb-4 logo"
+          />
+          </h2>
+          <nav className="space-y-1 text-xs">
+            {/* Dashboard Link */}
+            <a
+              href="#quick-actions"
+              className="flex items-center py-2 px-2 text-white hover:bg-gray-700 hover:pr-6 rounded transition duration-200"
+            >
+              <i className="fas fa-magic fa-fw mr-2"></i>
+              <span className="menu-text">Actions rapides</span>
+            </a>
 
-    <a href="#quick-actions" className="nav-link bg-orange-500">
-      <i className="fa fa-magic fa-fw pr-1"></i> Actions rapides
-    </a>
+            {/* Places Link */}
+            <a
+              href="#places"
+              className="flex items-center py-2 px-2 text-white hover:bg-gray-700 hover:pr-6 rounded transition duration-200"
+            >
+              <i className="fa fa-address-book fa-fw mr-2"></i>
+              <span className="menu-text">Liste places</span>
+            </a>
 
-    <a href="#signalements" className="nav-link bg-blue-500">
-      <i className="fa fa-bell fa-fw pr-1"></i> Signalements
-    </a>
+            {/* Users Link */}
+            <a
+              href="#users"
+              className="flex items-center py-2 px-2 text-white hover:bg-gray-700 hover:pr-6 rounded transition duration-200"
+            >
+              <i className="fa fa-users fa-fw mr-2"></i>
+              <span className="menu-text">Utilisateurs</span>
+            </a>
 
-    <a href="#utilisateurs" className="nav-link bg-gray-500">
-      <i className="fa fa-users fa-fw pr-1"></i> Utilisateurs
-    </a>
+            {/* Events Link */}
+            <a
+              href="#events"
+              className="flex items-center py-2 px-2 text-white hover:bg-gray-700 hover:pr-6 rounded transition duration-200"
+            >
+              <i className="fa fa-sitemap fa-fw mr-2"></i>
+              <span className="menu-text">Liste Evénements</span>
+            </a>
 
-    <a href="#categories" className="nav-link bg-red-500">
-      <i className="fa fa-list fa-fw pr-1"></i> Gestion Catégories
-    </a>
+            {/* Reports Link */}
+            <a
+              href="#signalements"
+              className="flex items-center py-2 px-2 text-white hover:bg-gray-700 hover:pr-6 rounded transition duration-200"
+            >
+              <i className="fa fa-bell fa-fw mr-2"></i>
+              <span className="menu-text">Signalements</span>
+            </a>
 
-    <a href="#places" className="nav-link bg-cyan-700">
-      <i className="fa fa-address-book fa-fw pr-1"></i> Liste places
-    </a>
+            {/* Categories Link */}
+            <a
+              href="#categories"
+              className="flex items-center py-2 px-2 text-white hover:bg-gray-700 hover:pr-6 rounded transition duration-200"
+            >
+              <i className="fa fa-list fa-fw mr-2"></i>
+              <span className="menu-text">Gestion Catégories</span>
+            </a>
 
-    <a href="#events" className="nav-link bg-sky-800">
-      <i className="fa fa-sitemap fa-fw pr-1"></i> Liste Evénements
-    </a>
+            {/* Reservations Link */}
+            <a
+              href="#reservations"
+              className="flex items-center py-2 px-2 text-white hover:bg-gray-700 hover:pr-6 rounded transition duration-200"
+            >
+              <i className="fa fa-address-book fa-fw mr-2"></i>
+              <span className="menu-text">Lieux de Reservations</span>
+            </a>
 
-    <a href="#reservations" className="nav-link bg-sky-500">
-      <i className="fa fa-address-book fa-fw pr-1"></i> Liste lieux de Reservations
-    </a>
-
-    <a href="#animation" className="nav-link bg-gray-500">
-      <i className="fa fa-clock fa-fw pr-1"></i> Quitter
-    </a>
-  </nav>
-</aside>
-
-
+            {/* Settings Link - Logout */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center py-2 px-2 text-white hover:bg-gray-700 hover:pr-1 rounded transition duration-200"
+            >
+              <i className="fa fa-sign-out mr-2"></i>
+              <span className="menu-text ">Quitter</span>
+            </button>
+          </nav>
+        </div>
+      </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden sm:pl-8 lg:pl-8 xl:pl-8 dark:bg-slate-900">
-      <header className="flex justify-between items-center mb-8 p-5">
-            <button className="md:hidden" onClick={toggleSidebar}>
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-            <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
+      <div
+        className={`flex-1 flex flex-col overflow-hidden h-auto ${
+          isSidebarOpen ? "ml-64" : "ml-20 "
+        }`}
+      >
+        {/* Header */}
+
+        {/* Sidebar Toggle Button */}
+        <button
+          onClick={toggleSidebar}
+          id="sidebarToggle"
+          className="fixed sidebar-toggle bg-gray-800 text-white p-2 rounded-full focus:outline-none  top-4 left-4 z-50"
+        >
+          <i className="fas fa-bars"></i>
+        </button>
+        <header className="bg-white shadow-sm dark:bg-slate-500 dark:text-white">
+        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <h1 className="ml-4 text-xl font-semibold text-gray-900 dark:text-white">
+              Dashboard Admin
+            </h1>
             <div className="flex items-center">
-              <input
-                type="text"
-                placeholder="Search here"
-                className="border border-gray-300 p-2 rounded-lg mr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button className="text-gray-600 hover:text-gray-800 transition duration-200">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                  />
-                </svg>
+              {/* Notification Icon (Currently Non-Functional) */}
+              <button className="mr-2 text-gray-500 hover:text-gray-700  focus:outline-none focus:ring">
+                <i className="fas fa-bell text-xl dark:text-gray-300 dark:hover:text-white"></i>
               </button>
-              <button className="ml-4 text-gray-600 hover:text-gray-800 transition duration-200">
+<DarkModeToggle />
+              {/* User Profile Icon (Displays User Image) */}
+              <button className="ml-2 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring">
                 <img
                   src={
                     user.google_id === null && user.image === null
@@ -267,28 +326,18 @@ const DashboardAdminContent = () => {
               </button>
               <button
                 onClick={handleLogout}
-                className="ml-4 text-gray-600 hover:text-gray-800 transition duration-200"
+                className="text-gray-300 hover:text-white text-xs"
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
+                <i className="fas fa-sign-out-alt mr-1 ml-4 text-xl text-gray-950 hover:text-red-500 dark:text-white dark:hover:text-red-400"></i> 
               </button>
-              <div className="dark:text-gray-950">{}</div>
             </div>
-          </header>
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 pt-5 dark:bg-slate-900">
-          <div className="dark:bg-slate-900 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:w-2/4 lg:w-3/4 xl:w-3/4">
+          </div>
+        </header>
+
+        {/* Main Dashboard Content */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-black p-4 pl-10">
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mx-4">
             <DashboardCard
               title="Les places"
               icon="fa fa-bolt"
@@ -305,7 +354,7 @@ const DashboardAdminContent = () => {
               title="Favoris"
               icon="fa fa-star"
               value={favoriteCount}
-              color=""
+              color="text-yellow-500"
             />
             <DashboardCard
               title="Signalements"
@@ -314,23 +363,111 @@ const DashboardAdminContent = () => {
               color="text-red-600"
             />
           </div>
+
+          {/* Quick Actions Section */}
           <QuickActions />
-          <Signalement />
-          <UtilisateursAdmin />
-          <ListeCategories />
-          <ListEvents />
-          <ListeReservationsAdmin />
-          <ListePlacesAdmin />
-          
-          <div id="animation" className="min-h-screen bg-gray-100 flex flex-col justify-center items-center px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 2xl:px-40">
-            <div className="relative w-full h-64 bg-white rounded-lg overflow-hidden flex items-center justify-center">
-              <div className="character walking p-6 sm:p-8 md:p-12 lg:p-16 xl:p-20 2xl:p-24"></div>
+          <ProductList />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            {[
+              {
+                icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z",
+                title: "Total Places",
+                value: "248",
+                color: "blue",
+              },
+              {
+                icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z",
+                title: "Total Users",
+                value: "12,361",
+                color: "green",
+              },
+              {
+                icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4",
+                title: "Events This Month",
+                value: "42",
+                color: "yellow",
+              },
+              {
+                icon: "M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9",
+                title: "Active Reports",
+                value: "7",
+                color: "red",
+              },
+            ].map((item, index) => (
+              <div key={index} className="card p-6">
+                <div className="flex items-center">
+                  <div
+                    className={`p-3 rounded-full bg-${item.color}-500 text-white mr-4`}
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d={item.icon}
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="mb-2 text-sm font-medium text-gray-600">
+                      {item.title}
+                    </p>
+                    <p className="text-lg font-semibold text-gray-700">
+                      {item.value}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid  gap-6 dark:text-white">
+            <div className="card p-6">
+              <h2 className="text-lg font-semibold mb-4">Recent Activities</h2>
+              <ul className="space-y-4">
+                {[
+                  { color: "blue", text: 'New place added: "Doggy Daycare"' },
+                  {
+                    color: "green",
+                    text: 'User "JohnDoe" updated their profile',
+                  },
+                  {
+                    color: "yellow",
+                    text: 'New event created: "Puppy Playtime"',
+                  },
+                  {
+                    color: "red",
+                    text: 'Report resolved: "Inappropriate content"',
+                  },
+                ].map((item, index) => (
+                  <li key={index} className="flex items-center">
+                    <span
+                      className={`w-2 h-2 bg-${item.color}-500 rounded-full mr-2`}
+                    ></span>
+                    <span className="text-sm text-gray-600">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
+            
+
+            {/* Components for Different Sections */}
+            <Signalement />
+            <UtilisateursAdmin />
+            <ListeCategories />
+            <ListEvents />
+            <ListeReservationsAdmin />
+            <ListePlacesAdmin />
           </div>
         </main>
       </div>
     </div>
-    </>
   );
 };
 
@@ -339,6 +476,7 @@ DashboardCard.propTypes = {
   icon: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   color: PropTypes.string.isRequired,
+  categories : PropTypes.array.isRequired
 };
 
 export default DashboardAdminContent;

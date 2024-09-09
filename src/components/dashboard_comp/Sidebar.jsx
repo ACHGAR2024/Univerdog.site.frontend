@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 
+
 const Sidebar = ({
   isOpen = false,
   toggleSidebar,
@@ -22,12 +23,12 @@ const Sidebar = ({
 
   return (
     <aside className={`sidebar ${isOpen ? "dark:bg-slate-200 dark:text-black" : "sidebar-hidden"}`}>
-      <div className="p-3 dark:bg-slate-200 dark:text-black ">
-        <img src="src/images/logo.png" alt="logo" className="mx-auto w-32 z-50" />
-        <h2 className="text-2xl font-bold mb-6 text-center">UniverDog</h2>
+      <div className="p-3 dark:bg-slate-200 dark:text-black text-xs">
+        <img src="src/images/logo.png" alt="logo" className="mx-auto w-20 z-50" />
+        <h2 className="text-md font-bold mb-6 text-center">UniverDog</h2>
         <nav>
           <ul className="left-0">
-            <li className="mb-4">
+            <li className="mb-1">
               <button
                 className={`${
                   currentSection === "userdashboard"
@@ -43,7 +44,7 @@ const Sidebar = ({
                 Tableau de bord
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-1">
               <button
                 className={`${
                   currentSection === "ProfilsDogs"
@@ -59,7 +60,7 @@ const Sidebar = ({
                 Mes chiens
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-1">
               <button
                 className={`${
                   currentSection === "ServicesVeto"
@@ -75,7 +76,23 @@ const Sidebar = ({
                 Services Vétérinaires
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-1">
+              <button
+                className={`${
+                  currentSection === "Carte"
+                    ? "css-1x3v3vy flex items-center  px-4 py-2 rounded-lg"
+                    : "flex items-center  hover:bg-gray-700 hover:dark:bg-slate-50 px-4 py-2 rounded-lg transition duration-200"
+                }`}
+                onClick={() => {
+                  setCurrentSection("Carte");
+                  if (!isMobile) toggleSidebar();
+                }}
+              >
+                <i className="fa-solid fa-route mr-3"></i>
+                Lieux utile
+              </button>
+            </li>
+            <li className="mb-1">
               <button
                 className={`${
                   currentSection === "ProfessionnelsCanin"
@@ -91,7 +108,7 @@ const Sidebar = ({
                 Professionnels canin
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-1">
               <button
                 className={`${
                   currentSection === "VenteProduits"
@@ -107,7 +124,7 @@ const Sidebar = ({
                 Nos produits phares
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-1">
               <button
                 className={`${
                   currentSection === "ConseilsIA"
@@ -123,7 +140,7 @@ const Sidebar = ({
                 Conseils avec IA
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-1">
               <button
                 className={`${
                   currentSection === "AdministrationDog"
@@ -139,7 +156,7 @@ const Sidebar = ({
                 Aide Administrative
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-1">
               <button
                 className={`${
                   currentSection === "VoyagesChiens"
@@ -155,7 +172,7 @@ const Sidebar = ({
                 Voyages avec chien
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-1">
               <button
                 className={`${
                   currentSection === "MonProfilUser"

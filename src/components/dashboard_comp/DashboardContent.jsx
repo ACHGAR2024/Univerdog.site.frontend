@@ -13,8 +13,10 @@ import MonProfilUser from "./pagesuser/MonProfilUser";
 import VoyagesChiens from "./pagesuser/VoyagesChiens";
 import AdministrationDog from "./pagesuser/AdministrationDog";
 import DarkModeToggle from "../DarkModeToggle"; // Importez le composant DarkModeToggle
+import Carte from "./pagesuser/Carte";
 
 const DashboardContent = () => {
+  const { token } = useContext(AuthContext); 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState("userdashboard");
   const { logout } = useContext(AuthContext);
@@ -26,7 +28,11 @@ const DashboardContent = () => {
     window.location.reload();
     window.location.href = "/";
   };
-
+  if (token) {
+    // Code à exécuter si l'utilisateur est authentifié
+  } else {
+    // Code à exécuter si l'utilisateur n'est pas authentifié
+  }
   const renderContent = () => {
     switch (currentSection) {
       case "userdashboard":
@@ -35,6 +41,8 @@ const DashboardContent = () => {
         return <ProfilsDogs />;
       case "ServicesVeto":
         return <ServicesVeto />;
+        case "Carte":
+        return <Carte />;
       case "ProfessionnelsCanin":
         return <ProfessionnelsCanin />;
       case "VenteProduits":
@@ -60,7 +68,7 @@ const DashboardContent = () => {
         setCurrentSection={setCurrentSection}
         currentSection={currentSection}
       />
-      <div className="relative mb-8">
+      <div className="relative mb-8 text-xs  ">
         <button
           onClick={toggleSidebar}
           className={`toggle-btn ${
@@ -78,8 +86,8 @@ const DashboardContent = () => {
             sidebarOpen ? "main-content-shifted" : ""
           }`}
         >
-          <header className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-bold  pl-8 mr-2">Dashboard User</h1>
+          <header className="flex justify-between items-center mb-2 ">
+            <h1 className="text-xl font-bold  pl-8 mr-2">Dashboard User</h1>
             <div className="flex items-center">
               <button className=" hover: transition duration-200">
                 <svg
@@ -115,7 +123,7 @@ const DashboardContent = () => {
                   className="w-8 h-8 rounded-full"
                 />
               </button>
-              <div className="ml-4  hover: transition duration-200">
+              <div className="ml-4  hover: transition duration-200 ">
                 <DarkModeToggle /> {/* Ajout du DarkModeToggle */}
               </div>
               <button
@@ -139,9 +147,10 @@ const DashboardContent = () => {
               </button>
             </div>
           </header>
-
+<div className="">
           {/* Render the current section based on state */}
           {renderContent()}
+</div>
         </main>
       </div>
     </React.Fragment>

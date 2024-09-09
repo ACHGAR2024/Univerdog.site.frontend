@@ -82,10 +82,16 @@ const EditPlace = () => {
     fetchCategories();
   }, [id, token]);
 
+  // Vérification si l'utilisateur connecté est bien le propriétaire de la place
   if (place && user && user.id !== place.user_id) {
-    return <div>Vous n&apos;êtes pas autorisé à modifier cette place.</div>;
+    return (
+      <div className="container mx-auto px-4 py-8 mt-20 mb-72 w-1/2">
+        <h2 className="text-2xl font-bold mb-4 text-black">
+          Vous n&apos;êtes pas autorisé à modifier ce lieu
+        </h2>
+      </div>
+    );
   }
-
   const handlePlaceSearch = async (e) => {
     const searchQuery = e.target.value;
     setFormData((prev) => ({

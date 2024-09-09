@@ -74,7 +74,7 @@ const UtilisateursAdmin = () => {
   };
 
   const handleRoleToggle = async (userId, currentRole) => {
-    const newRole = currentRole === "user" ? "agent" : "user";
+    const newRole = currentRole === "user" ? "professionnel" : "user";
     try {
       await axios.patch(
         `http://127.0.0.1:8000/api/users/${userId}/role`,
@@ -101,21 +101,21 @@ const UtilisateursAdmin = () => {
 
   return (
     <div
-      id="utilisateurs"
-      className="dark:text-gray-900  bg-white rounded-lg shadow-md animate-slideIn  pt-20 w-screen md:w-3/4 lg:w-2/3 xl:w-2/3 md:p-9"
+      id="users"
+      className="text-xs dark:text-gray-900  bg-white dark:bg-zinc-400 rounded-lg shadow-md animate-slideIn  pt-5  md:p-9"
     >
-      <h1 className="text-2xl font-bold mb-6 dark:text-gray-800 pl-8">
+      <h1 className="text-xl font-bold mb-6 dark:text-gray-800 pl-8">
         Gestion des utilisateurs
       </h1>
 
-      <div className="bg-white shadow-md rounded-lg overflow-hidden ">
-        <table className="divide-y divide-gray-200 ">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden  ">
+        <table className="divide-y divide-gray-200 m-5 ">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Image
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Nom
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -124,7 +124,7 @@ const UtilisateursAdmin = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Rôle
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
               </th>
             </tr>
@@ -143,7 +143,7 @@ const UtilisateursAdmin = () => {
                     alt={user.name}
                   />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
+                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">{user.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center">
                     <button
@@ -174,7 +174,7 @@ const UtilisateursAdmin = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
+                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">{user.email}</td>
               </tr>
             ))}
           </tbody>

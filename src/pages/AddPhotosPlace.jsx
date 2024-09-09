@@ -1,16 +1,21 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import Notification from "../components/Notification";
+import { UserContext } from "../context/UserContext";
 
 const AddPhotosPlace = () => {
   const navigate = useNavigate();
-  const { id: placeId } = useParams();
+  const { id} = useParams();
   const { token } = useContext(AuthContext);
+  const user = useContext(UserContext);
+  
   const [photos, setPhotos] = useState([]);
   const [photoPreviews, setPhotoPreviews] = useState([]);
-
+  const [place, setPlace] = useState(null);
+  const [error, setError] = useState(null); // Pour gérer les erreurs d'autorisation
+  
   const handlePhotoChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     setPhotos(selectedFiles);
@@ -31,19 +36,17 @@ const AddPhotosPlace = () => {
     e.preventDefault();
     if (photos.length === 0) {
       Notification.error("Veuillez sélectionner au moins une photo.");
-
       return;
     }
 
     const formDataToSend = new FormData();
-
     photos.forEach((photo, index) => {
       formDataToSend.append(`photos[${index}]`, photo);
     });
 
     try {
       await axios.post(
-        `http://127.0.0.1:8000/api/places/${placeId}/photos`,
+        `http://127.0.0.1:8000/api/places/${id}/photos`,
         formDataToSend,
         {
           headers: {
@@ -63,7 +66,49 @@ const AddPhotosPlace = () => {
       );
       Notification.error("Erreur lors de l'upload des photos");
     }
+    if (error !== null) {
+      console.error('Erreur lors de la mise à jour des photos:', error);
+      // Ajoutez ici votre logique pour gérer l'erreur
+    }
   };
+
+  useEffect(() => {
+    const fetchPlace = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/places/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        );
+        const { place } = response.data;
+        setPlace(place);
+     
+      } catch (error) {
+        setError("Erreur lors de la récupération de la place");
+        console.error(error);
+      }
+    };
+
+
+
+    fetchPlace();
+    
+  }, [id, token]);
+
+  // Vérification si l'utilisateur connecté est bien le propriétaire de la place
+  if (place && user && user.id !== place.user_id) {
+    return (
+      <div className="container mx-auto px-4 py-8 mt-20 mb-72 w-1/2">
+        <h2 className="text-2xl font-bold mb-4 text-black">
+          Vous n&apos;êtes pas autorisé à modifier ce lieu
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-72 w-1/2">

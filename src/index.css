@@ -36,13 +36,7 @@
   padding-left: 20px;
 }
 
-body {
-  @apply bg-gray-100 text-black;
-}
 
-body.dark {
-  @apply bg-gray-900 text-white;
-}
 
 @keyframes fadeIn {
   from {
@@ -189,3 +183,70 @@ body {
 .css-1x3v3vy:hover {
   background: linear-gradient(195deg, rgb(64, 137, 220), rgb(26, 115, 232));
   }
+
+/* customStyles.css */
+
+.custom-calendar {
+  padding: 20px;
+  background-color: #ffffff;
+  color: #f68787;
+  border: 2px solid #f1f1f1;
+  box-shadow: 0 2px 4px rgba(78, 237, 57, 0.1);
+  border-radius: 8px;
+}
+
+.custom-calendar .rbc-event {
+  background-color: #07810f;
+  color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  font-size: 9px;
+  text-align: center;
+  margin-left: 4px;
+}
+
+.custom-calendar .rbc-time-slot {
+  padding-top: 0px;
+  
+}
+
+.custom-calendar .rbc-event:hover {
+  background-color: #023601;
+}
+
+.custom-calendar .rbc-header {
+  background-color: #4f4f4f;
+  color: #ffffff;
+  font-size: 16px;
+  padding-bottom: 20px;
+}
+
+.custom-calendar .rbc-header:hover {
+  background-color: #5f5f5f;
+}
+
+.custom-calendar .rbc-toolbar button {
+  background-color: #323131;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.custom-calendar .rbc-toolbar button:hover {
+  background-color: #5f5f5f;
+  color:rgb(255, 255, 255);
+}
+.custom-calendar .rbc-event-available {
+  background-color: #00b894 !important; /* Couleur verte */
+  color: rgb(0, 0, 0); /* Texte blanc */
+}
+
+.custom-calendar .rbc-event-unavailable {
+  background-color: #dfe6e9 !important; /* Couleur grise */
+  color: black; /* Texte noir */
+}
+
+
+

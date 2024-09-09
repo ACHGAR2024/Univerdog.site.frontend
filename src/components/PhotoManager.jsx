@@ -10,21 +10,23 @@ const PhotoManager = () => {
   const [error, setError] = useState(null);
   const { token } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  const newId = parseInt(id) / 845;
+  
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/places/${id}/photos`
+          `http://127.0.0.1:8000/api/places/${newId}/photos`
         );
         setPhotos(response.data);
       } catch (error) {
         setError("Erreur lors de la récupération des photos");
+        Notiflix.Notify.failure("Erreur lors de la sélection des photos");
       }
     };
 
     fetchPhotos();
-  }, [id]);
+  }, [newId]);
 
   const handleDelete = async (photoId) => {
     try {
@@ -69,7 +71,7 @@ const PhotoManager = () => {
   return (
     <div className="container mx-auto px-4 py-28">
       <h1 className="text-2xl font-bold mb-4">
-        Gestion des Photos pour la place {id}
+        Gestion des Photos
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {photos.map((photo) => (

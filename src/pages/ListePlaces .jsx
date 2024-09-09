@@ -2,12 +2,12 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { UserContext } from "../context/UserContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Notiflix from "notiflix";
 
 const ListePlaces = () => {
   const [places, setPlaces] = useState([]);
-  const navigate = useNavigate();
+ // const navigate = useNavigate();
   const { token } = useContext(AuthContext);
   const user = useContext(UserContext);
 
@@ -102,88 +102,90 @@ const ListePlaces = () => {
   return (
     <div
       id="mesplaces"
-      className="mt-8 bg-white rounded-lg shadow-md p-6 animate-slideIn pt-20"
+      className="text-xs dark:bg-zinc-400 dark:text-gray-900 mt-8 bg-white rounded-lg shadow-md animate-slideIn mb-8 pt-5 w-screen md:p-9 sm:p-4"
     >
-      <h2 className="text-2xl font-bold mb-4">Vos places récentes</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left">Photo</th>
-              <th className="py-3 px-6 text-left">Titre</th>
-              <th className="py-3 px-6 text-left">Description</th>
-              <th className="py-3 px-6 text-center">Prix</th>
-              <th className="py-3 px-6 text-center">Date</th>
-              <th className="py-3 px-6 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-600 text-sm font-light">
-            {userPlaces.map((place) => (
-              <tr
-                key={place.id}
-                className="border-b border-gray-200 hover:bg-gray-100"
-              >
-                <td className="py-3 px-6 text-left whitespace-nowrap">
-                  <span className="font-medium">
-                    <img
-                      src={`http://127.0.0.1:8000${place.photo}`}
-                      alt={place.title}
-                      className="w-20 h-20 rounded-lg object-cover hover:cursor-zoom-in"
-                      onClick={() =>
-                        window.open(`http://127.0.0.1:8000${place.photo}`)
-                      }
-                    />
-                  </span>
-                </td>
-                <td className="py-3 px-6 text-left">
-                  <a
-                    href={`/fiche-place/${place.id}`}
-                    className="font-medium text-blue-500 hover:underline"
-                  >
-                    <span>{place.title}</span>
-                  </a>
-                </td>
-                <td className="py-3 px-6 text-center">
-                  <span className="font-medium">{place.description}</span>
-                </td>
-                <td className="py-3 px-6 text-center">
-                  <span>{place.price}</span>
-                </td>
-                <td className="py-3 px-6 text-center">
-                  <span>{place.publication_date}</span>
-                </td>
-                <td className="py-3 px-6 text-center">
-                  <div className="flex items-center justify-center space-x-4">
-                    <Link
-                      to={`/ajout-photos-place/${place.id}`}
-                      className="transform hover:text-purple-500 hover:scale-110 transition duration-300"
-                    >
-                      <i className="fa fa-image text-xl"></i>
-                    </Link>
-                    <button
-                      className="bg-blue-500 text-white p-2 rounded transition duration-300 hover:bg-blue-600"
-                      onClick={() => navigate(`/places/${place.id}/photos`)}
-                    >
-                      Gérer les photos
-                    </button>
-                    <Link
-                      to={`/edit-place/${place.id}`}
-                      className="transform hover:text-purple-500 hover:scale-110 transition duration-300"
-                    >
-                      <i className="fa fa-pencil text-xl"></i>
-                    </Link>
-                    <button
-                      onClick={() => confirmDelete(place.id)}
-                      className="transform hover:text-red-500 hover:scale-110 transition duration-300"
-                    >
-                      <i className="fa fa-trash-o text-xl"></i>
-                    </button>
-                  </div>
-                </td>
+      <h2 className="text-xl font-bold mb-6 dark:text-gray-800 pl-8">Vos places récentes</h2>
+      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full divide-y divide-gray-200">
+            <thead>
+              <tr className="bg-gray-200 text-gray-600 uppercase text-xs leading-normal">
+                <th className="px-6 py-3 text-left">Photo</th>
+                <th className="px-6 py-3 text-center">Actions</th>
+                <th className="px-6 py-3 text-left">Titre</th>
+                <th className="px-6 py-3 text-left">Description</th>
+                <th className="px-6 py-3 text-left">Prix</th>
+                <th className="px-6 py-3 text-left">Date</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="text-gray-600 text-xs font-light">
+              {userPlaces.map((place) => (
+                <tr
+                  key={place.id}
+                  className="border-b border-gray-200 hover:bg-gray-100"
+                >
+                  <td className="px-6 py-3 text-left">
+                    <span className="font-medium">
+                      <img
+                        src={`http://127.0.0.1:8000${place.photo}`}
+                        alt={place.title}
+                        className="w-16 h-16 rounded-lg object-cover hover:cursor-zoom-in"
+                        onClick={() =>
+                          window.open(`http://127.0.0.1:8000${place.photo}`)
+                        }
+                      />
+                    </span>
+                  </td>
+                  <td className="px-6 py-3 text-center">
+                    <div className="flex items-center justify-center space-x-4">
+                      <Link
+                        to={`/ajout-photos-place/${place.id}`}
+                        className="transform hover:text-purple-500 hover:scale-110 transition duration-300"
+                      >
+                        <i className="fa fa-plus text-xl"></i>
+                      </Link>
+                      <Link
+                        to={`/places/${place.id*845}/photos`}
+                        className="transform hover:text-blue-500 hover:scale-110 transition duration-300"
+                      >
+                        <i className="fa fa-image text-xl"></i>
+                      </Link>
+                      <Link
+                        to={`/edit-place/${place.id}`}
+                        className="transform hover:text-purple-500 hover:scale-110 transition duration-300"
+                      >
+                        <i className="fa fa-pencil text-xl"></i>
+                      </Link>
+                      <button
+                        onClick={() => confirmDelete(place.id)}
+                        className="transform hover:text-red-500 hover:scale-110 transition duration-300"
+                      >
+                        <i className="fa fa-trash-o text-xl"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td className="px-6 py-3 text-left">
+                    <a
+                      href={`/fiche-place/${place.id}`}
+                      className="font-medium text-blue-500 hover:underline"
+                    >
+                      <span>{place.title}</span>
+                    </a>
+                  </td>
+                  <td className="px-6 py-3 text-left ">
+                    <span className="font-medium hidden md:block">{place.description}</span>
+                  </td>
+                  <td className="px-6 py-3 text-left ">
+                    <span>{place.price}</span>
+                  </td>
+                  <td className="px-6 py-3 text-left">
+                    <span>{place.publication_date}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

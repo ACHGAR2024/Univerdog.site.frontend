@@ -7,10 +7,12 @@ import DashboardAdminContent from "./DashboardAdminContent";
 import DashboardProfessionnelContent from "./DashboardProfessionnelContent";
 
 const UserProfile = () => {
-  const [imageURL, setImageURL] = useState(null);
-  const { token } = useContext(AuthContext); // Obtenez le token depuis AuthContext
-  useContext(AuthContext);
+  const { token } = useContext(AuthContext); // Make sure token is fetched correctly
   const user = useContext(UserContext);
+  const [imageURL, setImageURL] = useState(null);
+  
+  useContext(AuthContext);
+ 
 
   useEffect(() => {
     if (user && user.image) {
@@ -61,12 +63,13 @@ const UserProfile = () => {
       </div>
 
       {user.role === "admin" ? (
-        <DashboardAdminContent user={user} />
-      ) : user.role === "professionnel" ? (
-        <DashboardProfessionnelContent user={user} />
-      ) : (
-        <DashboardContent user={user} token={token} /> // Passez le token ici
-      )}
+  <DashboardAdminContent user={user}  token={token}/>
+) : user.role === "professionnel" ? (
+  <DashboardProfessionnelContent user={user} token={token} />
+) : (
+  <DashboardContent user={user} token={token} /> // Ensure token is being passed
+)}
+
     </div>
   );
 };
