@@ -76,7 +76,7 @@ const ListeCategories = () => {
         <table className="divide-y divide-gray-200 ml-5 m-5">
           <thead>
             <tr className="bg-gray-200 text-gray-600 uppercase text-xs leading-normal">
-              <th className="py-3 px-6 text-left">ID</th>
+             
               <th className="py-3 px-6 text-left">Nom</th>
 
               <th className="py-3 px-6 text-center">Actions</th>
@@ -88,9 +88,7 @@ const ListeCategories = () => {
                 key={categorie.id}
                 className="border-b border-gray-200 hover:bg-gray-100"
               >
-                <td className="py-3 px-6 text-left whitespace-nowrap">
-                  <span className="font-medium">{categorie.id}</span>
-                </td>
+               
                 <td className="py-3 px-6 text-left">
                   <span>{categorie.name_cat}</span>
                 </td>

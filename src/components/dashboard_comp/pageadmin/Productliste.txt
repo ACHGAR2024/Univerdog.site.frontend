@@ -1,0 +1,274 @@
+import { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import axios from 'axios'; // Importez Axios
+import { AuthContext } from '../../../context/AuthContext';
+import { useContext } from "react";
+
+const ProductList = () => {
+    const { token } = useContext(AuthContext);
+    const [products, setProducts] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [categories, setCategories] = useState([]);
+    const [updatedProduct, setUpdatedProduct] = useState(null); // Pour stocker le produit en cours de modification
+
+    const fetchProducts = useCallback(async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/products', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setProducts(response.data.product || []);
+        } catch (error) {
+            console.error("Erreur lors de la sélection des produits", error);
+        }
+    }, [ token ]);
+
+    const fetchCategories = useCallback(async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/products-categories', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setCategories(response.data);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des catégories", error);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        fetchCategories();
+        fetchProducts();
+    }, [fetchCategories, fetchProducts]);
+
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`http://127.0.0.1:8000/api/products/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            fetchProducts();
+        } catch (error) {
+            console.error("Erreur lors de la suppression du produit", error);
+        }
+    };
+
+    const handleEdit = (product) => {
+        setSelectedProduct(product); // Définir le produit sélectionné pour la modification
+        setUpdatedProduct(product); // Stocker le produit dans updatedProduct
+    };
+
+    const handleSuccess = () => {
+        fetchProducts();
+        setSelectedProduct(null);
+        setUpdatedProduct(null); // Réinitialiser updatedProduct après la mise à jour
+    };
+
+    const handleChange = (e) => {
+        setUpdatedProduct({
+            ...updatedProduct, // Conservez les données du produit existant
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.put(`http://127.0.0.1:8000/api/products/${updatedProduct.id}`, updatedProduct, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Erreur lors de la mise à jour du produit');
+            }
+            fetchProducts();
+            setSelectedProduct(null);
+            setUpdatedProduct(null); // Réinitialiser updatedProduct après la mise à jour
+        } catch (error) {
+            console.error('Erreur lors de la mise à jour du produit:', error);
+        }
+    };
+
+    return (
+        <div id="products" className="text-xs bg-white dark:bg-zinc-400 dark:text-gray-900 rounded-lg shadow-md animate-slideIn mt-10 mb-8 p-9 md:p-9">
+            <h1 className="text-xl font-bold mb-4">Liste des produits</h1>
+            <ProductForm 
+                product={selectedProduct} 
+                onSuccess={handleSuccess} 
+                categories={categories} 
+                onChange={handleChange} 
+                handleSubmit={handleSubmit}
+            />
+            <div className="overflow-x-auto">
+                <table className="table-auto w-full text-xs">
+                    <thead className="bg-gray-100">
+                        <tr>
+                            <th className="px-4 py-2">Nom</th>
+                            <th className="px-4 py-2">Prix</th>
+                            <th className="px-4 py-2">Description</th>
+                            <th className="px-4 py-2">Lien d&#39;affiliation</th>
+                            <th className="px-4 py-2">Catégorie</th>
+                            <th className="px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {products.map((product) => (
+                            <tr key={product.id} className="border-b border-gray-200">
+                                <td className="px-4 py-2">{product.name_product}</td>
+                                <td className="px-4 py-2">{product.price} &euro;</td>
+                                <td className="px-4 py-2">{product.description_product}</td>
+                                <td className="px-4 py-2"><a href={product.affiliation_link} target="_blank" rel="noopener noreferrer">{product.affiliation_link}</a></td>
+                                <td className="px-4 py-2">{product.products_category.name_category}</td>
+                                <td className="px-4 py-2">
+                                    <div className="flex gap-2">
+                                        <button onClick={() => handleEdit(product)} className="bg-yellow-200 px-4 py-2 rounded-md flex items-center"><i className="fas fa-edit mr-2"></i>Modifier</button>
+                                        <button onClick={() => handleDelete(product.id)} className="bg-red-500 px-4 py-2 rounded-md flex items-center"><i className="fas fa-trash-alt mr-2"></i>Supprimer</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+};
+
+const ProductForm = ({ product, categories,  handleSubmit, onChange }) => {
+    const [formData, setFormData] = useState({
+        name_product: '',
+        price: '',
+        description_product: '',
+        affiliation_link: '',
+        products_category_id: ''
+    });
+
+    useEffect(() => {
+        if (product) {
+            setFormData({
+                name_product: product.name_product || '',
+                price: product.price || '',
+                description_product: product.description_product || '',
+                affiliation_link: product.affiliation_link || '',
+                products_category_id: product.products_category_id || ''
+            });
+        }
+    }, [product]);
+
+    const handleLocalChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+        onChange(e);  // Mise à jour de l'état dans le composant parent
+    };
+    return (
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 md:w-1/2">
+        {/* Nom du produit */}
+        <div className="flex items-center space-x-2">
+            <i className="fas fa-tag text-gray-700 dark:text-gray-300"></i>
+            <input 
+                type="text" 
+                name="name_product" 
+                value={formData.name_product} 
+                onChange={handleLocalChange} 
+                placeholder="Nom du produit" 
+                className="input-field"
+            />
+        </div>
+
+        {/* Prix */}
+        <div className="flex items-center space-x-2">
+            <i className="fas fa-euro-sign text-gray-700 dark:text-gray-300"></i>
+            <input 
+                type="number" 
+                name="price" 
+                value={formData.price} 
+                onChange={handleLocalChange} 
+                placeholder="Prix" 
+                className="input-field"
+            />
+        </div>
+
+        {/* Description */}
+        <div className="flex items-center space-x-2">
+            <i className="fas fa-align-left text-gray-700 dark:text-gray-300"></i>
+            <textarea 
+                name="description_product" 
+                value={formData.description_product} 
+                onChange={handleLocalChange} 
+                placeholder="Description du produit" 
+                className="input-field"
+            />
+        </div>
+
+        {/* Lien d'affiliation */}
+        <div className="flex items-center space-x-2">
+            <i className="fas fa-link text-gray-700 dark:text-gray-300"></i>
+            <input 
+                type="text" 
+                name="affiliation_link" 
+                value={formData.affiliation_link} 
+                onChange={handleLocalChange} 
+                placeholder="Lien d'affiliation" 
+                className="input-field"
+            />
+        </div>
+
+        {/* Catégorie */}
+        <div className="flex items-center space-x-2">
+            <i className="fas fa-folder text-gray-700 dark:text-gray-300"></i>
+            <select 
+                name="products_category_id" 
+                value={formData.products_category_id} 
+                onChange={handleLocalChange} 
+                className="input-field"
+            >
+                <option value="">Sélectionnez une catégorie</option>
+                {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                        {category.name_product_cat}
+                    </option>
+                ))}
+            </select>
+        </div>
+<div className="flex justify-end pb-4">
+        <button type="submit" className="btn-primary h-10 bg-slate-600 text-white rounded-md hover:bg-slate-900 px-5">
+            <i className="fas fa-save mr-2"></i>Enregistrer
+        </button></div>
+    </form>
+       
+    );
+};
+
+ProductList.propTypes = {
+    categories: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        name_category: PropTypes.string.isRequired
+    })).isRequired
+};
+
+ProductForm.propTypes = {
+    product: PropTypes.shape({
+        id: PropTypes.number,
+        name_product: PropTypes.string,
+        price: PropTypes.number,
+        description_product: PropTypes.string,
+        affiliation_link: PropTypes.string,
+        products_category_id: PropTypes.number
+    }),
+    onSuccess: PropTypes.func.isRequired,
+    categories: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        name_product_cat: PropTypes.string.isRequired
+    })).isRequired,
+    onChange: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired
+};
+
+export default ProductList;
