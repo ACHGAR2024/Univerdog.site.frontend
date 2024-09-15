@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "../../context/AuthContext";
@@ -11,39 +12,60 @@ import TimeCalandarPro from "./pagespro/TimeCalandarPro";
 import AppointmentsManagerPro from "./pagespro/AppointmentsManagerPro";
 import DarkModeToggle from "../DarkModeToggle";
 import axios from "axios";
+import useFetchProfessionalId from "./pagespro/hooks/proFetchProfessionalId";
 
 const BASE_URL = "http://127.0.0.1:8000/api/appointments_pro";
-const professionalId = 7; // à ajuster dynamiquement si besoin
 
-const DashboardContent = () => {
+const DashboardProfessionnelContent = () => {
+  const professionalId = useFetchProfessionalId();
   const [appointments, setAppointments] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState("ProDashboard");
-  const [appointmentsAwaiting, setAppointmentsAwaiting] = useState(0); // Pour stocker le nombre de RDV en attente
+  const [appointmentsAwaiting, setAppointmentsAwaiting] = useState(0);
   const { logout } = useContext(AuthContext);
   const user = useContext(UserContext);
+  const [isLoadingProfessionalId, setIsLoadingProfessionalId] = useState(true); // État de chargement
 
   // Fonction pour récupérer les rendez-vous
-  const fetchAppointments = async (professionalId) => {
-    try {
-      const response = await axios.get(`${BASE_URL}/${professionalId}`);
-      const appointmentsData = response.data;
-
-      // Filtrer et compter les rendez-vous en attente
-      const awaitingCount = appointmentsData.filter(
-        (appointment) => appointment.status === "En attente"
-      ).length;
-
-      setAppointments(appointmentsData); // Stocker tous les rendez-vous
-      setAppointmentsAwaiting(awaitingCount); // Stocker le nombre de RDV en attente
-    } catch (error) {
-      console.error("Erreur lors de la récupération des rendez-vous:", error);
-    }
-  };
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        if (professionalId !== null) { // Vérifiez que professionalId est chargé
+          const response = await axios.get(`${BASE_URL}/${professionalId}`);
+          const appointmentsData = response.data;
+  
+          // Filtrer et compter les rendez-vous en attente
+          const awaitingCount = appointmentsData.filter(
+            (appointment) => appointment.status === "En attente"
+          ).length;
+  
+          setAppointments(appointmentsData); // Stocker tous les rendez-vous
+          setAppointmentsAwaiting(awaitingCount); // Stocker le nombre de RDV en attente
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des rendez-vous:", error);
+      }
+    };
+  
+    // Call the fetchAppointments function
+    fetchAppointments();
+  }, [professionalId]);
 
   useEffect(() => {
-    fetchAppointments(professionalId);
-  }, []); // Exécuter la récupération des RDV au chargement du composant
+    // Chargez professionalId
+    const fetchProId = async () => {
+      
+      setIsLoadingProfessionalId(false);
+    };
+
+    fetchProId();
+  }, []);
+
+  useEffect(() => {
+    if (!isLoadingProfessionalId) { // Ne lancez la récupération que si le professionalId est chargé
+      
+    }
+  }, [professionalId, isLoadingProfessionalId, appointments, setAppointments]);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const handleLogout = () => {
@@ -167,7 +189,7 @@ const DashboardContent = () => {
   );
 };
 
-DashboardContent.propTypes = {
+DashboardProfessionnelContent.propTypes = {
   token: PropTypes.string.isRequired,
   user: PropTypes.shape({
     email: PropTypes.string.isRequired,
@@ -176,4 +198,4 @@ DashboardContent.propTypes = {
   }).isRequired,
 };
 
-export default DashboardContent;
+export default DashboardProfessionnelContent;

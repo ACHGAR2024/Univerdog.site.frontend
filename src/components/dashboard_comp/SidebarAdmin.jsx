@@ -40,7 +40,7 @@ const SidebarAdmin = ({
             className={`${
               currentSection === "AdminDashboard"
                 ? "css-1x3v3vy flex items-center px-2 py-2 rounded-lg"
-                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-50 px-2 py-2 rounded-lg transition duration-200"
+                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-5000 px-2 py-2 rounded-lg transition duration-200"
             }`}
             
             onClick={() => {
@@ -58,7 +58,7 @@ const SidebarAdmin = ({
             className={`${
               currentSection === "ListeCategories"
                 ? "css-1x3v3vy flex items-center px-2 py-2 rounded-lg"
-                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-50 px-2 py-2 rounded-lg transition duration-200"
+                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-500 px-2 py-2 rounded-lg transition duration-200"
             }`}
             onClick={() => {
               setCurrentSection("ListeCategories");
@@ -75,7 +75,7 @@ const SidebarAdmin = ({
             className={`${
               currentSection === "ListePlacesAdmin"
                 ? "css-1x3v3vy flex items-center px-2 py-2 rounded-lg"
-                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-50 px-2 py-2 rounded-lg transition duration-200"
+                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-500 px-2 py-2 rounded-lg transition duration-200"
             }`}
             onClick={() => handleNavigation("ListePlacesAdmin")}
           >
@@ -89,7 +89,7 @@ const SidebarAdmin = ({
             className={`${
               currentSection === "UtilisateursAdmin"
                 ? "css-1x3v3vy flex items-center px-2 py-2 rounded-lg"
-                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-50 px-2 py-2 rounded-lg transition duration-200"
+                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-500 px-2 py-2 rounded-lg transition duration-200"
             }`}
             onClick={() => handleNavigation("UtilisateursAdmin")}
           >
@@ -103,7 +103,7 @@ const SidebarAdmin = ({
             className={`${
               currentSection === "ListEvents"
                 ? "css-1x3v3vy flex items-center px-2 py-2 rounded-lg"
-                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-50 px-2 py-2 rounded-lg transition duration-200"
+                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-500 px-2 py-2 rounded-lg transition duration-200"
             }`}
             onClick={() => handleNavigation("ListEvents")}
           >
@@ -112,13 +112,28 @@ const SidebarAdmin = ({
               Événements
             </span>
           </button>
-
+          <button
+            className={`${
+              currentSection === "ListeCategoriesProducts"
+                ? "css-1x3v3vy flex items-center px-2 py-2 rounded-lg"
+                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-500 px-2 py-2 rounded-lg transition duration-200"
+            }`}
+            onClick={() => {
+              setCurrentSection("ListeCategoriesProducts");
+              //if (!isMobile) toggleSidebar(false);
+            }}
+          >
+            <i className="fa fa-list-alt fa-fw mr-2"></i>
+            <span className={`${isSidebarOpen ? "inline" : "hidden"} ml-1`}>
+              Catégories de produits
+            </span>
+          </button>
 
           <button
             className={`${
               currentSection === "ProductList"
                 ? "css-1x3v3vy flex items-center px-2 py-2 rounded-lg"
-                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-50 px-2 py-2 rounded-lg transition duration-200"
+                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-500 px-2 py-2 rounded-lg transition duration-200"
             }`}
             onClick={() => handleNavigation("ProductList")}
           >
@@ -132,7 +147,7 @@ const SidebarAdmin = ({
             className={`${
               currentSection === "Signalement"
                 ? "css-1x3v3vy flex items-center px-2 py-2 rounded-lg"
-                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-50 px-2 py-2 rounded-lg transition duration-200"
+                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-500 px-2 py-2 rounded-lg transition duration-200"
             }`}
             onClick={() => handleNavigation("Signalement")}
           >
@@ -146,7 +161,7 @@ const SidebarAdmin = ({
             className={`${
               currentSection === "ListeReservationsAdmin"
                 ? "css-1x3v3vy flex items-center px-2 py-2 rounded-lg"
-                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-50 px-2 py-2 rounded-lg transition duration-200"
+                : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-500 px-2 py-2 rounded-lg transition duration-200"
             }`}
             onClick={() => handleNavigation("ListeReservationsAdmin")}
           >

@@ -16,11 +16,13 @@ const EditEvent = () => {
   const [formData, setFormData] = useState({
     title_event: "",
     content_event: "",
+    type_event: "",
     address_event: "",
     event_date: "",
     event_end_date: "",
     price_event: "",
     photo_event: null,
+    link_event: "",
     user_id: "",
   });
   const [error, setError] = useState(null);
@@ -44,11 +46,13 @@ const EditEvent = () => {
         setFormData({
           title_event: event.title_event,
           content_event: event.content_event,
+          type_event: event.type_event,
           address_event: event.address_event,
           event_date: event.event_date,
           event_end_date: event.event_end_date,
           price_event: event.price_event,
           photo_event: null,
+          link_event: event.link_event,
           user_id: useridrecup.id,
         });
       } catch (error) {
@@ -66,10 +70,12 @@ const EditEvent = () => {
     const data = new FormData();
     data.append("title_event", formData.title_event);
     data.append("content_event", formData.content_event);
+    data.append("type_event", formData.type_event);
     data.append("address_event", formData.address_event);
     data.append("event_date", formData.event_date);
     data.append("event_end_date", formData.event_end_date);
     data.append("price_event", formData.price_event);
+    data.append("link_event", formData.link_event);
     data.append("_method", "PUT");
     if (formData.photo_event) {
       data.append("photo_event", formData.photo_event);
@@ -194,6 +200,29 @@ const EditEvent = () => {
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="type_event"
+          >
+            Type d&apos;événement
+          </label>
+          <select
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="type_event"
+            name="type_event"
+            value={formData.type_event}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Choisir un type d&apos;événement</option>
+            <option value="voyage">Voyage</option>
+            <option value="competition">Compétition canine</option>
+            <option value="Séminaire">Séminaire</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
             htmlFor="address_event"
           >
             Adresse
@@ -229,6 +258,24 @@ const EditEvent = () => {
           )}
         </div>
 
+        <div className="mb-4">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="link_event"
+          >
+            Lien
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="link_event"
+            type="text"
+            placeholder="Ajouter un lien..."
+            name="link_event"
+            value={formData.link_event || ""}
+            onChange={handleChange}
+            required
+          />
+        </div>
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"

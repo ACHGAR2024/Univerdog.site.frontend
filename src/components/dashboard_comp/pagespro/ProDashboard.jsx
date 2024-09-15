@@ -7,7 +7,7 @@ import ListePlaces from "../../../pages/ListePlaces ";
 import ListeSpecialty from "./ListeSpecialty";
 import ListeBusiness from "./ListeBusiness";
 import useFetchProfessionalId from "./hooks/proFetchProfessionalId";
-import React from 'react';
+import React from "react";
 
 const DashboardCard = ({ title, icon, value, color }) => (
   <div
@@ -46,31 +46,45 @@ const DashboardCard2 = ({ title, value, icon, change }) => (
 
 const QuickActions = () => (
   <div className="mt-8 bg-white rounded-lg shadow-md p-6 animate-slideIn">
-    <h2 className="text-xl font-bold mb-4 dark:text-black">Veuillez suivre les étapes ci-dessous pour compléter votre profil</h2>
+    <h2 className="text-xl font-bold mb-4 dark:text-black">
+      Veuillez suivre les étapes ci-dessous pour compléter votre profil
+    </h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <a
         href="/deposer_lieu_pro"
         className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center flex items-center justify-center"
       >
-        <span className="text-xl bg-white text-black font-extrabold py-1 px-3 rounded-3xl mr-2">1</span><i className="fas fa-plus-circle mr-2"></i> Nouvelle adresse
+        <span className="text-xl bg-white text-black font-extrabold py-1 px-3 rounded-3xl mr-2">
+          1
+        </span>
+        <i className="fas fa-plus-circle mr-2"></i> Nouvelle adresse
       </a>
       <a
         href="/deposer_professional"
         className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center flex items-center justify-center"
       >
-        <span className="text-xl bg-white text-black font-extrabold py-1 px-3 rounded-3xl mr-2">2</span><i className="fa fa-plus-circle pr-1"></i> Societé
+        <span className="text-xl bg-white text-black font-extrabold py-1 px-3 rounded-3xl mr-2">
+          2
+        </span>
+        <i className="fa fa-plus-circle pr-1"></i> Societé
       </a>
       <a
         href="/deposer_specialite"
         className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center flex items-center justify-center"
       >
-        <span className="text-xl bg-white text-black font-extrabold py-1 px-3 rounded-3xl mr-2">3</span><i className="fas fa-plus-circle mr-2"></i> Nouvelle spécialité
+        <span className="text-xl bg-white text-black font-extrabold py-1 px-3 rounded-3xl mr-2">
+          3
+        </span>
+        <i className="fas fa-plus-circle mr-2"></i> Nouvelle spécialité
       </a>
       <a
         href="/profil-pro-update"
         className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300 text-center flex items-center justify-center"
       >
-        <span className="text-xl bg-white text-black font-extrabold py-1 px-3 rounded-3xl mr-2">4</span><i className="fa fa-cog fa-fw pr-1"></i> Mettre a jour mes informations
+        <span className="text-xl bg-white text-black font-extrabold py-1 px-3 rounded-3xl mr-2">
+          4
+        </span>
+        <i className="fa fa-cog fa-fw pr-1"></i> Mettre a jour mes informations
       </a>
 
       <a
@@ -96,10 +110,11 @@ const ProDashboard = () => {
   const [favoriteCount, setFavoriteCount] = useState(0);
   const [reportCount, setReportCount] = useState(0);
 
-  const [totalPatients, setTotalPatients] = useState(0);
-  const [appointmentsThisWeek, setAppointmentsThisWeekConfirmed] = useState(0);
-  const [pendingAppointments, setPendingAppointments] = useState(0);
-  const [professionalsOnSite, setProfessionalsOnSite] = useState(0);
+  const [totalPatients, setUniqueDogs] = useState(0); // Initialisation à 0
+  const [appointmentsThisWeek, setAppointmentsThisWeekConfirmed] = useState(0); // Initialisation à 0
+ 
+  const [professionalsOnSite, setProfessionalsOnSite] = useState(0); // Initialisation à 0
+  const [totalAppointments, setAppointmentsAwaiting] = useState(0); // Initialisation à 0
 
   const { token } = useContext(AuthContext);
   const user = useContext(UserContext);
@@ -200,7 +215,7 @@ const ProDashboard = () => {
           }
         );
         setProfessionalsOnSite(professionalsResponse.data.length);
-
+        console.log("pro_id ==========>", professionalId);
         const appointmentsResponse = await axios.get(
           `http://127.0.0.1:8000/api/appointments_pro/${professionalId}`,
           {
@@ -211,34 +226,33 @@ const ProDashboard = () => {
             },
           }
         );
+        // Set the total number of appointments awaiting
+        const awaitingAppointments = appointmentsResponse.data.filter(
+          (appointment) => appointment.status === "En attente"
+        );
+        setAppointmentsAwaiting(awaitingAppointments.length);
 
-        // Process appointments data and update state
-        if (appointmentsResponse.data.length > 0) {
-          setAppointmentsThisWeekConfirmed(
-            appointmentsResponse.data.confirmed_appointments
-          );
-          setPendingAppointments(appointmentsResponse.data.pending_appointments);
-          setTotalPatients(appointmentsResponse.data.total_patients);
-        } else {
-          setAppointmentsThisWeekConfirmed(0);
-          setPendingAppointments(0);
-          setTotalPatients(0);
-        }
+        // Set the total number of appointments this week confirmed
+        const thisWeekConfirmedAppointments = appointmentsResponse.data.filter(
+          (appointment) =>
+            new Date(appointment.date_appointment).getWeekNumber() ===
+              new Date().getWeekNumber() && appointment.status === "Confirmé"
+        ).length;
+        setAppointmentsThisWeekConfirmed(thisWeekConfirmedAppointments);
+
+        // Set the total number of unique dogs
+        const uniqueDogs = [...new Set(appointmentsResponse.data.map(appointment => appointment.dog_id))];
+        setUniqueDogs(uniqueDogs.length);
+
       } catch (error) {
-        if (error.response && error.response.status === 404) {
-          //console.warn("No appointments found for this professional.");
-          setAppointmentsThisWeekConfirmed(0);
-          setPendingAppointments(0);
-          setTotalPatients(0);
-        } else {
-          console.error("An unexpected error occurred:", error);
-        }
+        console.error("Erreur lors de la création de la page", error);
       }
     };
 
     fetchMessagesCount();
     fetchDashboardData();
   }, [token, professionalId, user]);
+   
 
   return (
     <>
@@ -272,51 +286,59 @@ const ProDashboard = () => {
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-5">
-      <DashboardCard2
-        title="Total patients"
-        value={totalPatients}
-        icon={{
-          name: "fa-dog",
-          bg: "bg-blue-100",
-          color: "text-blue-500",
-        }}
-        change={{ text: "", color: "text-green-500" }}
-      />
-      <DashboardCard2
-        title="Mes RDV prochains"
-        value={appointmentsThisWeek}
-        icon={{
-          name: "fa-calendar",
-          bg: "bg-green-100",
-          color: "text-green-500",
-        }}
-        change={{ text: "", color: "text-green-500" }}
-      />
-      <DashboardCard2
-        title="RDV en attente"
-        value={pendingAppointments}
-        icon={{
-          name: "fa-bell",
-          bg: "bg-yellow-100",
-          color: "text-yellow-500",
-        }}
-        change={{ text: "", color: "text-green-500" }}
-      />
-      <DashboardCard2
-        title="Professionnels sur le site"
-        value={professionalsOnSite}
-        icon={{
-          name: "fa-user-plus",
-          bg: "bg-red-100",
-          color: "text-red-500",
-        }}
-        change={{ text: "", color: "text-red-500" }}
-      />
-    </div>
+          {totalPatients !== undefined && (
+            <DashboardCard2
+              title="Total patients"
+              value={totalPatients}
+              icon={{
+                name: "fa-dog",
+                bg: "bg-blue-100",
+                color: "text-blue-500",
+              }}
+              change={{ text: "", color: "text-green-500" }}
+            />
+          )}
+
+          <DashboardCard2
+            title="Mes RDV prochains"
+            value={appointmentsThisWeek}
+            icon={{
+              name: "fa-calendar",
+              bg: "bg-green-100",
+              color: "text-green-500",
+            }}
+            change={{ text: "", color: "text-green-500" }}
+          />
+
+          {totalAppointments !== undefined && (
+            <DashboardCard2
+              title="RDV en attente"
+              value={totalAppointments}
+              icon={{
+                name: "fa-bell",
+                bg: "bg-yellow-100",
+                color: "text-yellow-500",
+              }}
+              change={{ text: "", color: "text-green-500" }}
+            />
+          )}
+          {professionalsOnSite !== undefined && (
+            <DashboardCard2
+              title="Professionnels sur le site"
+              value={professionalsOnSite}
+              icon={{
+                name: "fa-user-plus",
+                bg: "bg-red-100",
+                color: "text-red-500",
+              }}
+              change={{ text: "", color: "text-red-500" }}
+            />
+          )}
+        </div>
         <QuickActions />
         <ListeBusiness userId={user.id} />
         <ListeSpecialty userId={user.id} />
-        
+
         <ListePlaces userId={user.id} />
       </React.Fragment>
       <div></div>
@@ -356,6 +378,5 @@ Date.prototype.getWeekNumber = function () {
   const weekNo = Math.ceil(((date - yearStart) / 86400000 + 1) / 7);
   return weekNo;
 };
-
 
 export default ProDashboard;

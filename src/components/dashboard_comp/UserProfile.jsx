@@ -1,11 +1,12 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext} from "react";
 
 import { AuthContext } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
 import DashboardContent from "./DashboardContent";
 import DashboardAdminContent from "./DashboardAdminContent";
 import DashboardProfessionnelContent from "./DashboardProfessionnelContent";
-
+//import { getExpiryTime } from '../auth/jwltoken';
 const UserProfile = () => {
   const { token } = useContext(AuthContext); // Make sure token is fetched correctly
   const user = useContext(UserContext);
@@ -61,15 +62,28 @@ const UserProfile = () => {
           </li>
         </ul>
       </div>
-
-      {user.role === "admin" ? (
-  <DashboardAdminContent user={user}  token={token}/>
-) : user.role === "professionnel" ? (
-  <DashboardProfessionnelContent user={user} token={token} />
-) : (
-  <DashboardContent user={user} token={token} /> // Ensure token is being passed
-)}
-
+       {/*
+        <li className="px-4">
+          Délai de connexion : {token ? <span>{Math.floor((JSON.parse(atob(token.split(".")[1])).exp - Date.now() / 1000) / 3600)} heures</span> : <span>Vous n&apos; tes pas connect </span>}
+        </li> */}
+        
+        {token && JSON.parse(atob(token.split(".")[1])).exp - Date.now() / 1000 < 0 ? (
+          <div className="bg-amber-200 shadow-lg mt-52 z-50 fixed top-0 left-20 rounded-md ">
+        
+          <li className="px-4 text-red-600">
+            <Link to="/login">Votre token a expiré, veuillez vous reconnecter</Link>
+          </li></div>
+        ) : (
+          <div>
+            {user.role === "admin" ? (
+              <DashboardAdminContent user={user} token={token} />
+            ) : user.role === "professionnel" ? (
+              <DashboardProfessionnelContent user={user} token={token} />
+            ) : (
+              <DashboardContent user={user} token={token} /> // Ensure token is being passed
+            )}
+          </div>
+        )}
     </div>
   );
 };

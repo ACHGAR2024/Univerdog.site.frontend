@@ -3,7 +3,8 @@ import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import ProductForm from "./ProductForm";
 import AddPhotosProduct from "./AddPhotosProduct"; // Import du composant d'ajout de photos
-
+  import Notiflix from "notiflix";
+ 
 const ProductList = () => {
   const { token } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
@@ -98,7 +99,20 @@ const ProductList = () => {
   const filteredProducts = products.filter((product) =>
     product.name_product.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
+  const confirmDelete = (id) => {
+    Notiflix.Confirm.show(
+      "Confirmer la suppression",
+      "Êtes-vous sûr de vouloir supprimer cette réservation ?",
+      "Oui",
+      "Non",
+      () => handleDelete(id),
+      null,
+      {
+        width: "320px",
+        borderRadius: "8px",
+      }
+    );
+  };
   return (
     <div className="product-list">
       <h2 className="text-xl font-bold">Liste des produits</h2>
@@ -199,7 +213,7 @@ const ProductList = () => {
                   <i className="fas fa-edit mr-2"></i> Modifier
                 </button>
                 <button
-                  onClick={() => handleDelete(product.id)}
+                  onClick={() => confirmDelete(product.id)}
                   className="bg-red-500 px-4 py-2 rounded-md flex items-center"
                 >
                   <i className="fas fa-trash-alt mr-2"></i> Supprimer

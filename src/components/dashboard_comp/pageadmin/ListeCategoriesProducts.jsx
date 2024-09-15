@@ -1,21 +1,21 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
-
+//import { Link } from "react-router-dom";
 import Notiflix from "notiflix";
 
-const ListeCategories = () => {
+const ListeCategoriesProducts = () => {
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState({ name_cat: "" });
+  const [currentCategory, setCurrentCategory] = useState({ name_product_cat: "" });
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/categories",
+          "http://127.0.0.1:8000/api/products-categories",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -24,7 +24,7 @@ const ListeCategories = () => {
             },
           }
         );
-        setCategories(response.data.categories || []);
+        setCategories(response.data || []);
       } catch (error) {
         console.error("Erreur lors de la récupération des catégories", error);
       }
@@ -35,7 +35,7 @@ const ListeCategories = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/categories/${id}`, {
+      await axios.delete(`http://127.0.0.1:8000/api/products-categories/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const ListeCategories = () => {
     try {
       if (isEditMode) {
         await axios.put(
-          `http://127.0.0.1:8000/api/categories/${currentCategory.id}`,
+          `http://127.0.0.1:8000/api/products-categories/${currentCategory.id}`,
           currentCategory,
           {
             headers: {
@@ -75,7 +75,7 @@ const ListeCategories = () => {
         );
       } else {
         await axios.post(
-          "http://127.0.0.1:8000/api/categories",
+          "http://127.0.0.1:8000/api/products-categories",
           currentCategory,
           {
             headers: {
@@ -86,17 +86,18 @@ const ListeCategories = () => {
         );
       }
       setIsModalOpen(false);
-      setCurrentCategory({ name_cat: "" });
-      const response = await axios.get("http://127.0.0.1:8000/api/categories", {
+      setCurrentCategory({ name_product_cat: "" });
+      // Re-fetch categories
+      const response = await axios.get("http://127.0.0.1:8000/api/products-categories", {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       });
-      setCategories(response.data.categories || []);
+      setCategories(response.data || []);
     } catch (error) {
       console.error("Erreur lors de l'ajout/mise à jour de la catégorie", error);
     }
   };
 
-  const openModal = (category = { name_cat: "" }) => {
+  const openModal = (category = { name_product_cat: "" }) => {
     setCurrentCategory(category);
     setIsEditMode(!!category.id);
     setIsModalOpen(true);
@@ -107,7 +108,9 @@ const ListeCategories = () => {
       id="categories"
       className="text-xs dark:bg-zinc-400 dark:text-gray-900 mt-8 bg-white rounded-lg shadow-md animate-slideIn mb-8 pt-5 w-screen md:p-9 sm:p-4"
     >
-      <h1 className="text-xl font-bold mb-6 dark:text-gray-800 pl-8">Liste des catégories</h1>
+      <h1 className="text-xl font-bold mb-6 dark:text-gray-800 pl-8">
+        Liste des catégories de produits
+      </h1>
 
       <button
         onClick={() => openModal()}
@@ -131,7 +134,7 @@ const ListeCategories = () => {
                 className="border-b border-gray-200 hover:bg-gray-100"
               >
                 <td className="py-3 px-6 text-left">
-                  <span>{categorie.name_cat}</span>
+                  <span>{categorie.name_product_cat}</span>
                 </td>
                 <td className="py-3 px-6 text-center">
                   <div className="flex item-center justify-center">
@@ -165,11 +168,11 @@ const ListeCategories = () => {
               type="text"
               className="w-full p-2 border border-gray-300 rounded mb-4"
               placeholder="Nom de la catégorie"
-              value={currentCategory.name_cat}
+              value={currentCategory.name_product_cat}
               onChange={(e) =>
                 setCurrentCategory({
                   ...currentCategory,
-                  name_cat: e.target.value,
+                  name_product_cat: e.target.value,
                 })
               }
             />
@@ -194,4 +197,4 @@ const ListeCategories = () => {
   );
 };
 
-export default ListeCategories;
+export default ListeCategoriesProducts;

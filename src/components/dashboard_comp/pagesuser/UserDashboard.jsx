@@ -1,43 +1,43 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import { UserContext } from "../../../context/UserContext";
 import PropTypes from "prop-types";
-import ListePlaces from "../../../pages/ListePlaces ";
 
-const DashboardCard = ({ title, icon, value, color }) => (
-  <div
-    className={`bg-white rounded-lg shadow-md p-6 ${color} animate-slideIn hover:shadow-lg transition-shadow duration-300`}
-  >
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm font-medium  uppercase">{title}</p>
-        <p className="mt-1 text-3xl font-semibold">{value}</p>
+import React from "react";
+
+const DashboardCard = ({ title, name, icon, change }) => (
+  <div className="dashboard-card">
+    <div className="flex items-center justify-between mb-4">
+      <div className={`p-3 rounded-full ${icon.bg}`}>
+        <i className={`fas ${icon.name} text-xl ${icon.color}`}></i>
       </div>
-      <div
-        className={`p-3 rounded-full ${color
-          .replace("text-", "bg-")
-          .replace("600", "100")}`}
-      >
-        <i className={`${icon} fa-2x ${color}`}></i>
-      </div>
+      <span className={`text-sm font-medium ${change.color}`}>
+        {change.text}
+      </span>
     </div>
+    <h3 className="text-2xl font-bold mb-1 dark:text-black">{name}</h3>
+    <p className=" text-sm dark:text-black">{title}</p>
   </div>
 );
+
 const DashboardCard2 = ({ title, value, icon, change }) => (
   <div className="dashboard-card">
-      <div className="flex items-center justify-between mb-4">
-          <div className={`p-3 rounded-full ${icon.bg}`}>
-              <i className={`fas ${icon.name} text-xl ${icon.color}`}></i>
-          </div>
-          <span className={`text-sm font-medium ${change.color}`}>{change.text}</span>
+    <div className="flex items-center justify-between mb-4">
+      <div className={`p-3 rounded-full ${icon.bg}`}>
+        <i className={`fas ${icon.name} text-xl ${icon.color}`}></i>
       </div>
-      <h3 className="text-2xl font-bold mb-1 dark:text-black">{value}</h3>
-      <p className=" text-sm dark:text-black">{title}</p>
+      <span className={`text-sm font-medium ${change.color}`}>
+        {change.text}
+      </span>
+    </div>
+    <h3 className="text-2xl font-bold mb-1 dark:text-black">{value}</h3>
+    <p className=" text-sm dark:text-black">{title}</p>
   </div>
 );
+
 const QuickActions = () => (
-  <div className="mt-8 bg-white rounded-lg shadow-md p-6 animate-slideIn">
+  <div className="mt-4 bg-white rounded-lg shadow-md p-6 animate-slideIn">
     <h2 className="text-2xl font-bold mb-4 dark:text-black">Actions rapides</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <a
@@ -67,61 +67,54 @@ const QuickActions = () => (
     </div>
   </div>
 );
-
 const UserDashboard = () => {
-  const [countPlaces, setCountPlaces] = useState(0);
-  const [countMessages, setCountMessages] = useState(0);
-  const [favoriteCount, setFavoriteCount] = useState(0);
-  const [reportCount, setReportCount] = useState(0);
+  
 
+
+  const [totalPatients, setUniqueDogs] = useState(0); // Initialisation à 0
+  const [appointmentsThisWeek, setAppointmentsThisWeekConfirmed] = useState(0); // Initialisation à 0
+
+  const [totalAppointments, setAppointmentsAwaiting] = useState(0); // Initialisation à 0
+
+  const [totalProfessionals,setTotalProfessionals] = useState(0);
   const { token } = useContext(AuthContext);
   const user = useContext(UserContext);
+ const [MyDogs, setMyDogs] = useState([]);
 
   useEffect(() => {
-    const fetchPlaceCount = async () => {
+    const fetchTotalDogUsers = async () => {
       if (!user || !user.id) return;
-
+    
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/places", {
+        const response = await axios.get("http://127.0.0.1:8000/api/dogs", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
             Accept: "application/json",
           },
         });
-
-        const userPlaces = response.data.places.filter(
-          (place) => place.user_id === user.id
-        );
-
-        setCountPlaces(userPlaces.length);
+        const MyDogs = response.data.filter((dog) => dog.user_id === user.id);
+        setMyDogs(MyDogs);
+        const totalDogs = response.data.filter(
+          (dog) => dog.user_id === user.id
+        ).length;
+        setUniqueDogs(totalDogs);
+        const dogsList = response.data
+          .filter(dog => dog.user_id === user.id)
+          .map(dog => ({id: dog.id, name: dog.name_dog}));
+        console.log("Liste des chiens de l'utilisateur", dogsList);
+    
+        // Appel de fetchDashboardData avec dogsList
+        fetchDashboardData(dogsList);
       } catch (error) {
-        console.error("Erreur lors de la récupération des places", error);
+        console.error("Erreur lors de la création de la page", error);
       }
     };
-
-    fetchPlaceCount();
-  }, [token, user]);
-
-  useEffect(() => {
-    const fetchMessagesCount = async () => {
-      if (!user || !user.id) return;
-
+    
+    const fetchDashboardData = async (dogsList) => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/messages", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
-
-        ////console.log('Response Data:', response.data);
-        ////console.log('User id:', user.id);
-
-        // Récupérer toutes les places pour cet utilisateur
-        const placesResponse = await axios.get(
-          "http://127.0.0.1:8000/api/places",
+        const appointmentsResponse = await axios.get(
+          `http://127.0.0.1:8000/api/appointments`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -130,136 +123,168 @@ const UserDashboard = () => {
             },
           }
         );
-
-        const userPlaces = placesResponse.data.places.filter(
-          (place) => place.user_id === user.id
+        // Set the total number of appointments awaiting
+        const awaitingAppointments = appointmentsResponse.data.filter(
+          (appointment) =>
+            appointment.status === "En attente" &&
+            dogsList.some((dog) => dog.id === appointment.dog_id)
         );
-
-        //console.log('User Places:', userPlaces);
-
-        const userMessages = response.data.filter((message) =>
-          userPlaces.some((place) => message.place_id === place.id)
-        );
-
-        //console.log('Filtered Messages:', userMessages);
-
-        setCountMessages(userMessages.length);
-
-        // Filtrer les messages favoris
-        const userFavoriteMessages = userMessages.filter(
-          (message) => message.is_favorite === 1
-        );
-
-        // Compter le nombre de messages favoris
-        setFavoriteCount(userFavoriteMessages.length);
-
-        // Filtrer les messages signaleés
-        const userReportedMessages = userMessages.filter(
-          (message) => message.is_report === 1
-        );
-
-        // Compter le nombre de messages signaleés
-        setReportCount(userReportedMessages.length);
+        console.log("awaitingAppointments ==========>", awaitingAppointments);
+        setAppointmentsAwaiting(awaitingAppointments.length);
+    
+        // Set the total number of appointments this week confirmed
+        const thisWeekConfirmedAppointments = appointmentsResponse.data.filter(
+          (appointment) =>
+            new Date(appointment.date_appointment).getWeekNumber() ===
+              new Date().getWeekNumber() && appointment.status === "Confirmé" &&
+              dogsList.some((dog) => dog.id === appointment.dog_id)
+        ).length;
+        console.log("thisWeekConfirmedAppointments ==========>", thisWeekConfirmedAppointments);
+        setAppointmentsThisWeekConfirmed(thisWeekConfirmedAppointments);
       } catch (error) {
-        console.error("Erreur lors de la récupération des messages", error);
-        if (error.response) {
-          console.error("Erreur:", error.response.data);
-        }
+        console.error("Erreur lors de la création de la page", error);
       }
     };
-
-    fetchMessagesCount();
+    
+    
+    const fetchTotalProfessionals = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/professionals", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+        setTotalProfessionals(response.data.length);
+      } catch (error) {
+        console.error("Erreur lors de la récupération du nombre total de professionnels", error);
+      }
+    };
+    fetchTotalProfessionals();
+    // Assurez-vous d'appeler fetchTotalDogUsers au lieu de fetchDashboardData directement
+    fetchTotalDogUsers();
   }, [token, user]);
 
-
-  
   return (
     <>
-    <React.Fragment>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 ">
-        <a href="#mesplaces">
-          <DashboardCard
-            title="Mes chiens"
-            icon="fa fa-bolt"
-            value={countPlaces}
-            color="text-blue-600"
+      <React.Fragment>
+      
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-5">
+          {totalPatients !== undefined && (
+            <DashboardCard2
+              title="Mes Chiens"
+              value={totalPatients}
+              icon={{
+                name: "fa-dog",
+                bg: "bg-blue-100",
+                color: "text-blue-500",
+              }}
+              change={{ text: "", color: "text-green-500" }}
+            />
+          )}
+
+          <DashboardCard2
+            title="Mes RDV prochains"
+            value={appointmentsThisWeek}
+            icon={{
+              name: "fa-calendar",
+              bg: "bg-green-100",
+              color: "text-green-500",
+            }}
+            change={{ text: "", color: "text-green-500" }}
           />
-        </a>
-        <DashboardCard
-          title="Messages"
-          icon="fa fa-envelope"
-          value={countMessages}
-          color="text-green-600"
-        />
-        <DashboardCard
-          title="Lieux Favoris"
-          icon="fa fa-star"
-          value={favoriteCount}
-          color="text-yellow-400"
-        />
-        <DashboardCard
-          title="Signalements"
-          icon="fa fa-flag"
-          value={reportCount}
-          color="text-red-600"
-        />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-5">
-         <DashboardCard2 
-             title="Total visiteurs de profil" 
-             value="1,524" 
-             icon={{name: "fa-users", bg: "bg-blue-100", color: "text-blue-500"}}
-             change={{text: "+2.5%", color: "text-green-500"}}
-         />
-         <DashboardCard2 
-             title="Rendez-vous cette semaine" 
-             value="42" 
-             icon={{name: "fa-calendar", bg: "bg-green-100", color: "text-green-500"}}
-             change={{text: "+12%", color: "text-green-500"}}
-         />
-         <DashboardCard2 
-             title="Mes Achats" 
-             value="15,230 €" 
-             icon={{name: "fa-euro-sign", bg: "bg-yellow-100", color: "text-yellow-500"}}
-             change={{text: "+5.2%", color: "text-green-500"}}
-         />
-         <DashboardCard2 
-             title="Professionnels sur le site" 
-             value="38" 
-             icon={{name: "fa-user-plus", bg: "bg-red-100", color: "text-red-500"}}
-             change={{text: "-3.1%", color: "text-red-500"}}
-         />
-     </div>
-      <QuickActions />
-      <ListePlaces userId={user.id} />
-    </React.Fragment>
-     <div>
-    
-    
- </div>
- </>
+
+          {totalAppointments !== undefined && (
+            <DashboardCard2
+              title="RDV en attente"
+              value={totalAppointments}
+              icon={{
+                name: "fa-bell",
+                bg: "bg-yellow-100",
+                color: "text-yellow-500",
+              }}
+              change={{ text: "", color: "text-green-500" }}
+            />
+          )}
+
+          <DashboardCard2
+            title="Professionnels sur le site"
+            value={totalProfessionals} 
+            icon={{
+              name: "fa-user-plus",
+              bg: "bg-red-100",
+              color: "text-red-500",
+            }}
+            change={{ text: "", color: "text-red-500" }}
+          />
+        </div>
+        <QuickActions />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-10">
+         {MyDogs.map ((dog) => (
+           <DashboardCard 
+           key={dog.id}
+           title={dog.sex}
+          
+           name={dog.name_dog}
+           icon={{
+             name: "fa-dog",
+             bg: "bg-red-100",
+             color: "text-red-500",
+           }}
+           change={{ text: "", color: "text-red-500" }}
+           />
+         ))}
+       
+         
+        </div>
+      </React.Fragment>
+      <div></div>
+    </>
   );
 };
 
-DashboardCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  color: PropTypes.string.isRequired,
-};
+
 
 DashboardCard2.propTypes = {
   title: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  value: PropTypes.number.isRequired,
   icon: PropTypes.shape({
-    name: PropTypes.string.isRequired,
     bg: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     color: PropTypes.string.isRequired,
   }).isRequired,
   change: PropTypes.shape({
     text: PropTypes.string.isRequired,
     color: PropTypes.string.isRequired,
   }).isRequired,
+};
+
+DashboardCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  name : PropTypes.string.isRequired,
+  icon: PropTypes.shape({
+    bg: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
+  }).isRequired,
+  change: PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
+Date.prototype.getWeekNumber = function () {
+  const date = new Date(this.getTime());
+  date.setHours(0, 0, 0, 0);
+  // Set the date to the nearest Thursday (current date + 4 - current day number, making Sunday = 7)
+  date.setDate(date.getDate() + 4 - (date.getDay() || 7));
+  // Get first day of the year
+  const yearStart = new Date(date.getFullYear(), 0, 1);
+  // Calculate full weeks to nearest Thursday
+  const weekNo = Math.ceil(((date - yearStart) / 86400000 + 1) / 7);
+  return weekNo;
 };
 
 export default UserDashboard;

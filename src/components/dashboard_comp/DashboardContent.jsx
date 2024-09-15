@@ -1,4 +1,5 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
 import { AuthContext } from "../../context/AuthContext";
 import { UserContext } from "../../context/UserContext";
@@ -12,11 +13,15 @@ import ConseilsIA from "./pagesuser/ConseilsIA";
 import MonProfilUser from "./pagesuser/MonProfilUser";
 import VoyagesChiens from "./pagesuser/VoyagesChiens";
 import AdministrationDog from "./pagesuser/AdministrationDog";
-import DarkModeToggle from "../DarkModeToggle"; // Importez le composant DarkModeToggle
+import DarkModeToggle from "../DarkModeToggle";
 import Carte from "./pagesuser/Carte";
+import RdvPro from "./pagesuser/RdvPro";
+
+const BASE_URL = "http://127.0.0.1:8000/api/appointments";
 
 const DashboardContent = () => {
-  const { token } = useContext(AuthContext); 
+  const [appointmentsAwaiting, setAppointmentsAwaiting] = useState(0);
+  const { token } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState("userdashboard");
   const { logout } = useContext(AuthContext);
@@ -28,11 +33,47 @@ const DashboardContent = () => {
     window.location.reload();
     window.location.href = "/";
   };
-  if (token) {
-    // Code à exécuter si l'utilisateur est authentifié
-  } else {
-    // Code à exécuter si l'utilisateur n'est pas authentifié
-  }
+
+  useEffect(() => {
+    const fetchTotalDogUsers = async () => {
+      if (!user || !user.id) return;
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/dogs", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+        const dogsList = response.data
+          .filter((dog) => dog.user_id === user.id)
+          .map((dog) => ({ id: dog.id, name: dog.name_dog }));
+        console.log("Liste des chiens de l'utilisateur", dogsList);
+        fetchAppointments(dogsList);
+      } catch (error) {
+        console.error("Erreur lors de la création de la page", error);
+      }
+    };
+
+    const fetchAppointments = async (dogsList) => {
+      try {
+        const response = await axios.get(`${BASE_URL}`);
+        const appointmentsData = response.data;
+        const awaitingAppointments = appointmentsData.filter(
+          (appointment) =>
+            appointment.status === "En attente" &&
+            dogsList.some((dog) => dog.id === appointment.dog_id)
+        );
+        console.log("awaitingAppointments ==========>", awaitingAppointments);
+        setAppointmentsAwaiting(awaitingAppointments.length);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des rendez-vous:", error);
+      }
+    };
+
+    fetchTotalDogUsers();
+  }, [user, token]);
+
   const renderContent = () => {
     switch (currentSection) {
       case "userdashboard":
@@ -41,10 +82,12 @@ const DashboardContent = () => {
         return <ProfilsDogs />;
       case "ServicesVeto":
         return <ServicesVeto />;
-        case "Carte":
+      case "Carte":
         return <Carte />;
       case "ProfessionnelsCanin":
         return <ProfessionnelsCanin />;
+      case "RdvPro":
+        return <RdvPro />;
       case "VenteProduits":
         return <VenteProduits />;
       case "ConseilsIA":
@@ -68,12 +111,12 @@ const DashboardContent = () => {
         setCurrentSection={setCurrentSection}
         currentSection={currentSection}
       />
-      <div className="relative mb-8 text-xs  ">
+      <div className="relative mb-8 text-xs">
         <button
           onClick={toggleSidebar}
           className={`toggle-btn ${
             sidebarOpen ? "toggle-btn-open" : ""
-          } bg-white p-2 rounded-full shadow-md  hover: focus:outline-none`}
+          } bg-white p-2 rounded-full shadow-md focus:outline-none`}
         >
           <i
             className={`fas ${
@@ -86,10 +129,13 @@ const DashboardContent = () => {
             sidebarOpen ? "main-content-shifted" : ""
           }`}
         >
-          <header className="flex justify-between items-center mb-2 ">
-            <h1 className="text-xl font-bold  pl-8 mr-2">Dashboard User</h1>
+          <header className="flex justify-between items-center mb-2 dark:text-white">
+            <h1 className="text-xl font-bold pl-8 mr-2">Dashboard User</h1>
             <div className="flex items-center">
-              <button className=" hover: transition duration-200">
+              <button className="relative">
+                <span className="bg-amber-400 text-black px-2 py-1 rounded-full text-xs absolute opacity-90">
+                  {appointmentsAwaiting}
+                </span>
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -106,7 +152,7 @@ const DashboardContent = () => {
                 </svg>
               </button>
               <button
-                className="ml-4  hover:scale-125 transition duration-200"
+                className="ml-4"
                 onClick={() => {
                   setCurrentSection("MonProfilUser");
                 }}
@@ -123,12 +169,12 @@ const DashboardContent = () => {
                   className="w-8 h-8 rounded-full"
                 />
               </button>
-              <div className="ml-4  hover: transition duration-200 ">
-                <DarkModeToggle /> {/* Ajout du DarkModeToggle */}
+              <div className="ml-4">
+                <DarkModeToggle />
               </div>
               <button
                 onClick={handleLogout}
-                className="ml-4  hover: transition duration-200"
+                className="ml-4"
               >
                 <svg
                   className="w-6 h-6"
@@ -147,10 +193,7 @@ const DashboardContent = () => {
               </button>
             </div>
           </header>
-<div className="">
-          {/* Render the current section based on state */}
-          {renderContent()}
-</div>
+          <div>{renderContent()}</div>
         </main>
       </div>
     </React.Fragment>

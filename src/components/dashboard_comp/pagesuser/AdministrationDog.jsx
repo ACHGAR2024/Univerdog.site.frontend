@@ -3,11 +3,11 @@ const AdministrationDog = () => {
 
     return (
         <>
-        <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-blue-600">Aide Administrative: Passeport pour votre chien en France</h1>
+        <div className="container mx-auto px-4 py-8 dark:text-white">
+        <h1 className="text-3xl font-bold text-center mb-8 text-blue-600">Aide Administrative</h1>
         
         <div className="card">
-            <h2 className="text-2xl font-semibold mb-4 text-blue-500"><i className="fas fa-paw mr-2"></i>Procédures administratives</h2>
+            <h2 className="text-xl font-semibold mb-4 text-blue-500"><i className="fas fa-paw mr-2"></i>Procédures administratives</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>

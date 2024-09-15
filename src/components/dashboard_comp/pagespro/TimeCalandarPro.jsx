@@ -227,13 +227,13 @@ const TimeCalandarPro_store = ({ onSubmit, professionalId }) => {
     for (const jour of jours) {
       if (!horaires[jour].ferme) {
         const dayMapping = {
-          Lundi: "Monday",
-          Mardi: "Tuesday",
-          Mercredi: "Wednesday",
-          Jeudi: "Thursday",
-          Vendredi: "Friday",
-          Samedi: "Saturday",
-          Dimanche: "Sunday",
+          Lundi: 'Lundi',
+          Mardi: 'Mardi',
+          Mercredi: 'Mercredi',
+          Jeudi: 'Jeudi',
+          Vendredi: 'Vendredi',
+          Samedi: 'Samedi',
+          Dimanche: 'Dimanche',
         };
 
         const requestData = [

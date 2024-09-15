@@ -45,7 +45,7 @@ import DeposerCategorie from "./pages/DeposerCategorie";
 import DeposerSpecialty from "./pages/DeposerSpecialty";
 import DeposerProfessional from "./pages/DeposerProfessional";
 import MessagesManagement from "./pages/MessagesManagement";
-import FichePlace from "./pages/FichePlace";
+
 import Aide from "./pages/Aide";
 import Aide_pro from "./pages/Aide_pro";
 
@@ -88,6 +88,7 @@ import DashDog from "./pages/DashDog";
 import DogDetails from "./components/dashboard_comp/pagesuser/DogDetails";
 import ProfilsDogs from "./components/dashboard_comp/pagesuser/ProfilsDogs";
 import CartePlaces from "./components/dashboard_comp/pagesuser/CartePlaces";
+import FichePlaceDogPro from "./components/dashboard_comp/pagesuser/FichePlaceDogPro";
 import Carte from "./components/dashboard_comp/pagesuser/Carte";
 import DeposerLieuPro from "./components/dashboard_comp/pagespro/DeposerLieuPro";
 import EditProfessional from "./components/EditProfessional";
@@ -157,7 +158,7 @@ const Home = () => {
 
             {/* Protected Routes */}
             <Route path="/rechercher-place" element={<RechercherPlace />} />
-            <Route path="/fiche-place/:id" element={<FichePlace />} />
+            <Route path="/fiche-place/:id" element={<FichePlaceDogPro />} />
 
             <Route path="/signin" element={<SignIn />} />
             <Route path="/dash" element={<Dash />} />

@@ -1,12 +1,19 @@
 import { useContext } from 'react';
-import PropTypes from 'prop-types'; // Import PropTypes
+import PropTypes from 'prop-types'; 
 import { AuthContext } from '../../../context/AuthContext';
 import { UserContext } from '../../../context/UserContext';
 import DarkModeToggle from '../../DarkModeToggle';
+import { useNavigate } from 'react-router-dom'; 
 
 const HeaderAdmin = ({ toggleSidebar }) => {
   const { logout } = useContext(AuthContext);
-const { user } = useContext(UserContext);
+  const navigate = useNavigate(); 
+  const handleLogout = () => {
+    logout();
+    navigate('/'); 
+  }
+  const { user } = useContext(UserContext);
+
   return (
     <header className="bg-white shadow-sm dark:bg-slate-500 dark:text-white flex justify-between items-center p-4">
       <button
@@ -36,7 +43,7 @@ const { user } = useContext(UserContext);
         </div>
 
         <button
-          onClick={() => logout()}
+          onClick={() => handleLogout()} 
           className="ml-4 text-gray-600 hover:text-red-500 dark:hover:text-red-400 focus:outline-none"
         >
           <i className="fas fa-sign-out-alt"></i>
@@ -48,9 +55,7 @@ const { user } = useContext(UserContext);
 
 // Define prop types for validation
 HeaderAdmin.propTypes = {
-  toggleSidebar: PropTypes.func.isRequired, // Ensure toggleSidebar is a function
-  // If you decide to keep isSidebarOpen, uncomment the line below and use it within the component
-  // isSidebarOpen: PropTypes.bool.isRequired,
+  toggleSidebar: PropTypes.func.isRequired, 
 };
 
 export default HeaderAdmin;

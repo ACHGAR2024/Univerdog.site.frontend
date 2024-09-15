@@ -7,6 +7,7 @@ import Header from "./pageadmin/Header";
 import Signalement from "./pageadmin/Signalement";
 import ListePlacesAdmin from "./pageadmin/ListePlacesAdmin";
 import ListeCategories from "./pageadmin/ListeCategories";
+import ListeCategoriesProducts from "./pageadmin/ListeCategoriesProducts";
 import ListeReservationsAdmin from "./pageadmin/ListeReservationsAdmin";
 import ListEvents from "./pageadmin/ListEvents";
 import AdminDashboard from "./pageadmin/AdminDashboard";
@@ -46,7 +47,8 @@ const DashboardAdminContent = () => {
         return <ListeReservationsAdmin />;
       case "ListEvents":
         return <ListEvents />;
-
+        case "ListeCategoriesProducts":
+          return <ListeCategoriesProducts />;
       case "ProductList":
         return <ProductList />;
       default:

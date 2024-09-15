@@ -53,7 +53,7 @@ const ConseilsIA = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-6 ml-10 flex items-center">
+      <h2 className="text-xl font-bold mb-6 ml-10 flex items-center dark:text-white">
         <i className="fa-solid fa-robot w-6 h-6 mr-2 text-orange-500"></i>
         &nbsp; Conseils avec IA
       </h2>

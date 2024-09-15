@@ -149,7 +149,7 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
           </li>
         ) : (
           dogPhotos.map((photo) => (
-            <li key={photo.id} className="flex space-x-4">
+            <li key={photo.id} className="flex space-x-4 relative -mb-10 z-40">
               <img
                 id="imgdog"
                 src={`http://127.0.0.1:8000/storage/dogs_photos/${photo.photo_name_dog}?t=${photo.timestamp}`}
@@ -169,15 +169,13 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
           ))
         )}
       </ul>
-      <div className="bg-sky-200 mt-2 w-full transform hover:scale-105 transition-transform duration-300 ease-in-out shadow-lg rounded-lg overflow-hidden">
+      <div className="bg-sky-100 shadow-gray-500 shadow-xl mt-2 w-full transform hover:scale-105 transition-transform duration-300 ease-in-out  rounded-lg overflow-hidden">
         <div className="p-6">
           <h3 className="text-xl font-bold mb-2 text-gray-800 flex items-center">
             <FaDog className="mr-2" /> {dog.name_dog}
           </h3>
-          <p className="text-gray-600 mb-2">
-            <strong>Identifiant:</strong> {dog.id}
-          </p>
-          <p className="text-gray-600 mb-2">
+          
+          <p className="text-gray-600 mb-4">
             <strong>Race:</strong> {dog.breed}
           </p>
           <p className="text-gray-600 mb-4">
@@ -186,13 +184,13 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
           <p className="text-gray-600 mb-4">
             <strong>Âge:</strong> {calculateAge(dog.birth_date)}
           </p>
-          <p className="text-gray-600 mb-2">
+          <p className="text-gray-600 mb-4">
             <strong>Poids:</strong> {dog.weight} kg
           </p>
           <p className="text-gray-600 mb-4">
             <strong>Sexe:</strong> {dog.sex === "male" ? "Mâle" : dog.sex}
           </p>
-          <p className="text-gray-600 mb-2">
+          <p className="text-gray-600 mb-4">
             <strong>Informations médicales:</strong> {dog.medical_info}
           </p>
           

@@ -92,6 +92,8 @@ const AppointmentsUser = ({
   const [token] = useState(localStorage.getItem("token"));
 
   useEffect(() => {
+
+    
     const fetchAppointments = async () => {
       try {
         // Première requête pour le nombre de rendez-vous en attente
@@ -111,10 +113,14 @@ const AppointmentsUser = ({
         );
         setNumberOfAppointmentsWaiting(numberOfAppointmentsWaiting);
       } catch (error) {
-        console.error(
-          "Erreur lors du chargement des rendez-vous en attente :",
-          error
-        );
+        if (error.response && error.response.status === 404) {
+          console.error("Aucun rendez-vous en attente pour ce professionnel.");
+        } else {
+          console.error(
+            "Erreur lors du chargement des rendez-vous en attente :",
+            error
+          );
+        }
       }
     };
 
@@ -128,36 +134,50 @@ const AppointmentsUser = ({
             },
           }
         );
+    
+        // Vérifier si des rendez-vous ont été trouvés
+        if (responseEvents.data.length === 0) {
+          console.log("Aucun rendez-vous trouvé pour ce professionnel.");
+          return;
+        }
+    
         setEvents(
-          responseEvents.data.map((appointment) => {
-            const appointmentEnd = new Date(
-              `${appointment.date_appointment}T${appointment.time_appointment}`
-            );
-            appointmentEnd.setMinutes(appointmentEnd.getMinutes() + 30);
-
-            const isOtherDog =
-              Number(appointment.dog_id) !== Number(selectedDog); // Définir si c'est un autre chien
-
-            return {
-              id: appointment.id,
-              status: appointment.status,
-              title: isOtherDog ? `` : `RDV : ${appointment.reason}`,
-              start: new Date(
+          responseEvents.data
+            .filter((appointment) => appointment.status !== "Annulé")
+            .map((appointment) => {
+              const appointmentEnd = new Date(
                 `${appointment.date_appointment}T${appointment.time_appointment}`
-              ),
-              end: appointmentEnd,
-              isOtherDog, // Ajouter la propriété isOtherDog
-              ...appointment,
-            };
-          })
+              );
+              appointmentEnd.setMinutes(appointmentEnd.getMinutes() + 30);
+    
+              const isOtherDog =
+                Number(appointment.dog_id) !== Number(selectedDog); // Définir si c'est un autre chien
+    
+              return {
+                id: appointment.id,
+                status: appointment.status,
+                title: isOtherDog ? `` : `RDV : ${appointment.reason}`,
+                start: new Date(
+                  `${appointment.date_appointment}T${appointment.time_appointment}`
+                ),
+                end: appointmentEnd,
+                isOtherDog, // Ajouter la propriété isOtherDog
+                ...appointment,
+              };
+            })
         );
       } catch (error) {
-        console.error(
-          "Erreur lors du chargement des événements pour le calendrier :",
-          error
-        );
+        if (error.response && error.response.status === 404) {
+          console.error("Aucun rendez-vous trouvé pour ce chien ou ce professionnel.");
+        } else {
+          console.error(
+            "Erreur lors du chargement des événements pour le calendrier :",
+            error
+          );
+        }
       }
     };
+    
 
     const fetchAvailableSlots = async () => {
       try {
@@ -211,10 +231,10 @@ const AppointmentsUser = ({
         );
       }
     };
-
+ fetchAvailableSlots();
     fetchAppointments();
     fetchAppointmentsForCalendar();
-    fetchAvailableSlots();
+   
   }, [token, selectedProfessional, selectedDog, selectedService]);
 
   const isSlotAvailable = (date, time) => {

@@ -1,13 +1,14 @@
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
-import { UserContext } from "../context/UserContext";
-//import { useNavigate } from "react-router-dom";
-import Notification from "../components/Notification";
+import { AuthContext } from "../../../context/AuthContext";
+import { UserContext } from "../../../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import Notification from "../../../components/Notification";
 
-const DeposerPlace = () => {
+
+const DeposerPlacePro = () => {
   const useridrecup = useContext(UserContext);
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -23,6 +24,25 @@ const DeposerPlace = () => {
   const [categories, setCategories] = useState([]);
   const [suggestedCities, setSuggestedCities] = useState([]);
   const { token } = useContext(AuthContext);
+
+const specialityIcons = {
+    "Vétérinaire": "stethoscope",
+    "Cliniques vétérinaires": "hospital",
+    "Parcs à chiens": "paw",
+    "Sentiers de randonnée": "hiking",
+    "Plages autorisées aux chiens": "beach",
+    "Campings dog-friendly": "camping",
+    "Restaurants et cafés acceptant les chiens": "utensils",
+    "Magasins et centres commerciaux acceptant les chiens": "store",
+    "Clubs et écoles de dressage": "trophy",
+    "Cliniques vétérinaires et spas pour chiens": "hospital",
+    "Aires de repos sur autoroutes": "traffic-circle-o",
+    "Hôtels et hébergements acceptant les chiens": "hotel",
+    // ... ajouter d'autres spécialités et leurs icônes
+  };
+
+  
+  console.log(specialityIcons["Vétérinaire"]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -73,12 +93,13 @@ const DeposerPlace = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("MON USER ID:", useridrecup.id);
+    
     if (!useridrecup.id) {
       console.error("Erreur : ID utilisateur non disponible");
       Notification.error("ID utilisateur non disponible");
       return;
     }
-
+  
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("title", formData.title);
@@ -89,30 +110,24 @@ const DeposerPlace = () => {
       formDataToSend.append("latitude", formData.latitude);
       formDataToSend.append("longitude", formData.longitude);
       formDataToSend.append("type", formData.type);
-      formDataToSend.append("user_id", useridrecup.id); // Utilisation de `myIdUser`   
-
-      const currentDate = new Date()
-        .toISOString()
-        .slice(0, 19)
-        .replace("T", " ");
+      
+      
+      
+      formDataToSend.append("user_id", useridrecup.id);
+      const currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
       formDataToSend.append("publication_date", currentDate);
-
-      // Append category IDs as JSON string
-      formDataToSend.append(
-        "category_ids",
-        JSON.stringify(formData.category_ids)
-      );
-
+  
+     
+  
       await axios.post("http://127.0.0.1:8000/api/places", formDataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log("Reponse de création de place :", formDataToSend);
       Notification.success("Place ajoutée avec succès !");
-      //navigate("/dashboard");
-
+      navigate("/dashboard");
+  
       setFormData({
         title: "",
         description: "",
@@ -132,6 +147,7 @@ const DeposerPlace = () => {
       Notification.error("Erreur lors de la création de la place");
     }
   };
+  
 
   const handleChange = (e) => {
     if (e.target.name === "photo") {
@@ -157,10 +173,11 @@ const DeposerPlace = () => {
         [e.target.name]: e.target.value,
       }));
     }
+
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-20 mb-72 w-1/2">
+    <div className="container mx-auto px-4 py-8  mb-72 w-3/4 md:w-1/2 lg:w-3/5">
       <h1 className="text-3xl font-bold mb-8 text-black">Déposer une place</h1>
 
       <form
@@ -224,25 +241,26 @@ const DeposerPlace = () => {
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="category_ids"
+            htmlFor="type"
           >
             Catégorie
           </label>
           <select
-            className="block appearance-none h-10 w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            id="category_ids"
-            name="category_ids"
-            value={formData.category_ids}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Choisir une catégorie</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name_cat}
-              </option>
-            ))}
-          </select>
+  className="block appearance-none h-10 w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+  id="type"
+  name="type"
+  value={formData.type}
+  onChange={handleChange}
+  required
+>
+  <option value="">Choisir une catégorie</option>
+  {categories.map((category) => (
+    <option key={category.id} value={specialityIcons[category.name_cat]}>
+      {category.name_cat}
+    </option>
+  ))}
+</select>
+
         </div>
         <div className="mb-4">
           <label
@@ -335,23 +353,7 @@ const DeposerPlace = () => {
             accept="image/*"
           />
         </div>
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="type"
-          >
-            Type
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="type"
-            type="text"
-            placeholder="Type de la place"
-            name="type"
-            value={formData.type || ""}
-            onChange={handleChange}
-          />
-        </div>
+       
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -363,4 +365,4 @@ const DeposerPlace = () => {
   );
 };
 
-export default DeposerPlace;
+export default DeposerPlacePro;

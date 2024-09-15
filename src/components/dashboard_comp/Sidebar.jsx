@@ -79,6 +79,22 @@ const Sidebar = ({
             <li className="mb-1">
               <button
                 className={`${
+                  currentSection === "RdvPro"
+                    ? "css-1x3v3vy flex items-center  px-4 py-2 rounded-lg"
+                    : "flex items-center  hover:bg-gray-700 hover:dark:bg-slate-50 px-4 py-2 rounded-lg transition duration-200"
+                }`}
+                onClick={() => {
+                  setCurrentSection("RdvPro");
+                  if (!isMobile) toggleSidebar();
+                }}
+              >
+                <i className="fa-solid fa-bone mr-3"></i>
+                Autres rendez-vous
+              </button>
+            </li>
+            <li className="mb-1">
+              <button
+                className={`${
                   currentSection === "Carte"
                     ? "css-1x3v3vy flex items-center  px-4 py-2 rounded-lg"
                     : "flex items-center  hover:bg-gray-700 hover:dark:bg-slate-50 px-4 py-2 rounded-lg transition duration-200"

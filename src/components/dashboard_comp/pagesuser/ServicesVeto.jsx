@@ -108,7 +108,7 @@ const ServicesVeto = () => {
         <h2 className="text-xl font-bold ml-10 flex items-center">
           <i className="fa-solid fa-heart-pulse text-red-600 mr-2"></i>
           
-          <span className="mr-2">Services vétérinaires </span>
+          <span className="mr-2 dark:text-white">Services vétérinaires </span>
         </h2>
         <div className="p-4 flex items-center">
           <div>

@@ -1,142 +1,210 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import StarRatings from 'react-star-ratings';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 
 const ProfessionnelsCanin = () => {
-  const [professionals, setProfessionals] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const initialCategory = queryParams.get("category") || "";
+
   const [places, setPlaces] = useState([]);
-  const [specialities, setSpecialities] = useState([]);
+  const [filteredPlaces, setFilteredPlaces] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [category, setCategory] = useState(initialCategory);
+  const [sortOrder, setSortOrder] = useState("");
+  const [categories, setCategories] = useState([]);
 
+  // Fetching places
   useEffect(() => {
-    const fetchProfessionalsAndPlaces = async () => {
+    const fetchPlaces = async () => {
       try {
-        const [professionalsResponse, placesResponse, specialitiesResponse] = await Promise.all([
-          axios.get('http://127.0.0.1:8000/api/professionals'),
-          axios.get('http://127.0.0.1:8000/api/places'),
-          axios.get('http://127.0.0.1:8000/api/speciality'), // Fetch specialities
-        ]);
+        const url = category
+          ? `http://127.0.0.1:8000/api/places/category/${category}`
+          : "http://127.0.0.1:8000/api/places";
 
-        setProfessionals(professionalsResponse.data);
-        console.log('Professionals:', professionalsResponse.data);
-        setPlaces(placesResponse.data);
-        console.log('Places:', placesResponse.data);
-        setSpecialities(specialitiesResponse.data);
-        console.log('Specialities:', specialitiesResponse.data);
+        const response = await axios.get(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+
+        setPlaces(response.data.places || []);
+        setFilteredPlaces(response.data.places || []);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Erreur lors de la récupération des places", error);
       }
     };
 
-    fetchProfessionalsAndPlaces();
+    fetchPlaces();
+  }, [category]);
+
+  // Fetching categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/categories",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
+        setCategories(response.data.categories || []);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des catégories", error);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
-  const findPlaceForProfessional = (placeId) => {
-    // Access the 'places' array within the 'places' object
-    if (Array.isArray(places.places) && places.places.length > 0) {
-      const place = places.places.find((place) => place.id === placeId);
-      return place || null;
-    } else {
-      return null;
-    }
-  };
+  // Filtering and sorting places
+  useEffect(() => {
+    let result = places;
 
-  const findSpecialitiesForProfessional = (professionalId) => {
-    return specialities.filter((speciality) => speciality.professional_id === professionalId);
+    if (searchTerm) {
+      result = result.filter((place) =>
+        place.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (sortOrder) {
+      result = result.sort((a, b) =>
+        sortOrder === "asc" ? a.price - b.price : b.price - a.price
+      );
+    }
+
+    setFilteredPlaces(result);
+  }, [searchTerm, sortOrder, places]);
+
+  // Handling category change
+  const handleCategoryClick = (cat) => {
+    setCategory(cat);
+    navigate(`?category=${cat}`);
   };
 
   return (
-    <div className=' dark:text-black'>
-      <h2 className="text-3xl font-bold mb-6 ml-10 flex items-center dark:text-white">
-        <i className="fa-solid fa-dog w-6 h-6 mr-2 text-orange-500"></i>
-        &nbsp; Professionnels canins
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {professionals.map((professional) => {
-          const place = findPlaceForProfessional(professional.place_id);
-          const professionalSpecialities = findSpecialitiesForProfessional(professional.id);
-
-          return (
-            <div
-              key={professional.id}
-              className="dashboard-card p-6 transform hover:scale-105 transition-transform duration-300 ease-in-out shadow-lg rounded-lg overflow-hidden"
-            >
-              <img
-                src={place ? `http://127.0.0.1:8000${place.photo}` : 'https://via.placeholder.com/150'}
-                alt={professional.company_name}
-                className="w-32 h-32 rounded-full mx-auto mb-4"
-              />
-              <h3 className="text-xl font-bold mb-2 text-center dark:text-black">
-                {professional.company_name}
-              </h3>
-              <p className="text-gray-600 mb-4 text-center">
-                {professional.description_pro}
-              </p>
- {/* Display specialities if available */}
- {professionalSpecialities.length > 0 && (
-                <div className="mt-2">
-                  <p className="text-gray-600 mb-2 text-center font-bold">
-                    Spécialités:
-                  </p>
-                  
-                    {professionalSpecialities.map((speciality) => (
-                      <p key={speciality.id} className="text-orange-500 text-center">{speciality.name_speciality}</p>
-                    ))}
-                 
-                </div>
-              )}
-              {/* Display place information if available */}
-              {place && (
-                <div className="mt-4">
-                  <div className="flex items-center justify-center my-4">
-                    <i className="fa-solid fa-map-location text-orange-500 pr-2"></i>
-                    <div className="text-center">{place.title}</div>
-                  </div>
-                  <div className="flex items-center justify-center my-4">
-                    <i className="fa-solid fa-map-pin text-orange-500 pr-2"></i>
-                    <div className="text-center">{place.address}</div>
-                  </div>
-                  <div className="flex items-center justify-center my-4">
-                    <i className="fa-solid fa-crosshairs text-orange-500 pr-2"></i>
-                    <div className="text-center">{place.latitude} {place.longitude}</div>
-                  </div>
-                  {/* Assuming you have postal_code in your places data */}
-                  <div className="flex items-center justify-center my-4">
-                    <i className="fa-solid fa-mail-bulk text-orange-500 pr-2"></i>
-                    <div className="text-center">{place.postal_code}</div>
-                  </div>
-                  <div className="text-center text-orange-500">
-                    <a
-                      href={`https://www.google.com/maps/place/${place.latitude},${place.longitude}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Voir sur Google Maps
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {/* Assuming you have a rating field in your API data */}
-              <div className="text-center my-8">
-              <StarRatings
-              
-                rating={
-                  Math.round((parseFloat(professional.rates) || 0) * 2) / 2
-                }
-                starRatedColor="orange"
-                numberOfStars={5}
-                name="rating"
-                starDimension="20px"
-                starSpacing="2px"
-              /> &nbsp; &nbsp;{professional.rates}
-</div>
-              <button className=" bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full flex items-center justify-center mt-2">
-                <i className="fa-solid fa-eye mr-2"></i>Voir profil
-              </button>
-            </div>
-          );
-        })}
+    <div className="container mx-auto px-4 pt-2 mb-36">
+      <div className="flex-col md:flex-row justify-between my-4 hidden md:block">
+        <input
+          type="text"
+          placeholder="Rechercher..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="p-2 border rounded mb-4 md:mb-0 mr-2"
+        />
+        <select
+          value={category}
+          onChange={(e) => handleCategoryClick(e.target.value)}
+          className="p-2 border rounded mb-4 md:mb-0 mr-2 dark:text-gray-900"
+        >
+          <option value="">Toutes les catégories</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name_cat}
+            </option>
+          ))}
+        </select>
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+          className="p-2 border rounded mr-2 dark:text-gray-900"
+        >
+          <option value="">Trier par</option>
+          <option value="asc">Prix croissant</option>
+          <option value="desc">Prix décroissant</option>
+        </select>
+        <a href="/carte">
+          <button className="bg-slate-400 hover:bg-slate-800 text-white p-2 rounded">
+            Rechercher par carte
+          </button>
+        </a>
+        <a href="/lieux-places">
+          <button className="bg-slate-400 hover:bg-slate-800 text-white p-2 rounded m-2">
+            Rechercher par lieu
+          </button>
+        </a>
       </div>
+
+      <section className="py-15 mb-5 animate-slideIn mt-3">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {categories.map((cat) => (
+              <div
+                key={cat.id}
+                onClick={() => handleCategoryClick(cat.id)}
+                className={`dark:text-gray-900 bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300 cursor-pointer ${
+                  category === cat.id ? "bg-gray-200" : ""
+                }`}
+              >
+                <i
+                  className={`fa fa-${
+                    {
+                      "Vétérinaire": "stethoscope",
+                      "Parcs à chiens": "tree",
+                      "Sentiers de randonnée": "hiking",
+                      "Plages autorisées aux chiens": "umbrella-beach",
+                      "Campings dog-friendly": "campground",
+                      "Restaurants et cafés acceptant les chiens": "utensils",
+                      "Magasins et centres commerciaux acceptant les chiens": "shopping-bag",
+                      "Clubs et écoles de dressage": "graduation-cap",
+                      "Toiletteur canine": "bone",
+                      "Cliniques vétérinaires et spas pour chiens": "medkit",
+                      "Aires de repos sur autoroutes": "gas-pump",
+                      "Hôtels et hébergements acceptant les chiens": "hotel",
+                    }[cat.name_cat] || "question-circle"
+                  } 
+                  ${
+                    {
+                      "Vétérinaire": "text-blue-600",
+                      "Parcs à chiens": "text-green-600",
+                      "Sentiers de randonnée": "text-yellow-600",
+                      "Plages autorisées aux chiens": "text-blue-300",
+                      "Campings dog-friendly": "text-green-300",
+                      "Restaurants et cafés acceptant les chiens": "text-yellow-300",
+                      "Magasins et centres commerciaux acceptant les chiens": "text-blue-300",
+                      "Clubs et écoles de dressage": "text-red-600",
+                      "Toiletteur canine": "text-green-300",
+                      "Cliniques vétérinaires et spas pour chiens": "text-red-300",
+                      "Aires de repos sur autoroutes": "text-yellow-300",
+                      "Hôtels et hébergements acceptant les chiens": "text-blue-300",
+                    }[cat.name_cat] || "text-gray-600"
+                  } 
+                  mb-4 text-3xl`}
+                ></i>
+
+                <h3 className="font-semibold">{cat.name_cat}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {filteredPlaces.map((place) => (
+          <Link key={place.id} to={`/fiche-place/${place.id}`}>
+            <div className="bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 hover:transform hover:-translate-y-2">
+              <div
+                className="h-48 bg-cover bg-center"
+                style={{
+                  backgroundImage: `url(http://127.0.0.1:8000${place.photo})`,
+                }}
+              ></div>
+              <div className="p-4">
+                <div className="dark:text-gray-900 font-semibold mb-2">
+                  {place.title}
+                </div>
+                <div className="dark:text-gray-900 text-accent font-bold">
+                  {place.price} €
+                </div>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </section>
     </div>
   );
 };

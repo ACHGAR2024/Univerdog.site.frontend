@@ -28,12 +28,11 @@ const VoyagesChiens = () => {
   
     fetchVoyages();
   }, []);
-
   return (
     <div>
 
 
-      <h2 className="text-3xl font-bold mb-6 ml-10 flex items-center ">
+      <h2 className="text-xl font-bold mb-6 ml-10 flex items-center dark:text-white ">
         <i className="fa-solid fa-suitcase w-6 h-6 mr-2 text-orange-500  "></i>
         &nbsp; Voyages avec Chien
       </h2>
@@ -50,8 +49,11 @@ const VoyagesChiens = () => {
               key={voyage.id}
               className="bg-white p-4 rounded-lg shadow transform hover:scale-105 transition-transform duration-300 ease-in-out"
             >
+
+
               <img
-                src={voyage.photo_event}
+              
+                src={`http://127.0.0.1:8000${voyage.photo_event}`}
                 alt={voyage.title_event}
                 className="w-full h-40 object-cover rounded-lg mb-4"
               />
