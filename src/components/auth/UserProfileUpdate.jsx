@@ -5,6 +5,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { UserContext } from "../../context/UserContext";
 import Notification from "../../components/Notification";
 //import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const UserProfileUpdate = () => {
   const [userData, setUserData] = useState({
@@ -149,7 +150,14 @@ const UserProfileUpdate = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 ">
-      <h1 className="text-3xl font-bold  text-black dark:text-black">
+      {location.pathname !== "/dashboard" && (
+        <Link to="/dashboard">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-4">
+            <i className="fa-solid fa-arrow-left"></i> Retour
+          </button>
+        </Link>
+      )}
+      <h1 className="text-xl font-bold  text-black dark:text-black mb-4">
         Modifier Profile
       </h1>
       <form

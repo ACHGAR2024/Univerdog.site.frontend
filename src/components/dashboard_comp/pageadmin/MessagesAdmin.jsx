@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import axios from "axios";
 import Notiflix from "notiflix";
-import Notification from "../components/Notification";
-import { UserContext } from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import Notification from "../../../components/Notification";
+import { UserContext } from "../../../context/UserContext";
 
-const MessagesManagement = () => {
+//import { Link } from "react-router-dom";
+
+const MessagesAdmin = () => {
   const [messages, setMessages] = useState([]);
   const [places, setPlaces] = useState([]);
   const [filter, setFilter] = useState("my_messages");
@@ -14,7 +14,7 @@ const MessagesManagement = () => {
   const [replyContent, setReplyContent] = useState("");
   const [notification, setNotification] = useState(null);
   const U_id = useContext(UserContext);
-  const navigate = useNavigate();
+ 
 
   const fetchMessages = useCallback(async () => {
     try {
@@ -69,10 +69,10 @@ const MessagesManagement = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setMessages(messages.filter((message) => message.id !== id));
-      setNotification({
-        type: "success",
-        message: "Message supprimé avec succès.",
-      });
+      
+      
+       
+    
     } catch (error) {
       console.error("Erreur lors de la suppression du message", error);
       setNotification({
@@ -90,6 +90,8 @@ const MessagesManagement = () => {
       "Non",
       () => {
         handleDelete(id);
+        setReplyToId(null);
+        setReplyContent("");
       },
       () => {
         // Action à prendre si l'utilisateur annule la suppression
@@ -136,9 +138,7 @@ const MessagesManagement = () => {
         setReplyToId(null);
         setReplyContent("");
         Notiflix.Notify.success("Réponse envoyée avec succès.");
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 2000);
+       
       } catch (error) {
         console.error("Erreur lors de la soumission de la réponse", error);
         Notiflix.Notify.failure("Erreur lors de la soumission de la réponse.");
@@ -157,19 +157,15 @@ const MessagesManagement = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-20 mb-20 dark:text-gray-900">
-      <Link to="/dashboard">
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-4">
-          <i className="fa-solid fa-arrow-left"></i> Retour
-        </button>
-      </Link>
+    <div className="container mx-auto px-4 py-8  mb-20 dark:text-gray-900">
+     
       {notification && (
         <Notification type={notification.type} message={notification.message} />
       )}
-      <h1 className="text-3xl font-bold mb-6">Gestion des Messages</h1>
+      <h1 className="text-xl font-bold mb-6 dark:text-white">Gestion des Messages</h1>
 
       <div className="mb-4">
-        <label className="mr-2">Filtrer par:</label>
+        <label className="mr-2 dark:text-white">Filtrer par:</label>
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
@@ -180,8 +176,8 @@ const MessagesManagement = () => {
           )}
           <option value="my_messages">Mes Messages Reçus</option>
           <option value="sent_messages">Mes Messages Envoyés</option>
-          {/*<option value="favorite">Favoris</option>
-          <option value="reported">Signalés</option>*/}
+          <option value="favorite">Favoris</option>
+          <option value="reported">Signalés</option>
         </select>
       </div>
 
@@ -333,4 +329,4 @@ const MessagesManagement = () => {
   );
 };
 
-export default MessagesManagement;
+export default MessagesAdmin;

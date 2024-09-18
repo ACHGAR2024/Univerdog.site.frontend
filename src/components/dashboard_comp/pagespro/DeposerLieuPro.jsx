@@ -12,7 +12,7 @@ const DeposerPlacePro = () => {
     title: "",
     description: "",
     price: "",
-    category_ids: [], // Assure-toi que category_ids est un tableau
+    category_id: null, // Stockez la catégorie sélectionnée en tant que ID
     address: "",
     photo: null,
     latitude: "",
@@ -34,10 +34,10 @@ const DeposerPlacePro = () => {
     "Magasins et centres commerciaux acceptant les chiens": "store",
     "Clubs et écoles de dressage": "trophy",
     "Toiletteur canine": "bone",
-    "Cliniques vétérinaires et spas pour chiens": "hospital",
+    "Spas pour chiens": "spa",
     "Aires de repos sur autoroutes": "gas-pump",
     "Hôtels et hébergements acceptant les chiens": "hotel",
-    // ... ajouter d'autres spécialités et leurs icônes
+    // ... ajouter d'autres spécialités et leurs icônes 
   };
 
   useEffect(() => {
@@ -108,10 +108,8 @@ const DeposerPlacePro = () => {
       formDataToSend.append("type", formData.type);
       formDataToSend.append("user_id", useridrecup.id);
 
-      // Ajout des catégories sélectionnées
-      formData.category_ids.forEach((id) => {
-        formDataToSend.append("category_ids[]", id);
-      });
+      // Ajout de la catégorie sélectionnée
+      formDataToSend.append("category_id", formData.category_id); 
 
       const currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
       formDataToSend.append("publication_date", currentDate);
@@ -129,7 +127,7 @@ const DeposerPlacePro = () => {
         title: "",
         description: "",
         price: "",
-        category_ids: [],
+        category_id: null, // Réinitialisez category_id
         address: "",
         photo: null,
         latitude: "",
@@ -154,15 +152,13 @@ const DeposerPlacePro = () => {
       [name]: value
     }));
 
-    if (name === "category_ids") {
-      const selectedValues = Array.from(e.target.selectedOptions, option => option.value);
-
-      setFormData(prev => ({
+    if (name === "category_id") {
+      // Stockez l'ID de la catégorie sélectionnée
+      setFormData((prev) => ({
         ...prev,
-        category_ids: selectedValues,
-        type: specialityIcons[categories.find(cat => cat.id === selectedValues[0])?.name_cat] || formData.type,
+        category_id: value,
+        type: specialityIcons[categories.find(cat => cat.id === value)?.name_cat] || formData.type, // Mettre à jour le type si le bouton est coché
       }));
-
     } else if (name === "photo") {
       setFormData((prev) => ({
         ...prev,
@@ -247,18 +243,18 @@ const DeposerPlacePro = () => {
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="category_ids"
+            htmlFor="category_id"
           >
-            Catégorie <span className="text-red-500 text-xs"> - Vous pouvez sélectionner plusieurs à la fois, avec Ctrl</span>
+            Catégorie 
           </label>
           <select
             className="block appearance-none w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            id="category_ids"
-            name="category_ids"
+            id="category_id"
+            name="category_id"
             onChange={handleChange}
-            value={formData.category_ids}
-            multiple 
+            value={formData.category_id || ""} // Utilisez la valeur de formData.category_id
           >
+            <option value="">Sélectionnez une catégorie</option> {/* Option vide */}
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name_cat}
@@ -396,5 +392,5 @@ const DeposerPlacePro = () => {
     </div>
   );
 };
-
+ 
 export default DeposerPlacePro;

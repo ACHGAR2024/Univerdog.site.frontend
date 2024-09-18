@@ -12,8 +12,8 @@ const HeaderAdmin = ({ toggleSidebar }) => {
     logout();
     navigate('/'); 
   }
-  const { user } = useContext(UserContext);
-
+  const user = useContext(UserContext);
+console.log (user.image);
   return (
     <header className="bg-white shadow-sm dark:bg-slate-500 dark:text-white flex justify-between items-center p-4">
       <button
@@ -31,6 +31,7 @@ const HeaderAdmin = ({ toggleSidebar }) => {
         <DarkModeToggle />
 
         <div className="ml-4">
+          <a href="/profil-user-update" className="text-gray-600 hover:text-gray-700 focus:outline-none">
           <img
             src={
               user?.image
@@ -38,8 +39,9 @@ const HeaderAdmin = ({ toggleSidebar }) => {
                 : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
             }
             alt="profil"
-            className="w-8 h-8 rounded-full"
+            className="w-10 h-10 rounded-full shadow-amber-500 shadow-lg"
           />
+          </a>
         </div>
 
         <button

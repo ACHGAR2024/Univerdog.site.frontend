@@ -154,7 +154,7 @@ const FichePlace = () => {
     try {
       await axios.post(
         "http://127.0.0.1:8000/api/messages/favorite",
-        { place_id: id, content: "Favoris Ajouté", status: "En attente" },
+        { place_id: id,  status: "En attente" },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }

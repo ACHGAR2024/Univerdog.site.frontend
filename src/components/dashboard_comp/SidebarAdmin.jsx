@@ -29,11 +29,13 @@ const SidebarAdmin = ({
     >
       <div className="mt-5 pl-6">
         <div className="flex justify-center mb-5">
+          <a href="/">
           <img
             src="src/images/logo.png"
             alt="UniverDog Logo"
             className=" mr-5 w-20 h-14 rounded-full"
           />
+          </a>
         </div>
         <nav className="space-y-1 text-xs">
           <button

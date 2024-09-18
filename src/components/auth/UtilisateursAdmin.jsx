@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 
 const UtilisateursAdmin = () => {
   const [users, setUsers] = useState([]);
-
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+
   const fetchUsers = useCallback(async () => {
     try {
       const response = await axios.get("http://127.0.0.1:8000/api/users", {
@@ -32,20 +33,13 @@ const UtilisateursAdmin = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setUsers(users.filter((user) => user.id !== userId));
-      //setNotification({ type: 'success', message: 'Utilisateur supprimé avec succès' });
-      // Affichage dee message de succès avec Notiflix
       Notification.success("Utilisateur supprimé avec succès");
-
-      // Rediriction de l'utilisateur vers une autre page après un court délai
       setTimeout(() => {
         navigate("/dashboard");
-      }, 2000); // Redirection après 2 secondes
+      }, 2000);
     } catch (error) {
-      //console.error('Erreur lors de la suppression de l\'utilisateur', error);
-      //setNotification({ type: 'error', message: 'Erreur lors de la suppression de l\'utilisateur' });
-      Notification.success("Erreur lors de la suppression de l'utilisateur");
+      Notification.error("Erreur lors de la suppression de l'utilisateur");
       if (error.response) {
-        console.error("Erreur:", error.response.data);
         Notification.error(error.response.data);
       }
     }
@@ -64,11 +58,8 @@ const UtilisateursAdmin = () => {
         borderRadius: "8px",
         titleColor: "#000",
         messageColor: "#000",
-        buttonsFontSize: "16px",
         okButtonBackground: "#007bff",
         cancelButtonBackground: "#6c757d",
-        okButtonColor: "#fff",
-        cancelButtonColor: "#fff",
       }
     );
   };
@@ -88,28 +79,43 @@ const UtilisateursAdmin = () => {
           user.id === userId ? { ...user, role: newRole } : user
         )
       );
-      Notification.success("Role mis à jour avec succès");
+      Notification.success("Rôle mis à jour avec succès");
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du rôle", error);
       Notification.error("Erreur lors de la mise à jour du rôle");
       if (error.response) {
-        console.error("Erreur:", error.response.data);
         Notification.error(error.response.data);
       }
     }
   };
 
+  // Filtrage des utilisateurs en fonction du terme de recherche
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div
       id="users"
-      className="text-xs dark:text-gray-900  bg-white dark:bg-zinc-400 rounded-lg shadow-md animate-slideIn  pt-5  md:p-9"
+      className="text-xs dark:text-gray-900 bg-white dark:bg-zinc-400 rounded-lg shadow-md animate-slideIn pt-5 md:p-9"
     >
       <h1 className="text-xl font-bold mb-6 dark:text-gray-800 pl-8">
         Gestion des utilisateurs
       </h1>
 
-      <div className="bg-white shadow-md rounded-lg overflow-hidden  ">
-        <table className="divide-y divide-gray-200 m-5 ">
+      {/* Champ de recherche */}
+      <div className="mb-4 px-8">
+        <input
+          type="text"
+          placeholder="Rechercher un utilisateur par nom ou email"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+        />
+      </div>
+
+      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <table className="divide-y divide-gray-200 m-5">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -130,7 +136,7 @@ const UtilisateursAdmin = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <tr key={user.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <img
@@ -143,7 +149,9 @@ const UtilisateursAdmin = () => {
                     alt={user.name}
                   />
                 </td>
-                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">{user.name}</td>
+                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
+                  {user.name}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center">
                     <button
@@ -162,8 +170,7 @@ const UtilisateursAdmin = () => {
                       }
                       className="text-blue-600 hover:text-blue-900 ml-4"
                     >
-                      <i className="fas fa-exchange-alt"></i>{" "}
-                      {/* Icône pour le changement de rôle */}
+                      <i className="fas fa-exchange-alt"></i>
                     </button>
                     <button
                       onClick={() => confirmDelete(user.id)}
@@ -174,7 +181,9 @@ const UtilisateursAdmin = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
-                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">{user.email}</td>
+                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
+                  {user.email}
+                </td>
               </tr>
             ))}
           </tbody>

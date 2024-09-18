@@ -1,5 +1,3 @@
-// src/pages/public/HomeContent.jsx
-
 import { useState, useEffect } from "react";
 import { Carousel } from "flowbite-react";
 import Nav from "../../components/nav_footer/Nav";
@@ -8,27 +6,65 @@ import Footer from "../../components/nav_footer/Footer";
 function HomeContent() {
   const [showModal, setShowModal] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+ 
+
+
+  const handleRefuseCookies = () => {
+    setShowModal(false);
+    // Enregistrer le refus dans localStorage avec une durée de validité de 12 mois
+    const expirationDate = new Date();
+    expirationDate.setMonth(expirationDate.getMonth() + 12); // Durée de 12 mois
+    localStorage.setItem(
+      "cookieConsent",
+      JSON.stringify({
+        accepted: false,
+        expirationDate: expirationDate.toISOString(),
+      })
+    );
+  };
+
+  const handleManagePreferences = () => {
+    // Rediriger vers la page de préférences des cookies
+    window.location.href = '/cookie_preferences';
+  };
+
+  useEffect(() => {
+    const consent = localStorage.getItem("cookieConsent");
+    if (consent) {
+      const consentData = JSON.parse(consent);
+      const expirationDate = new Date(consentData.expirationDate);
+      if (expirationDate > new Date()) {
+        setShowModal(false);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const consent = localStorage.getItem("cookieConsent");
     if (!consent) {
       setShowModal(true);
     }
-    // Simuler l'état d'authentification
-    // Remplacez ceci par votre logique d'authentification réelle
-    const userIsAuthenticated = false; // Changez en fonction de votre logique
+
+    const userIsAuthenticated = false;
     setIsAuthenticated(userIsAuthenticated);
   }, []);
 
   const handleLogout = () => {
-    // Implémentez la logique de déconnexion ici
     setIsAuthenticated(false);
-    // Ajoutez la logique de déconnexion réelle si nécessaire
   };
+
   const handleConsent = () => {
-    // Add your logic here for handling consent
-    // For example, you can set the consent in localStorage and hide the modal
-    localStorage.setItem("cookieConsent", "accepted");
+    // Enregistrez le consentement dans le localStorage avec une durée de validité de 12 mois
+    const expirationDate = new Date();
+    expirationDate.setMonth(expirationDate.getMonth() + 12); // Durée de 12 mois
+    localStorage.setItem(
+      "cookieConsent",
+      JSON.stringify({
+        accepted: true,
+        expirationDate: expirationDate.toISOString(),
+      })
+    );
+
     setShowModal(false);
   };
 
@@ -46,11 +82,23 @@ function HomeContent() {
               vous acceptez notre politique de cookies.
             </p>
             <button
-              className="bg-orange_univerdog hover:bg-jaune_univerdog_01 hover:text-black text-white font-bold py-2 px-4 rounded"
+              className="mr-2 bg-orange_univerdog hover:bg-jaune_univerdog_01 hover:text-black text-white font-bold py-2 px-4 rounded"
               onClick={handleConsent}
             >
               J&#39;accepte
             </button>
+            <button
+            className="mr-2 bg-red-500 hover:bg-jaune_univerdog_01 hover:text-black text-white font-bold py-2 px-4 rounded"
+            onClick={handleRefuseCookies}
+          >
+            Refuser
+          </button>
+          <button
+            className="bg-gray-300 text-gray-950 hover:bg-red-500  font-bold py-2 px-4 rounded"
+            onClick={handleManagePreferences}
+          >
+            Gérer les préférences
+          </button>
           </div>
         </div>
       )}

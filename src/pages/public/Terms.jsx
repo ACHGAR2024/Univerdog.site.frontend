@@ -1,6 +1,7 @@
 import Nav from "../../components/nav_footer/Nav";
 import Footer from "../../components/nav_footer/Footer";
 import { useState, useEffect } from "react";
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 function Terms() {
   // Simuler l'état d'authentification
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -18,6 +19,15 @@ function Terms() {
   };
   return (
     <>
+    <HelmetProvider>
+      <Helmet>
+        <title>Conditions d&#39;Utilisation - UniverDog</title>
+        <meta name="description" content="Consultez nos conditions d'utilisation pour comprendre les règles et responsabilités lors de l'utilisation du site UniverDog." />
+        <meta property="og:title" content="Conditions d'Utilisation - UniverDog" />
+        <meta property="og:description" content="Découvrez les conditions d'utilisation régissant l'accès et l'utilisation des services de UniverDog." />
+        <meta property="og:type" content="website" />
+      </Helmet>
+    </HelmetProvider>
       <Nav  isAuthenticated={isAuthenticated} handleLogout={handleLogout}/>
     <header
       className="pt-16 flex w-full flex-col justify-center items-center poetsen-one-regular bg-gray-700 text-white dark:bg-black dark:text-dark_text"

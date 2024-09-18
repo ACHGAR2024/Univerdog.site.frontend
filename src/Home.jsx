@@ -37,7 +37,7 @@ import EventForm from "./components/EventForm";
 import EditEvent from "./components/EditEvent";
 
 // Page Components
-import HomeContent from "./pages/public/HomeContent";
+
 import Dashboard from "./pages/Dashboard";
 import RechercherPlace from "./pages/RechercherPlace";
 import DeposerPlace from "./pages/DeposerPlace";
@@ -69,15 +69,20 @@ import { UserProvider } from "./context/UserContext";
 import { DarkModeProvider } from "./context/DarkModeContext";
 
 // ** Main Application Component **
-
+import Terms from "./pages/public/Terms";
 import About from "./pages/public/About";
-import RegisterForm from "./pages/RegisterForm";
+import Privacy from "./pages/public/Privacy";
 import Contact from "./pages/public/Contact";
+import HomeContent from "./pages/public/HomeContent";
+import MentionsLegales from "./pages/public/MentionsLegales";
+import CGPVfile from "./pages/public/CGPVfile";
+import  CookiePreferences from "./pages/public/CookiePreferences";
+
 import Inscription from "./pages/Inscription";
 import Forgotpw from "./pages/Forgotpw";
 import Resetpw from "./pages/Resetpw";
-import Terms from "./pages/public/Terms";
-import Privacy from "./pages/public/Privacy";
+import RegisterForm from "./pages/RegisterForm";
+
 import ProfilGoogle from "./components/ProfilGoogle";
 
 import SignIn from "./pages/auth/SignIn";
@@ -135,6 +140,10 @@ const Home = () => {
             <Route path="/resetpw" element={<Resetpw />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/mentions_legales" element={<MentionsLegales />} />
+            <Route path="/cgpv" element={<CGPVfile />} />
+
+            <Route path="/cookie_preferences" element={<CookiePreferences />} />
 
             {/* Public Routes */}
             <Route path="/" element={<HomeContent />} />

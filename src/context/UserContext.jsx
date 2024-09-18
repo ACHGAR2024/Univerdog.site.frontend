@@ -16,11 +16,13 @@ const UserProvider = ({ children }) => {
     }
     const fetchUser = async () => {
       if (!token) {
-        console.log(" _   _      _ _    ");
-        console.log("| | | | ___| | | ___    ");
-        console.log("| |_| |/ _ \\ | |/ _ \\  ");
-        console.log("|  _  |  __/ | | (_) |  ");
-        console.log("|_| |_|\\___|_|_|\\___/  ");
+        console.log("______    ____      ______   ");
+        console.log("|  _  |  |  _  |   |  ___ |  ");
+        console.log("| | | |  | | | |   | |  __     ");
+        console.log("| | | |  | | | |   | | |_ |  ");
+        console.log("| |/ /   | |_| |   | |__| |  ");
+        console.log("|___/    |_____|   |______/   ");
+        console.log("       UniverDog");
 
         return;
       }

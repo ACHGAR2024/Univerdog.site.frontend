@@ -5,6 +5,10 @@ function Footer() {
         <div className="flex justify-between items-center w-full px-4 py-2">
           {/* Copyright */}
           <div className="flex items-center mt-1">Copyright © 2024</div>
+          {/* Mentions legales */}
+          <div className="flex items-center mt-1 hover:text-orange-400"><a href="/mentions_legales">Mentions légales</a></div>
+         {/* CCGPV */}
+          <div className="flex items-center mt-1 hover:text-orange-400"><a href="/cgpv">CCGPV</a></div>
           <div className="flex items-center pb-1">
             {/* Linkedin */}
             <a

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
-
+import { Link } from "react-router-dom";
 const LieuPlacesRecherche = () => {
   const [places, setPlaces] = useState([]);
   const [searchRegion, setSearchRegion] = useState("");
@@ -38,6 +38,11 @@ const LieuPlacesRecherche = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-40">
+      <Link to="/dashboard">
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-4">
+          <i className="fa-solid fa-arrow-left"></i> Retour
+        </button>
+      </Link>
       <div className="mb-4">
         <input
           type="text"

@@ -146,8 +146,7 @@ const AppointmentsManagerUser = ({ selectedProfessional, selectedDog, }) => {
               <th>Heure</th>
               <th>Raison</th>
               <th>Statut</th>
-              <th>Chien</th>
-              <th>Professionnel</th>
+              
               <th>Date de création</th>
               <th>Actions</th>
             </tr>
@@ -177,8 +176,7 @@ const AppointmentsManagerUser = ({ selectedProfessional, selectedDog, }) => {
                   >
                     {app.status}
                   </td>
-                  <td>{app.dog_id}</td>
-                  <td>{app.professional_id}</td>
+                  
                   <td>
                     {new Intl.DateTimeFormat("fr-FR", {
                       year: "numeric",

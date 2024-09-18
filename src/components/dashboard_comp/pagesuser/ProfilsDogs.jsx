@@ -2,6 +2,7 @@ import { useContext, useState, useEffect, useRef } from "react";
 import QRCode from "qrcode";
 import PropTypes from "prop-types";
 import { UserContext } from "../../../context/UserContext";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import {
   FaEdit,
@@ -584,6 +585,13 @@ const ProfilsDogs = () => {
 
   return (
     <div className="p-4 dark:text-black">
+      {location.pathname !== "/dashboard" && (
+        <Link to="/dashboard">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-4">
+            <i className="fa-solid fa-arrow-left"></i> Retour
+          </button>
+        </Link>
+      )}
       {dogs.map((dog) => (
         <DogCard
           key={dog.id}

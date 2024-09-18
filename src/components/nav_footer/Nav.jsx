@@ -5,10 +5,11 @@ import DarkModeToggle from "./../DarkModeToggle";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-const Nav = ({ isAuthenticated }) => {
+const Nav = () => {
   const [showMenu, setShowMenu] = useState(false);
   const location = useLocation();
   const { logout } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
   const navigate = useNavigate();
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -63,8 +64,8 @@ const Nav = ({ isAuthenticated }) => {
           {/* ... other links ... */}
           <DarkModeToggle />
 
-          {/* Conditional rendering for authentication */}
-          {isAuthenticated ? (
+          {/* Rendu conditionnel pour l'authentification */}
+          {token ? ( // Si l'utilisateur est connecté
             <>
               <Link
                 to="/dashboard"
@@ -78,10 +79,11 @@ const Nav = ({ isAuthenticated }) => {
                 onClick={handleLogout}
                 className="text-gray-300 hover:text-white text-xs"
               >
-                Deconnexion
+                Déconnexion
               </button>
             </>
           ) : (
+            // Si l'utilisateur n'est pas connecté
             <>
               <Link
                 to="/login"
@@ -154,22 +156,51 @@ const Nav = ({ isAuthenticated }) => {
               >
                 Contact
               </Link>
-              <Link
-                to="/login"
-                className={`text-xs block px-4 py-2 text-white bg-gray-800 hover:bg-gray-300 hover:text-sky-600 ${
-                  location.pathname === "/login" ? "nav-active" : ""
-                }`}
-                onClick={closeMenu}
-              >
-                Connexion
-              </Link>
+
+              {/* ... other links ... */}
+              {token ? ( // Si l'utilisateur est connecté
+                <>
+                  <Link
+                    to="/dashboard"
+                    className={`text-xs block px-4 py-2 text-white bg-gray-800 hover:bg-gray-300 hover:text-sky-600 ${
+                      location.pathname === "/dashboard" ? "nav-active" : ""
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    Tableau de bord
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      closeMenu();
+                    }}
+                    className="w-full text-xs block px-4 py-2 text-white bg-gray-800 hover:bg-gray-300 hover:text-sky-600"
+                  >
+                    Déconnexion
+                  </button>
+                </>
+              ) : (
+                // Si l'utilisateur n'est pas connecté
+                <>
+                  {" "}
+                  <Link
+                    to="/login"
+                    className={`text-xs block px-4 py-2 text-white bg-gray-800 hover:bg-gray-300 hover:text-sky-600 ${
+                      location.pathname === "/login" ? "nav-active" : ""
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    Connexion
+                  </Link>
+                </>
+              )}
             </div>
           </>
         )}
       </nav>
     </>
   );
-}
+};
 
 Nav.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,

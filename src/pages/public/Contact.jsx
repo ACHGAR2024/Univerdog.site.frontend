@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Nav from "../../components/nav_footer/Nav";
 import Footer from "../../components/nav_footer/Footer";
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 function Contact() {
   // Simuler l'état d'authentification
@@ -21,14 +22,23 @@ function Contact() {
 
   return (
     <>
+    <HelmetProvider>
+      <Helmet>
+        <title>Contactez-nous - UniverDog</title>
+        <meta name="description" content="Contactez-nous pour toute question ou information supplémentaire sur UniverDog." />
+        <meta property="og:title" content="Contactez-nous - UniverDog" />
+        <meta property="og:description" content="Utilisez notre formulaire de contact pour nous joindre directement." />
+        <meta property="og:type" content="website" />
+      </Helmet>
+    </HelmetProvider>
       <Nav isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
       <header
-        className="flex w-full flex-col h-screen justify-center items-center poetsen-one-regular bg-cover bg-no-repeat dark:bg-gray-900"
+        className="text-xs flex w-full flex-col h-screen justify-center items-center poetsen-one-regular bg-cover bg-no-repeat dark:bg-gray-900"
         style={{ backgroundImage: `url('/src/images/dog-contact.webp')` }}
       >
         <div className="flex flex-col items-center justify-center h-screen">
           <form
-            className="w-96 max-w-md mx-auto bg-black shadow-md rounded-md px-4 pt-4 pb-4 text-sm bg-opacity-60 dark:bg-gray-800 dark:text-white"
+            className="w-96 max-w-md mx-auto bg-black shadow-md rounded-md px-4 pt-4 pb-4 text-xs bg-opacity-60 dark:bg-gray-800 dark:text-white"
           >
             <h2 className="text-white text-lg font-bold mb-4 dark:text-white">
               Contactez-nous
@@ -44,7 +54,7 @@ function Contact() {
                 id="name"
                 type="text"
                 autoComplete="off"
-                className="form-control pl-2 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="form-control pl-2 p-1 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
             <div className="mb-4">
@@ -58,7 +68,7 @@ function Contact() {
                 id="email_contact"
                 type="email"
                 autoComplete="off"
-                className="form-control pl-2 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="form-control pl-2 p-1 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
             <div className="mb-4">
@@ -72,7 +82,7 @@ function Contact() {
                 id="subject"
                 type="text"
                 autoComplete="off"
-                className="form-control pl-2 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="form-control pl-2 p-1 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
             <div className="mb-4">
@@ -84,8 +94,8 @@ function Contact() {
               </label>
               <textarea
                 id="message"
-                rows="4"
-                className="form-control pl-2 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                rows="2"
+                className="form-control pl-2 p-1 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               ></textarea>
             </div>
             <div className="text-center">
@@ -97,6 +107,7 @@ function Contact() {
               </button>
             </div>
           </form>
+          <p className="text-gray-200 dark:text-gray-300">Aucune donnée personnelle n’est conservée par notre site via ce formulaire</p>
         </div>
       </header>
       <Footer />

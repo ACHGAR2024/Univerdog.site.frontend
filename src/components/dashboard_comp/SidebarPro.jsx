@@ -24,7 +24,7 @@ const Sidebar = ({
   return (
     <aside className={`sidebar ${isOpen ? "dark:bg-slate-300 dark:text-black" : "sidebar-hidden"}`}>
       <div className="p-3 dark:bg-slate-300 dark:text-black text-md">
-        <img src="src/images/logo.png" alt="logo" className="mx-auto w-20 z-50" />
+      <a href="/"><img src="src/images/logo.png" alt="logo" className="mx-auto w-20 z-50" /></a>
         <h2 className="text-xl font-bold mb-6 text-center">UniverDog</h2>
         <nav>
           <ul className="left-0">

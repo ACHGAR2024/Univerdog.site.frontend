@@ -1,17 +1,20 @@
 import { useEffect, useState, useContext} from "react";
+//import Login from '../../pages/auth/Login';
 
 import { AuthContext } from "../../context/AuthContext";
-import { Link } from "react-router-dom";
+
 import { UserContext } from "../../context/UserContext";
 import DashboardContent from "./DashboardContent";
 import DashboardAdminContent from "./DashboardAdminContent";
 import DashboardProfessionnelContent from "./DashboardProfessionnelContent";
+
+
 //import { getExpiryTime } from '../auth/jwltoken';
 const UserProfile = () => {
   const { token } = useContext(AuthContext); // Make sure token is fetched correctly
   const user = useContext(UserContext);
   const [imageURL, setImageURL] = useState(null);
-  
+  const { logout } = useContext(AuthContext);
   useContext(AuthContext);
  
 
@@ -24,7 +27,11 @@ const UserProfile = () => {
   if (!user) {
     return <div>Chargement...</div>;
   }
-
+  const handleLogout = () => {
+    logout();
+    window.location.reload();
+    window.location.href = "/";
+  };
   return (
     <div className="flex flex-col items-right ">
       <div className="bg-white shadow-lg mt-52 z-50 fixed top-0 right-0 rounded-md invisible ">
@@ -68,11 +75,7 @@ const UserProfile = () => {
         </li> */}
         
         {token && JSON.parse(atob(token.split(".")[1])).exp - Date.now() / 1000 < 0 ? (
-          <div className="bg-amber-200 shadow-lg mt-52 z-50 fixed top-0 left-20 rounded-md ">
-        
-          <li className="px-4 text-red-600">
-            <Link to="/login">Votre token a expiré, veuillez vous reconnecter</Link>
-          </li></div>
+          handleLogout()
         ) : (
           <div>
             {user.role === "admin" ? (

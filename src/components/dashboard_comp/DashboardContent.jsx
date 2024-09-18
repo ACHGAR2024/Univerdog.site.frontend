@@ -132,7 +132,9 @@ const DashboardContent = () => {
           <header className="flex justify-between items-center mb-2 dark:text-white">
             <h1 className="text-xl font-bold pl-8 mr-2">Dashboard User</h1>
             <div className="flex items-center">
-              <button className="relative">
+              <button className="relative" onClick={() => {
+                  setCurrentSection("ServicesVeto");
+                }}>
                 <span className="bg-amber-400 text-black px-2 py-1 rounded-full text-xs absolute opacity-90">
                   {appointmentsAwaiting}
                 </span>

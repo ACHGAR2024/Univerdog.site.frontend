@@ -1,6 +1,7 @@
 import Nav from "../../components/nav_footer/Nav";
 import Footer from "../../components/nav_footer/Footer";
 import { useState, useEffect } from "react";
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 function Privacy() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -17,6 +18,15 @@ function Privacy() {
   };
   return (
     <>
+    <HelmetProvider>
+      <Helmet>
+        <title>Politique de Confidentialité - UniverDog</title>
+        <meta name="description" content="Consultez notre politique de confidentialité pour savoir comment nous collectons, utilisons et protégeons vos données personnelles sur UniverDog." />
+        <meta property="og:title" content="Politique de Confidentialité - UniverDog" />
+        <meta property="og:description" content="Découvrez comment UniverDog protège vos données personnelles conformément aux lois en vigueur." />
+        <meta property="og:type" content="website" />
+      </Helmet>
+    </HelmetProvider>
        <Nav isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
 
     <header

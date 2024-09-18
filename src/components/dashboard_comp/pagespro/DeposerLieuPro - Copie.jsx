@@ -35,7 +35,7 @@ const DeposerLieuPro = () => {
     "Restaurants et cafés acceptant les chiens": "utensils",
     "Magasins et centres commerciaux acceptant les chiens": "store",
     "Clubs et écoles de dressage": "trophy",
-    "Cliniques vétérinaires et spas pour chiens": "hospital",
+    "Spas pour chiens": "spa",
     "Aires de repos sur autoroutes": "traffic-circle-o",
     "Hôtels et hébergements acceptant les chiens": "hotel",
     // ... ajouter d'autres spécialités et leurs icônes

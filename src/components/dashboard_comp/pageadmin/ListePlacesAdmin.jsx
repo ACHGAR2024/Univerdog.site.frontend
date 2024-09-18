@@ -1,49 +1,32 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import { Link } from "react-router-dom";
 import Notiflix from "notiflix";
-//import Notification from "../../Notification"; // Make sure the path is correct
 
 const ListePlacesAdmin = () => {
   const [places, setPlaces] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // État pour le terme de recherche
   const { token } = useContext(AuthContext);
 
-  const fetchPlaces = async () => {
+  const fetchPlaces = useCallback(async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/places", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      });
-
-      setPlaces(response.data.places || []);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des places", error);
-    }
-  };
-
-  useEffect(() => {
-    const fetchPlaces = async () => {
-      try {
         const response = await axios.get("http://127.0.0.1:8000/api/places", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
         });
-
         setPlaces(response.data.places || []);
-      } catch (error) {
+    } catch (error) {
         console.error("Erreur lors de la récupération des places", error);
-      }
-    };
+    }
+}, [token]);
 
+useEffect(() => {
     fetchPlaces();
-  }, [token]);
+}, [fetchPlaces]);
 
   const handleDelete = async (id) => {
     try {
@@ -67,10 +50,7 @@ const ListePlacesAdmin = () => {
       });
       fetchPlaces();
     } catch (error) {
-      console.error(
-        "Erreur lors de la suppression des photos de la place",
-        error
-      );
+      console.error("Erreur lors de la suppression des photos de la place", error);
     }
   };
 
@@ -85,37 +65,50 @@ const ListePlacesAdmin = () => {
       },
       () => {
         // Action à prendre si l'utilisateur annule la suppression
-      },
-      {
-        // Options supplémentaires de configuration (si nécessaire)
       }
     );
   };
 
+  // Filtrer les lieux selon le terme de recherche
+  const filteredPlaces = places.filter((place) =>
+    place.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    place.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div
       id="places"
-      className="text-xs dark:bg-zinc-400 dark:text-gray-900 mt-8 bg-white rounded-lg shadow-md animate-slideIn  mb-8 pt-8  md:p-9"
+      className="text-xs dark:bg-zinc-400 dark:text-gray-900 mt-8 bg-white rounded-lg shadow-md animate-slideIn mb-8 pt-8 md:p-9"
     >
       <h1 className="text-xl font-bold mb-6 dark:text-gray-800 pl-8">
         Gestion des lieux pour chien
       </h1>
 
+      {/* Champ de recherche */}
+      <div className="mb-4 px-8">
+        <input
+          type="text"
+          placeholder="Rechercher un lieu par titre ou description"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+        />
+      </div>
+
       <div className="bg-white shadow-md rounded-lg overflow-hidden ">
-        <table className="divide-y divide-gray-200 ">
+        <table className="divide-y divide-gray-200">
           <thead>
             <tr className="bg-gray-200 text-gray-600 uppercase text-xs leading-normal">
               <th className="py-3 px-6 text-left">Photo</th>
               <th className="py-3 px-6 text-left">Titre</th>
               <th className="py-3 px-6 text-center">Actions</th>
-
               <th className="py-3 px-6 text-center">Prix</th>
               <th className="py-3 px-6 text-center">Date</th>
               <th className="py-3 px-6 text-left">Description</th>
             </tr>
           </thead>
           <tbody className="text-gray-600 text-xs font-light">
-            {places.map((place) => (
+            {filteredPlaces.map((place) => (
               <tr
                 key={place.id}
                 className="border-b border-gray-200 hover:bg-gray-100"
@@ -142,7 +135,7 @@ const ListePlacesAdmin = () => {
                 </td>
                 <td className="py-3 px-6 text-center">
                   <div className="flex item-center justify-center">
-                  <Link
+                    <Link
                       to={`/edit-place/${place.id}`}
                       className="transform hover:text-purple-500 hover:scale-110 transition duration-300"
                     >
@@ -155,14 +148,13 @@ const ListePlacesAdmin = () => {
                       <i className="fa fa-image"></i>
                     </Link>
                     <button
-                      onClick={() => confirmDelete(place.id)} // Use confirmDelete for deletion with confirmation
+                      onClick={() => confirmDelete(place.id)}
                       className="w-4 mr-2 transform hover:text-red-500 hover:scale-110"
                     >
                       <i className="fa fa-trash-o"></i>
                     </button>
                   </div>
                 </td>
-
                 <td className="py-3 px-6 text-center">
                   <span>{place.price}</span>
                 </td>

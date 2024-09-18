@@ -6,6 +6,7 @@ import Section from "../../components/Section";
 import Nav from "../../components/nav_footer/Nav";
 import Footer from "../../components/nav_footer/Footer";
 import { useState } from 'react'; // Importer useState si vous avez besoin de gérer l'état local
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 function About() {
   // Définir un état pour l'authentification et une fonction pour la déconnexion
@@ -17,7 +18,18 @@ function About() {
   };
 
   return (
+    
     <>
+    <HelmetProvider>
+      <Helmet>
+        <title>À Propos - UniverDog</title>
+        <meta name="description" content="Découvrez l'histoire et la mission d'UniverDog, la plateforme dédiée aux chiens et à leurs propriétaires." />
+        <meta property="og:title" content="À Propos - UniverDog" />
+        <meta property="og:description" content="En savoir plus sur UniverDog, le site qui connecte les propriétaires de chiens et les professionnels." />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      
+   
       <Nav isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
       <div className="bg-gray-700 text-white dark:bg-black dark:text-dark_text"> {/* Apply dark mode classes */}
         <header className="flex w-full pt-20 flex-col justify-center items-center">
@@ -78,6 +90,7 @@ function About() {
         </header>
       </div>
       <Footer />
+      </HelmetProvider>
     </>
   );
 }
