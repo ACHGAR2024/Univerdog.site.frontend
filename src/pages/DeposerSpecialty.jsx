@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { UserContext } from "../context/UserContext";
 import Notification from "../components/Notification";
+import { Link } from "react-router-dom";
 
 const DeposerSpecialty = () => {
   const navigate = useNavigate();
@@ -19,26 +20,28 @@ const DeposerSpecialty = () => {
   useEffect(() => {
     // Fetch categories
     const fetchCategories = async () => {
-        try {
-            const response = await axios.get('http://127.0.0.1:8000/api/categories');
-            setCategories(response.data.categories);
-        } catch (error) {
-            console.error('Erreur lors de la récupération des catégories:', error);
-        }
+      try {
+        const response = await axios.get(
+          "https://api.univerdog.site/api/categories"
+        );
+        setCategories(response.data.categories);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des catégories:", error);
+      }
     };
-    fetchCategories(); 
+    fetchCategories();
     // Fetch professionals and categories
     const fetchData = async () => {
-        try {
-            const [categoriesResponse, professionalsResponse] = await Promise.all([
-                axios.get('http://127.0.0.1:8000/api/categories'),
-                axios.get('http://127.0.0.1:8000/api/professionals')
-            ]);
-            setCategories(categoriesResponse.data.categories);
-            setProfessionals(professionalsResponse.data); // Assuming this returns an array
-        } catch (error) {
-            console.error('Erreur lors de la récupération des données:', error);
-        }
+      try {
+        const [categoriesResponse, professionalsResponse] = await Promise.all([
+          axios.get("https://api.univerdog.site/api/categories"),
+          axios.get("https://api.univerdog.site/api/professionals"),
+        ]);
+        setCategories(categoriesResponse.data.categories);
+        setProfessionals(professionalsResponse.data); // Assuming this returns an array
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données:", error);
+      }
     };
 
     fetchData();
@@ -47,11 +50,13 @@ const DeposerSpecialty = () => {
   useEffect(() => {
     if (user) {
       // Find the professional ID associated with the current user
-      const userProfessional = professionals.find(pro => pro.user_id === user.id);
+      const userProfessional = professionals.find(
+        (pro) => pro.user_id === user.id
+      );
       if (userProfessional) {
-        setFormDataSpeciality(prevData => ({
+        setFormDataSpeciality((prevData) => ({
           ...prevData,
-          professional_id: userProfessional.id
+          professional_id: userProfessional.id,
         }));
       }
     }
@@ -66,15 +71,18 @@ const DeposerSpecialty = () => {
         "name_speciality",
         formDataSpeciality.name_speciality
       );
-      formDataToSendSpecialty.append("professional_id", formDataSpeciality.professional_id);
+      formDataToSendSpecialty.append(
+        "professional_id",
+        formDataSpeciality.professional_id
+      );
 
       await axios.post(
-        "http://127.0.0.1:8000/api/speciality",
+        "https://api.univerdog.site/api/speciality",
         formDataToSendSpecialty,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         }
       );
@@ -103,6 +111,13 @@ const DeposerSpecialty = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-72">
+      {location.pathname !== "/dashboard" && (
+        <Link to="/dashboard">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-4">
+            <i className="fa-solid fa-arrow-left"></i> Retour
+          </button>
+        </Link>
+      )}
       <h1 className="text-3xl font-bold mb-8 text-black">
         Déposer une Spécialité
       </h1>

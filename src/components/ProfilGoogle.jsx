@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
-import { googleLogout} from "@react-oauth/google";
+import { googleLogout } from "@react-oauth/google";
 
 function ProfilGoogle() {
-
   const [profile, setProfile, setMessage] = useState([]);
-
-
 
   useEffect(() => {
     const storedProfile = localStorage.getItem("profile");

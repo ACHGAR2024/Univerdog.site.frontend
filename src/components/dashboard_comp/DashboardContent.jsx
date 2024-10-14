@@ -17,7 +17,7 @@ import DarkModeToggle from "../DarkModeToggle";
 import Carte from "./pagesuser/Carte";
 import RdvPro from "./pagesuser/RdvPro";
 
-const BASE_URL = "http://127.0.0.1:8000/api/appointments";
+const BASE_URL = "https://api.univerdog.site/api/appointments";
 
 const DashboardContent = () => {
   const [appointmentsAwaiting, setAppointmentsAwaiting] = useState(0);
@@ -38,17 +38,20 @@ const DashboardContent = () => {
     const fetchTotalDogUsers = async () => {
       if (!user || !user.id) return;
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/dogs", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/dogs",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
         const dogsList = response.data
           .filter((dog) => dog.user_id === user.id)
           .map((dog) => ({ id: dog.id, name: dog.name_dog }));
-        console.log("Liste des chiens de l'utilisateur", dogsList);
+        //console.log("Liste des chiens de l'utilisateur", dogsList);
         fetchAppointments(dogsList);
       } catch (error) {
         console.error("Erreur lors de la création de la page", error);
@@ -64,7 +67,7 @@ const DashboardContent = () => {
             appointment.status === "En attente" &&
             dogsList.some((dog) => dog.id === appointment.dog_id)
         );
-        console.log("awaitingAppointments ==========>", awaitingAppointments);
+        //("awaitingAppointments ==========>", awaitingAppointments);
         setAppointmentsAwaiting(awaitingAppointments.length);
       } catch (error) {
         console.error("Erreur lors de la récupération des rendez-vous:", error);
@@ -132,9 +135,12 @@ const DashboardContent = () => {
           <header className="flex justify-between items-center mb-2 dark:text-white">
             <h1 className="text-xl font-bold pl-8 mr-2">Dashboard User</h1>
             <div className="flex items-center">
-              <button className="relative" onClick={() => {
+              <button
+                className="relative"
+                onClick={() => {
                   setCurrentSection("ServicesVeto");
-                }}>
+                }}
+              >
                 <span className="bg-amber-400 text-black px-2 py-1 rounded-full text-xs absolute opacity-90">
                   {appointmentsAwaiting}
                 </span>
@@ -161,23 +167,18 @@ const DashboardContent = () => {
               >
                 <img
                   src={
-                    user.google_id === null
-                      ? "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                      : user.image
-                      ? `http://127.0.0.1:8000${user.image}`
-                      : user.avatar
+                    user.image
+                      ? `https://api.univerdog.site${user.image}`
+                      : `https://ui-avatars.com/api/?name=${user.name}&background=random`
                   }
-                  alt="User avatar"
-                  className="w-8 h-8 rounded-full"
+                  alt={user.name}
+                  className="w-10 h-10 rounded-full ml-2"
                 />
               </button>
               <div className="ml-4">
                 <DarkModeToggle />
               </div>
-              <button
-                onClick={handleLogout}
-                className="ml-4"
-              >
+              <button onClick={handleLogout} className="ml-4">
                 <svg
                   className="w-6 h-6"
                   fill="none"

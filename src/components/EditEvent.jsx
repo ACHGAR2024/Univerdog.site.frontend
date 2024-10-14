@@ -33,7 +33,7 @@ const EditEvent = () => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/events/${id}`,
+          `https://api.univerdog.site/api/events/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -83,7 +83,7 @@ const EditEvent = () => {
     data.append("user_id", useridrecup.id);
 
     try {
-      const endpoint = `http://127.0.0.1:8000/api/events/${id}`;
+      const endpoint = `https://api.univerdog.site/api/events/${id}`;
 
       const method = "post";
 
@@ -214,7 +214,7 @@ const EditEvent = () => {
           >
             <option value="">Choisir un type d&apos;événement</option>
             <option value="voyage">Voyage</option>
-            <option value="competition">Compétition canine</option>
+            <option value="compétition">Compétition canine</option>
             <option value="Séminaire">Séminaire</option>
             <option value="Autre">Autre</option>
           </select>

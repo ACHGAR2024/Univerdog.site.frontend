@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import { UserContext } from "../../../context/UserContext";
 import Notification from "../../../components/Notification";
+import { Link } from "react-router-dom";
 
 const DeposerPlacePro = () => {
   const useridrecup = useContext(UserContext);
@@ -12,7 +13,7 @@ const DeposerPlacePro = () => {
     title: "",
     description: "",
     price: "",
-    category_id: null, // Stockez la catégorie sélectionnée en tant que ID
+    category_id: null,
     address: "",
     photo: null,
     latitude: "",
@@ -24,27 +25,31 @@ const DeposerPlacePro = () => {
   const [suggestedCities, setSuggestedCities] = useState([]);
 
   const specialityIcons = {
-    "Vétérinaire": "stethoscope",
-    "Cliniques vétérinaires": "hospital",
-    "Parcs à chiens": "paw",
+    Vétérinaire: "stethoscope",
+    "Toiletteur canine": "bone",
+    "Pension canine": "bed",
+    "Cliniques vétérinaires": "medkit",
+    "Magasins et centres commerciaux acceptant les chiens": "shopping-bag",
+    "Hôtels et hébergements acceptant les chiens": "hotel",
+    "Restaurants et cafés acceptant les chiens": "utensils",
+    "Parcs à chiens": "tree",
+    "Spas pour chiens": "spa",
     "Sentiers de randonnée": "hiking",
     "Plages autorisées aux chiens": "umbrella-beach",
     "Campings dog-friendly": "campground",
-    "Restaurants et cafés acceptant les chiens": "utensils",
-    "Magasins et centres commerciaux acceptant les chiens": "store",
-    "Clubs et écoles de dressage": "trophy",
-    "Toiletteur canine": "bone",
-    "Spas pour chiens": "spa",
+    "Clubs et écoles de dressage": "graduation-cap",
     "Aires de repos sur autoroutes": "gas-pump",
-    "Hôtels et hébergements acceptant les chiens": "hotel",
-    // ... ajouter d'autres spécialités et leurs icônes 
+
+    // ...  other specialities and their icons
   };
+
+  const [hoveredIcon, setHoveredIcon] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/categories",
+          "https://api.univerdog.site/api/categories",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -77,7 +82,7 @@ const DeposerPlacePro = () => {
           `https://api-adresse.data.gouv.fr/search/?q=${searchQuery}&limit=1`
         );
         setSuggestedCities(response.data.features || []);
-        console.log("data adresse", response.data.features);
+        //("data adresse", response.data.features);
       } catch (error) {
         console.error("Erreur lors de la recherche adresse", error);
       }
@@ -88,7 +93,7 @@ const DeposerPlacePro = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("MON USER ID:", useridrecup.id);
+    //("MON USER ID:", useridrecup.id);
 
     if (!useridrecup.id) {
       console.error("Erreur : ID utilisateur non disponible");
@@ -108,26 +113,31 @@ const DeposerPlacePro = () => {
       formDataToSend.append("type", formData.type);
       formDataToSend.append("user_id", useridrecup.id);
 
-      // Ajout de la catégorie sélectionnée
-      formDataToSend.append("category_id", formData.category_id); 
+      formDataToSend.append("category_id", formData.category_id);
 
-      const currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
+      const currentDate = new Date()
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ");
       formDataToSend.append("publication_date", currentDate);
 
-      await axios.post("http://127.0.0.1:8000/api/places", formDataToSend, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        "https://api.univerdog.site/api/places",
+        formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       Notification.success("Place ajoutée avec succès !");
-      //navigate("/dashboard");
 
       setFormData({
         title: "",
         description: "",
         price: "",
-        category_id: null, // Réinitialisez category_id
+        category_id: null,
         address: "",
         photo: null,
         latitude: "",
@@ -146,18 +156,19 @@ const DeposerPlacePro = () => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    // Mettez à jour formData
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
 
     if (name === "category_id") {
-      // Stockez l'ID de la catégorie sélectionnée
       setFormData((prev) => ({
         ...prev,
         category_id: value,
-        type: specialityIcons[categories.find(cat => cat.id === value)?.name_cat] || formData.type, // Mettre à jour le type si le bouton est coché
+        type:
+          specialityIcons[
+            categories.find((cat) => cat.id === value)?.name_cat
+          ] || formData.type,
       }));
     } else if (name === "photo") {
       setFormData((prev) => ({
@@ -165,10 +176,10 @@ const DeposerPlacePro = () => {
         photo: e.target.files[0],
       }));
     } else if (name === "type" && type === "radio") {
-      // Pour les boutons radio, utilisez la valeur et la valeur checked
+      // For radio buttons, use the value and the checked value
       setFormData((prev) => ({
         ...prev,
-        type: checked ? value : prev.type, // Mettre à jour le type si le bouton est coché
+        type: checked ? value : prev.type, // Update type if the button is checked
       }));
     } else {
       setFormData((prev) => ({
@@ -180,7 +191,14 @@ const DeposerPlacePro = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 mb-72 w-3/4 md:w-1/2 lg:w-3/5">
-      <h1 className="text-xl font-bold mb-8 text-black">Déposer un lieu professionnel</h1>
+      <Link to="/dashboard">
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-4">
+          <i className="fa-solid fa-arrow-left"></i> Retour
+        </button>
+      </Link>
+      <h1 className="text-xl font-bold mb-8 text-black">
+        Déposer un lieu professionnel
+      </h1>
 
       <form
         onSubmit={handleSubmit}
@@ -191,7 +209,7 @@ const DeposerPlacePro = () => {
             className="block text-gray-700 text-sm font-bold mb-2"
             htmlFor="title"
           >
-            Titre place
+            Titre place, Nom de l&apos;établissement ou Nom de professionnel
           </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -245,16 +263,17 @@ const DeposerPlacePro = () => {
             className="block text-gray-700 text-sm font-bold mb-2"
             htmlFor="category_id"
           >
-            Catégorie 
+            Catégorie
           </label>
           <select
             className="block appearance-none w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             id="category_id"
             name="category_id"
             onChange={handleChange}
-            value={formData.category_id || ""} // Utilisez la valeur de formData.category_id
+            value={formData.category_id || ""}
           >
-            <option value="">Sélectionnez une catégorie</option> {/* Option vide */}
+            <option value="">Sélectionnez une catégorie</option>{" "}
+            {/* Empty option */}
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name_cat}
@@ -373,9 +392,20 @@ const DeposerPlacePro = () => {
                   checked={formData.type === value}
                   className="hidden"
                 />
-                <label htmlFor={key} className="flex items-center p-2 border rounded cursor-pointer" style={{ backgroundColor: formData.type === value ? '#3498db' : '#f1f1f1' }}>
-                  <i className={`fas fa-${value} text-2xl mr-2`} />
-                  
+                <label
+                  htmlFor={key}
+                  className="flex items-center p-2 border rounded cursor-pointer"
+                  style={{
+                    backgroundColor:
+                      formData.type === value ? "#3498db" : "#f1f1f1",
+                  }}
+                  onMouseOver={() => setHoveredIcon(key)}
+                  onMouseOut={() => setHoveredIcon(null)}
+                >
+                  <i className={`fas fa-${value} text-lg mr-2`} />
+                  {hoveredIcon === key && (
+                    <span className="ml-2 text-xs text-gray-700">{key}</span>
+                  )}
                 </label>
               </div>
             ))}
@@ -392,5 +422,5 @@ const DeposerPlacePro = () => {
     </div>
   );
 };
- 
+
 export default DeposerPlacePro;

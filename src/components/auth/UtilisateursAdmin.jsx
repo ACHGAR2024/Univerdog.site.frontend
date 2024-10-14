@@ -11,7 +11,7 @@ const UtilisateursAdmin = () => {
 
   const fetchUsers = useCallback(async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/users", {
+      const response = await axios.get("https://api.univerdog.site/api/users", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setUsers(response.data.users);
@@ -29,7 +29,7 @@ const UtilisateursAdmin = () => {
 
   const handleDelete = async (userId) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/users/${userId}`, {
+      await axios.delete(`https://api.univerdog.site/api/users/${userId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setUsers(users.filter((user) => user.id !== userId));
@@ -68,7 +68,7 @@ const UtilisateursAdmin = () => {
     const newRole = currentRole === "user" ? "professionnel" : "user";
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/users/${userId}/role`,
+        `https://api.univerdog.site/api/users/${userId}/role`,
         { role: newRole },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -88,10 +88,11 @@ const UtilisateursAdmin = () => {
     }
   };
 
-  // Filtrage des utilisateurs en fonction du terme de recherche
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filtering users based on the search term
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -103,7 +104,7 @@ const UtilisateursAdmin = () => {
         Gestion des utilisateurs
       </h1>
 
-      {/* Champ de recherche */}
+     
       <div className="mb-4 px-8">
         <input
           type="text"
@@ -143,7 +144,7 @@ const UtilisateursAdmin = () => {
                     className="h-10 w-10 rounded-full"
                     src={
                       user.image
-                        ? `http://127.0.0.1:8000${user.image}`
+                        ? `https://api.univerdog.site${user.image}`
                         : `https://ui-avatars.com/api/?name=${user.name}&background=random`
                     }
                     alt={user.name}

@@ -6,13 +6,13 @@ import PropTypes from "prop-types";
 const PrivateRoute = ({ element: Component, ...rest }) => {
   const { isAuthenticated } = useContext(AuthContext);
 
-  // Rendre le composant avec les props restants ou rediriger
+  // Render the component with the remaining props or redirect
   return isAuthenticated ? <Component {...rest} /> : <Navigate to="/" />;
 };
 
-// Définir `element` comme un composant React
+// Define `element` as a React component
 PrivateRoute.propTypes = {
-  element: PropTypes.elementType.isRequired, // ElementType pour un composant React
+  element: PropTypes.elementType.isRequired,
 };
 
 export default PrivateRoute;

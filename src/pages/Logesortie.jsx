@@ -5,11 +5,11 @@ function Logesortie() {
     "505686323657-h36l1ttme6v4rev761odsejfgovehm04.apps.googleusercontent.com";
 
   const onLogoutSuccess = () => {
-    console.log("Logout Success");
+    //("Logout Success");
   };
 
   const onFailure = () => {
-    console.log("Logout Failed");
+    //("Logout Failed");
   };
 
   const logout = useGoogleLogout({

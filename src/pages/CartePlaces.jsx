@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import axios from "axios";
-import { getCityCoordinates } from "../utils/geocode"; // Assurez-vous que le chemin d'importation est correct
+import { getCityCoordinates } from "../utils/geocode"; // Ensure the import path is correct
 
 const CartePlaces = () => {
   const [termeRecherche, setTermeRecherche] = useState("");
@@ -15,7 +15,7 @@ const CartePlaces = () => {
         const response = await axios.get("http://127.0.0.1:8000/api/places");
         const lieuxData = response.data.places || [];
 
-        // Obtenez les coordonnées pour chaque lieu et mettez à jour les marqueurs
+        // Get coordinates for each place and update markers
         const marqueursAvecCoordonnees = await Promise.all(
           lieuxData.map(async (lieu) => {
             try {
@@ -33,7 +33,7 @@ const CartePlaces = () => {
               }
             } catch (error) {
               console.error(`Erreur pour ${lieu.address}: ${error.message}`);
-              // Utilisez les coordonnées directement si elles sont disponibles
+              // Use coordinates directly if available
               if (lieu.latitude && lieu.longitude) {
                 return {
                   position: [lieu.latitude, lieu.longitude],
@@ -51,7 +51,7 @@ const CartePlaces = () => {
           })
         );
 
-        // Filtrez les marqueurs non trouvés (null) et mettez à jour l'état
+        // Filter out not found markers (null) and update state
         setMarqueurs(
           marqueursAvecCoordonnees.filter((marqueur) => marqueur !== null)
         );
@@ -63,7 +63,7 @@ const CartePlaces = () => {
     fetchLieux();
   }, []);
 
-  // Définir customIcon en dehors de la fonction MaCarte
+  // Define customIcon outside of the MaCarte function
   const customIcon = (type) =>
     new L.divIcon({
       html: `<i class="fas fa-${type} text-2xl text-${
@@ -80,7 +80,7 @@ const CartePlaces = () => {
       popupAnchor: [10, 5],
     });
 
-  // Filtrer les lieux en fonction du terme de recherche
+  // Filter places based on search term
   const marqueursFiltres = marqueurs.filter((marqueur) =>
     marqueur.popup.toLowerCase().includes(termeRecherche.toLowerCase())
   );

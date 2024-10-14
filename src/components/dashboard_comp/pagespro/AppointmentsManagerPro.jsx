@@ -3,11 +3,12 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { AuthContext } from "../../../context/AuthContext";
 import useFetchProfessionalId from "./hooks/proFetchProfessionalId";
+import Notiflix from "notiflix";
 
 // API base URL
-const BASE_URL = "http://127.0.0.1:8000/api/appointments";
+const BASE_URL = "https://api.univerdog.site/api/appointments";
 
-// Composant React pour gérer les rendez-vous
+// React component to manage appointments
 const AppointmentsManagerPro = () => {
   const [appointments, setAppointments] = useState([]);
   const [updatedReason, setUpdatedReason] = useState(""); // State for reason input
@@ -28,14 +29,16 @@ const AppointmentsManagerPro = () => {
     };
     const loadDogs = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/dogs');
+        const response = await fetch("https://api.univerdog.site/api/dogs");
         if (!response.ok) {
-          throw new Error('Erreur lors de la récupération des données des chiens');
+          throw new Error(
+            "Erreur lors de la récupération des données des chiens"
+          );
         }
         const dogsData = await response.json();
         setDogs(dogsData);
       } catch (error) {
-        console.error('Erreur lors de la récupération des chiens:', error);
+        console.error("Erreur lors de la récupération des chiens:", error);
       }
     };
 
@@ -45,40 +48,42 @@ const AppointmentsManagerPro = () => {
     }
   }, [professionalId, token]);
 
-// Récupération des données des chiens
-useEffect(() => {
-  const loadDogs = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/dogs");
-      if (!response.ok) {
-        throw new Error("Erreur lors de la récupération des données des chiens");
+  // Retrieve dog data
+  useEffect(() => {
+    const loadDogs = async () => {
+      try {
+        const response = await fetch("https://api.univerdog.site/api/dogs");
+        if (!response.ok) {
+          throw new Error(
+            "Erreur lors de la récupération des données des chiens"
+          );
+        }
+        const dogsData = await response.json();
+        setDogs(dogsData);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des données des chiens:",
+          error
+        );
       }
-      const dogsData = await response.json();
-      setDogs(dogsData);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des données des chiens:", error);
-    }
+    };
+
+    loadDogs();
+  }, []);
+
+  // Find dog by app.dog_id
+  const getDogNameById = (dogId) => {
+    const dog = dogs.find((d) => d.id === dogId);
+    return dog ? dog.name_dog : "Inconnu"; // Return dog's name or 'Inconnu' if not found
   };
-
-  loadDogs();
-}, []);
-
-// Find dog by app.dog_id
-const getDogNameById = (dogId) => {
-  const dog = dogs.find((d) => d.id === dogId);
-  return dog ? dog.name_dog : 'Inconnu'; // Return dog's name or 'Inconnu' if not found
-};
   const fetchAppointments = async (professionalId, token) => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}_pro/${professionalId}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.get(`${BASE_URL}_pro/${professionalId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       return response.data;
     } catch (error) {
       console.error("Erreur lors de la récupération des rendez-vous:", error);
@@ -95,11 +100,7 @@ const getDogNameById = (dogId) => {
       );
       for (const appointment of appointmentsToCancel) {
         try {
-          await updateAppointment(
-            appointment.id,
-            { status: "Annulé" },
-            token
-          );
+          await updateAppointment(appointment.id, { status: "Annulé" }, token);
         } catch (error) {
           console.error(
             "Erreur lors de la mise à jour du rendez-vous :",
@@ -110,11 +111,11 @@ const getDogNameById = (dogId) => {
     };
     checkAppointments();
   }, [appointments, token]);
-  // Fonction pour mettre à jour un rendez-vous
+  // Function to update an appointment
   const updateAppointment = async (appointmentId, updatedData, token) => {
     try {
       const response = await axios.put(
-        `${BASE_URL}/${appointmentId}/`,
+        `${BASE_URL}/${appointmentId}`,
         updatedData,
         {
           headers: {
@@ -130,10 +131,10 @@ const getDogNameById = (dogId) => {
     }
   };
 
-  // Fonction pour supprimer un rendez-vous
+  // Function to delete an appointment
   const deleteAppointment = async (appointmentId, token) => {
     try {
-      await axios.delete(`${BASE_URL}/${appointmentId}/`, {
+      await axios.delete(`${BASE_URL}/${appointmentId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -167,15 +168,32 @@ const getDogNameById = (dogId) => {
   };
 
   const handleDeleteAppointment = async (id) => {
-    try {
-      await deleteAppointment(id, token);
-      setAppointments(appointments.filter((app) => app.id !== id));
-    } catch (error) {
-      console.error("Erreur lors de la suppression du rendez-vous:", error);
-    }
+    Notiflix.Confirm.show(
+      "Confirmer la suppression",
+      "Êtes-vous sûr de vouloir supprimer cette réservation ?",
+      "Oui",
+      "Non",
+      async () => {
+        try {
+          await deleteAppointment(id, token);
+          setAppointments(appointments.filter((app) => app.id !== id));
+          Notiflix.Notify.success("Rendez-vous supprimé avec succès");
+        } catch (error) {
+          console.error("Erreur lors de la suppression du rendez-vous:", error);
+          Notiflix.Notify.failure("Échec de la suppression du rendez-vous");
+        }
+      },
+      () => {
+        // Action annulée
+      },
+      {
+        width: "320px",
+        borderRadius: "8px",
+      }
+    );
   };
 
-  // Fonction pour confirmer un rendez-vous
+  // Function to confirm an appointment
   const handleConfirmAppointment = async (id) => {
     try {
       const updatedAppointment = await updateAppointment(
@@ -191,7 +209,7 @@ const getDogNameById = (dogId) => {
     }
   };
 
-  // Fonction pour annuler un rendez-vous
+  // Function to cancel an appointment
   const handleCancelAppointment = async (id) => {
     try {
       const updatedAppointment = await updateAppointment(
@@ -207,37 +225,39 @@ const getDogNameById = (dogId) => {
     }
   };
 
-  // Filtrer les rendez-vous en fonction de la recherche
+  // Filter appointments based on search input
   const filteredAppointments = appointments.filter((app) => {
     return (
       app.reason.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.dog_id.toString().includes(searchTerm) ||
-      new Intl.DateTimeFormat("fr-FR").format(
-        new Date(app.date_appointment)
-      ).includes(searchTerm)
+      new Intl.DateTimeFormat("fr-FR")
+        .format(new Date(app.date_appointment))
+        .includes(searchTerm)
     );
   });
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md text-xs">
-      <h1 className="text-xl font-bold ">Gestion des Rendez-vous</h1>
+    <div className="bg-white p-6 rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800">
+        Gestion des Rendez-vous
+      </h1>
 
-      {/* Search Input */}
+      {/* Champ de recherche */}
       <input
         type="text"
         placeholder="Rechercher un rendez-vous"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="border border-gray-300 p-2 rounded-lg mx-5 my-5 w-1/2"
+        className="w-full md:w-1/2 px-4 py-2 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
 
-      {/* Update Form */}
-      <div>
+      {/* Formulaire de mise à jour */}
+      <div className="mb-6">
         <select
           value={selectedAppointmentId || ""}
           onChange={(e) => setSelectedAppointmentId(e.target.value)}
-          className="border border-gray-300 p-2 rounded-lg mx-5 my-5"
+          className="w-full md:w-1/2 px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="" disabled>
             Sélectionner un rendez-vous
@@ -251,82 +271,102 @@ const getDogNameById = (dogId) => {
             </option>
           ))}
         </select>
-        <input
-          type="text"
-          placeholder="Nouvelle raison"
-          value={updatedReason}
-          onChange={(e) => setUpdatedReason(e.target.value)}
-          className="border border-gray-300 p-2 rounded-lg mx-5 my-5"
-        />
-        <button
-          onClick={handleUpdateAppointment}
-          className="bg-blue-500 text-white p-2 rounded-lg"
-        >
-          Modifier
-        </button>
+        <div className="flex flex-col md:flex-row gap-4">
+          <input
+            type="text"
+            placeholder="Nouvelle raison"
+            value={updatedReason}
+            onChange={(e) => setUpdatedReason(e.target.value)}
+            className="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            onClick={handleUpdateAppointment}
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
+          >
+            Modifier
+          </button>
+        </div>
       </div>
 
-      {/* Appointment List */}
-      <div>
-        <table className="table-auto w-full">
+      {/* Liste des rendez-vous */}
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
           <thead>
-            <tr>
-              <th>Date</th>
-              <th>Heure</th>
-              <th>Raison</th>
-              <th>Statut</th>
-              <th>Chien</th>
-              
-              <th>Date de création</th>
-              <th>Actions</th>
+            <tr className="bg-gray-100">
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                Date
+              </th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                Heure
+              </th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600 w-56">
+                Statut
+              </th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                Raison
+              </th>
+
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                Chien
+              </th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                Date de création
+              </th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {filteredAppointments.map((app) => (
-              <tr key={app.id} className="hover:bg-gray-100">
-                <td>
+              <tr
+                key={app.id}
+                className="border-b border-gray-200 hover:bg-gray-50"
+              >
+                <td className="px-4 py-3 text-sm">
                   {new Intl.DateTimeFormat("fr-FR").format(
                     new Date(app.date_appointment)
                   )}
                 </td>
-                <td>{app.time_appointment}</td>
-                <td>{app.reason}</td>
-                <td
-                  className={
-                    app.status === "En attente"
-                      ? "text-yellow-500"
-                      : app.status === "Confirmé"
-                      ? "text-green-500"
-                      : app.status === "Annulé"
-                      ? "text-red-500"
-                      : ""
-                  }
-                >
-                  <div className="m-2">{app.status} </div>{" "}
-                  <div className="mb-2">
-                    {app.status === "En attente" && (
-                      <>
-                        <button
-                          type="button"
-                          className="bg-green-500 text-xs text-white p-1 rounded-md mr-2"
-                          onClick={() => handleConfirmAppointment(app.id)}
-                        >
-                          Confirmer
-                        </button>
-                        <button
-                          type="button"
-                          className="bg-red-500 text-white p-1 rounded-md mr-2"
-                          onClick={() => handleCancelAppointment(app.id)}
-                        >
-                          Annuler
-                        </button>
-                      </>
-                    )}
-                  </div>
+                <td className="px-4 py-3 text-sm">{app.time_appointment}</td>
+                <td className="px-4 py-3 text-sm w-56">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      app.status === "En attente"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : app.status === "Confirmé"
+                        ? "bg-green-100 text-green-800"
+                        : app.status === "Annulé"
+                        ? "bg-red-100 text-red-800"
+                        : ""
+                    }`}
+                  >
+                    {app.status}
+                  </span>
+                  {app.status === "En attente" && (
+                    <div className="mt-2 space-x-2">
+                      <button
+                        type="button"
+                        className="px-2 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600"
+                        onClick={() => handleConfirmAppointment(app.id)}
+                      >
+                        Confirmer
+                      </button>
+                      <button
+                        type="button"
+                        className="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 mt-2"
+                        onClick={() => handleCancelAppointment(app.id)}
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  )}
                 </td>
-                <td>{app.dog_id} - {getDogNameById(app.dog_id)}</td>
-               
-                <td>
+                <td className="px-4 py-3 text-sm">{app.reason}</td>
+                <td className="px-4 py-3 text-sm">
+                  {app.dog_id} - {getDogNameById(app.dog_id)}
+                </td>
+                <td className="px-4 py-3 text-sm">
                   {new Intl.DateTimeFormat("fr-FR", {
                     year: "numeric",
                     month: "2-digit",
@@ -335,25 +375,25 @@ const getDogNameById = (dogId) => {
                     minute: "2-digit",
                   }).format(new Date(app.created_at))}
                 </td>
-                <td>
-                  <div className="flex items-center">
+                <td className="px-4 py-3 text-sm">
+                  <div className="flex items-center space-x-2">
                     <button
                       type="button"
-                      className="flex items-center justify-center p-2 border rounded-md mr-2"
+                      className="px-3 py-1 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-100"
                       onClick={() => {
                         setSelectedAppointmentId(app.id);
                         setUpdatedReason(app.reason);
                       }}
                     >
-                      <i className="fa fa-pencil mr-2" />
-                      Mettre à jour
+                      <i className="fa fa-pencil mr-1" />
+                      Modifier
                     </button>
                     <button
                       type="button"
-                      className="flex items-center justify-center p-2 border rounded-md text-red-600"
+                      className="px-3 py-1 border border-red-300 rounded-md text-red-600 hover:bg-red-100"
                       onClick={() => handleDeleteAppointment(app.id)}
                     >
-                      <i className="fa fa-trash mr-2" />
+                      <i className="fa fa-trash mr-1" />
                       Supprimer
                     </button>
                   </div>
@@ -368,7 +408,7 @@ const getDogNameById = (dogId) => {
 };
 
 AppointmentsManagerPro.propTypes = {
-  selectedProfessional: PropTypes.string, // Pas nécessaire si on utilise le hook pour obtenir l'ID professionnel
+  selectedProfessional: PropTypes.string,
 };
 
 export default AppointmentsManagerPro;

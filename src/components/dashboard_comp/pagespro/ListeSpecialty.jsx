@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
-import Notiflix from "notiflix"; 
+import Notiflix from "notiflix";
 
 const ListeSpecialty = () => {
   const [speciality, setspeciality] = useState([]);
@@ -9,32 +9,33 @@ const ListeSpecialty = () => {
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
-  
-
     const fetchSpeciality = async () => {
-        try {
-            const response = await axios.get("http://127.0.0.1:8000/api/speciality_spe", {
-                headers: {
-                    Authorization: `Bearer ${token}`, // Add the token for authentication
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-            });
-            setspeciality(response.data || []);
-        } catch (error) {
-            console.error("Erreur lors de la récupération des spécialités", error);
-            Notiflix.Notify.failure("Erreur lors de la récupération des spécialités");
-        }
+      try {
+        const response = await axios.get(
+          "https://api.univerdog.site/api/speciality_spe",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Add the token for authentication
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
+        setspeciality(response.data || []);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des spécialités", error);
+        Notiflix.Notify.failure(
+          "Erreur lors de la récupération des spécialités"
+        );
+      }
     };
 
-   
     fetchSpeciality();
-}, [token]);
-
+  }, [token]);
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/speciality/${id}`, {
+      await axios.delete(`https://api.univerdog.site/api/speciality/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -78,7 +79,7 @@ const ListeSpecialty = () => {
             <thead>
               <tr className="bg-gray-200 text-gray-600 uppercase text-xs leading-normal">
                 <th className="py-3 px-6 text-left">Nom</th>
-               
+
                 <th className="py-3 px-6 text-center">Actions</th>
               </tr>
             </thead>
@@ -91,7 +92,7 @@ const ListeSpecialty = () => {
                   <td className="py-3 px-6 text-left">
                     <span>{specialite.name_speciality}</span>
                   </td>
-                 
+
                   <td className="py-3 px-6 text-center">
                     <div className="flex item-center justify-center">
                       <button
@@ -109,8 +110,6 @@ const ListeSpecialty = () => {
         ) : (
           <p className="ml-5 m-5">Aucune spécialité disponible</p>
         )}
-
-    
       </div>
     </div>
   );

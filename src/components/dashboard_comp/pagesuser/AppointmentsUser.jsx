@@ -11,7 +11,6 @@ import axios from "axios";
 import Notiflix from "notiflix";
 import PropTypes from "prop-types";
 
-
 const locales = { fr: fr };
 
 const localizer = dateFnsLocalizer({
@@ -61,20 +60,6 @@ const AppointmentsUser = ({
   selectedDog,
   selectedProfessional,
 }) => {
-  // Choix du chien et du professionnel
-  //const [firstSelect, setFirstSelect] = useState("");
-  //const [secondSelect, setSecondSelect] = useState("");
-
-  console.log(`ID du service : `, selectedService);
-  console.log("ID du chien : ", selectedDog);
-  console.log("ID du professionnel : ", selectedProfessional);
-
-  /*const handleSubmit = () => {
-    console.log("ID du chien :", firstSelect);
-    console.log("ID du professionnel :", secondSelect);
-    // Appelez votre fonction interne ici
-  };*/
-
   const [events, setEvents] = useState([]);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -86,19 +71,16 @@ const AppointmentsUser = ({
     time_appointment: "",
     reason: "",
     status: "En attente",
-    dog_id: selectedDog, // Remplacez par l'ID du chien
-    professional_id: selectedProfessional, // Remplacez par l'ID du professionnel
+    dog_id: selectedDog, // Replace with the dog's ID
+    professional_id: selectedProfessional, // Replace with the professional's ID
   });
   const [token] = useState(localStorage.getItem("token"));
 
   useEffect(() => {
-
-    
     const fetchAppointments = async () => {
       try {
-        // Première requête pour le nombre de rendez-vous en attente
         const responseWaiting = await axios.get(
-          `http://127.0.0.1:8000/api/appointments_pro/${selectedProfessional}/${selectedDog}`,
+          `https://api.univerdog.site/api/appointments_pro/${selectedProfessional}/${selectedDog}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -108,9 +90,7 @@ const AppointmentsUser = ({
         const numberOfAppointmentsWaiting = responseWaiting.data.filter(
           (appointment) => appointment.status === "En attente"
         ).length;
-        console.log(
-          `Nombre de rendez-vous en attente pour le professionnel ${selectedProfessional} : ${numberOfAppointmentsWaiting}`
-        );
+
         setNumberOfAppointmentsWaiting(numberOfAppointmentsWaiting);
       } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -127,20 +107,19 @@ const AppointmentsUser = ({
     const fetchAppointmentsForCalendar = async () => {
       try {
         const responseEvents = await axios.get(
-          `http://127.0.0.1:8000/api/appointments_pro/${selectedProfessional}`,
+          `https://api.univerdog.site/api/appointments_pro/${selectedProfessional}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-    
-        // Vérifier si des rendez-vous ont été trouvés
+
         if (responseEvents.data.length === 0) {
-          console.log("Aucun rendez-vous trouvé pour ce professionnel.");
+          console.warn("Aucun rendez-vous trouvé pour ce professionnel.");
           return;
         }
-    
+
         setEvents(
           responseEvents.data
             .filter((appointment) => appointment.status !== "Annulé")
@@ -149,10 +128,10 @@ const AppointmentsUser = ({
                 `${appointment.date_appointment}T${appointment.time_appointment}`
               );
               appointmentEnd.setMinutes(appointmentEnd.getMinutes() + 30);
-    
+
               const isOtherDog =
-                Number(appointment.dog_id) !== Number(selectedDog); // Définir si c'est un autre chien
-    
+                Number(appointment.dog_id) !== Number(selectedDog);
+
               return {
                 id: appointment.id,
                 status: appointment.status,
@@ -161,14 +140,16 @@ const AppointmentsUser = ({
                   `${appointment.date_appointment}T${appointment.time_appointment}`
                 ),
                 end: appointmentEnd,
-                isOtherDog, // Ajouter la propriété isOtherDog
+                isOtherDog,
                 ...appointment,
               };
             })
         );
       } catch (error) {
         if (error.response && error.response.status === 404) {
-          console.error("Aucun rendez-vous trouvé pour ce chien ou ce professionnel.");
+          console.error(
+            "Aucun rendez-vous trouvé pour ce chien ou ce professionnel."
+          );
         } else {
           console.error(
             "Erreur lors du chargement des événements pour le calendrier :",
@@ -177,12 +158,11 @@ const AppointmentsUser = ({
         }
       }
     };
-    
 
     const fetchAvailableSlots = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/availability_pro/${selectedProfessional}`,
+          `https://api.univerdog.site/api/availability_pro/${selectedProfessional}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -190,7 +170,7 @@ const AppointmentsUser = ({
           }
         );
 
-        // Traitement pour obtenir les créneaux disponibles
+        // Processing to get available slots
         const today = new Date();
         const threeMonthsLater = new Date(
           today.getFullYear(),
@@ -231,10 +211,9 @@ const AppointmentsUser = ({
         );
       }
     };
- fetchAvailableSlots();
+    fetchAvailableSlots();
     fetchAppointments();
     fetchAppointmentsForCalendar();
-   
   }, [token, selectedProfessional, selectedDog, selectedService]);
 
   const isSlotAvailable = (date, time) => {
@@ -248,7 +227,7 @@ const AppointmentsUser = ({
     const selectedDate = format(slotInfo.start, "yyyy-MM-dd");
     const selectedTime = format(slotInfo.start, "HH:mm");
 
-    // Vérifier si le créneau est déjà réservé
+    // Check if the slot is already booked
     const isBooked = events.some(
       (event) =>
         format(event.start, "yyyy-MM-dd") === selectedDate &&
@@ -259,17 +238,17 @@ const AppointmentsUser = ({
       Notiflix.Notify.failure(
         "Le créneau sélectionné est déjà réservé par un autre utilisateur. Veuillez choisir un autre créneau."
       );
-      return; // Sortir de la fonction car le créneau est déjà pris
+      return; // Exit the function as the slot is already taken
     }
 
-    // Vérifier si le créneau est disponible
+    // Check if the slot is available
     if (isSlotAvailable(selectedDate, selectedTime)) {
       setNewEvent({
         ...newEvent,
         date_appointment: selectedDate,
         time_appointment: selectedTime,
       });
-      setShowModal(true); // Afficher le formulaire de création du rendez-vous
+      setShowModal(true); // Show the appointment creation form
     } else {
       Notiflix.Notify.failure(
         "Le créneau sélectionné n'est pas disponible. Veuillez choisir un autre créneau."
@@ -321,7 +300,7 @@ const AppointmentsUser = ({
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/appointments",
+        "https://api.univerdog.site/api/appointments",
         updatedEvent,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -349,7 +328,7 @@ const AppointmentsUser = ({
         "Le rendez-vous a été créé avec_succès. Veuillez patienter pour confirmer le rendez-vous."
       );
       handleCloseModal();
-      // Mettre à jour le nombre de rendez-vous en attente
+      // Update the number of pending appointments
       setNumberOfAppointmentsWaiting(numberOfAppointmentsWaiting + 1);
     } catch (error) {
       console.error("Erreur lors de la création du rendez-vous :", error);
@@ -379,37 +358,37 @@ const AppointmentsUser = ({
     const dateFormatted = format(date, "yyyy-MM-dd");
     const timeFormatted = format(date, "HH:mm");
 
-    // Vérifier si la date et l'heure sont déjà prises par un autre rendez-vous
+    // Check if the date and time are already taken by another appointment
     const isBooked = events.some(
       (event) =>
         format(event.start, "yyyy-MM-dd") === dateFormatted &&
         format(event.start, "HH:mm") === timeFormatted
     );
 
-    // Si le créneau est réservé
+    // If the slot is booked
     if (isBooked) {
       return {
         style: {
-          backgroundColor: "#f8d7da", // Rouge pour les créneaux réservés
-          borderColor: "#dc3545", // Bordure rouge pour les créneaux réservés
+          backgroundColor: "#f8d7da", // Red for booked slots
+          borderColor: "#dc3545", // Red border for booked slots
           color: "black",
           cursor: "not-allowed",
         },
       };
     }
 
-    // Si le créneau est disponible
+    // If the slot is available
     if (isSlotAvailable(dateFormatted, timeFormatted)) {
       return {
         style: {
-          backgroundColor: "#d4edda", // Vert pour les créneaux disponibles
+          backgroundColor: "#d4edda", // Green for available slots
           borderColor: "#28a745",
         },
       };
     } else {
       return {
         style: {
-          backgroundColor: "#f8d7da", // Rouge clair pour les créneaux non disponibles
+          backgroundColor: "#f8d7da", // Light red for unavailable slots
           borderColor: "#dc3545",
           color: "black",
         },
@@ -421,25 +400,25 @@ const AppointmentsUser = ({
     let backgroundColor;
     let borderColor;
     let color;
-    /*console.log("event", event.dog_id, selectedDog);
+    /*//("event", event.dog_id, selectedDog);
     if (event.dog_id !== selectedDog) {
       return { style: { backgroundColor: "#f8d7da", borderColor: "#000000" } };
     }*/
 
     switch (event.status) {
       case "Confirmé":
-        backgroundColor = "green"; // Couleur pour les événements confirmés
+        backgroundColor = "green"; // Color for confirmed events
         color = "white";
         borderColor = "#000000";
         break;
       case "Annulé":
-        backgroundColor = "red"; // Couleur pour les événements annulés
+        backgroundColor = "red"; // Color for canceled events
         borderColor = "#000000";
         color = "white";
         break;
       case "En attente":
       default:
-        backgroundColor = "#fff3cd"; // Couleur pour les événements en attente
+        backgroundColor = "#fff3cd"; // Color for pending events
         borderColor = "#000000";
         color = "black";
         break;
@@ -450,7 +429,7 @@ const AppointmentsUser = ({
         backgroundColor,
         color,
         borderColor,
-         // Couleur du texte
+        // Text color
         borderWidth: "2px",
       },
     };
@@ -472,14 +451,14 @@ const AppointmentsUser = ({
             selectable
             onSelectSlot={handleSelectSlot}
             onSelectEvent={handleEventClick}
-            views={{ week: true, day: true, month: true }} // Afficher les vues par défaut
+            views={{ week: true, day: true, month: true }} // Show default views
             messages={messages}
             formats={formats}
             defaultView="week"
             culture="fr"
             className="custom-calendar"
-            slotPropGetter={slotPropGetter} // Appliquer les styles aux créneaux
-            eventPropGetter={eventPropGetter} // Gérer l'affichage des événements
+            slotPropGetter={slotPropGetter} // Apply styles to slots
+            eventPropGetter={eventPropGetter} // Manage event display
             min={new Date(1970, 1, 1, 8, 0, 0)}
           />
         </div>
@@ -492,12 +471,12 @@ const AppointmentsUser = ({
               </h2>
               <form onSubmit={handleCreateEvent}>
                 <div className="mb-4">
-                  <h2 className="block text-gray-700 font-semibold mb-2">
+                  {/*<h2 className="block text-gray-700 font-semibold mb-2">
                     Chien :{newEvent.dog_id}
                   </h2>
                   <h2 className="block text-gray-700 font-semibold mb-2">
                     Professionnel : {newEvent.professional_id}
-                  </h2>
+                  </h2>*/}
                   <h2 className="block text-gray-700 font-semibold mb-2">
                     Date : {newEvent.date_appointment}
                   </h2>

@@ -25,7 +25,7 @@ const calculateAverageRating = (messages) => {
 
   return (totalFavorites - totalReports) / messages.length;
 };
-// Configuration de l'icône par défaut de Leaflet
+// Leaflet default icon configuration
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -34,7 +34,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
 });
 
-// Configuration de react-slick
+// React-slick configuration
 const settings = {
   dots: true,
   infinite: true,
@@ -63,26 +63,24 @@ const FichePlace = () => {
     const fetchPlace = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/places/${id}`
+          `https://api.univerdog.site/api/places/${id}`
         );
         const fetchedPlace = response.data.place;
         setPlace(fetchedPlace);
-        console.log("Fetched place:", fetchedPlace);
+       
 
         // Fetch photos
-        console.log(
-          `Fetching photos from: http://127.0.0.1:8000/api/places/${id}/photos`
-        );
+        
         const photosResponse = await axios.get(
-          `http://127.0.0.1:8000/api/places/${id}/photos`
+          `https://api.univerdog.site/api/places/${id}/photos`
         );
-        console.log("Photos response:", photosResponse);
+      
         setPhotos(photosResponse.data); // Changed this line
-        console.log("Fetched photos:", photosResponse.data);
+       
 
         // Fetch messages for ratings
         const messagesResponse = await axios.get(
-          "http://127.0.0.1:8000/api/messages",
+          "https://api.univerdog.site/api/messages",
 
           {
             headers: {
@@ -97,13 +95,10 @@ const FichePlace = () => {
           if (fetchedPlace.address) {
             const { lat, lon } = await getCityCoordinates(fetchedPlace.address);
             setPosition([lat, lon]);
-            console.log("Coordinates from address:", { lat, lon });
+          
           } else if (fetchedPlace.latitude && fetchedPlace.longitude) {
             setPosition([fetchedPlace.latitude, fetchedPlace.longitude]);
-            console.log("Coordinates from latitude and longitude:", {
-              lat: fetchedPlace.latitude,
-              lon: fetchedPlace.longitude,
-            });
+           
           } else {
             throw new Error("No address or coordinates available");
           }
@@ -113,10 +108,7 @@ const FichePlace = () => {
           );
           if (fetchedPlace.latitude && fetchedPlace.longitude) {
             setPosition([fetchedPlace.latitude, fetchedPlace.longitude]);
-            console.log("Fallback coordinates from latitude and longitude:", {
-              lat: fetchedPlace.latitude,
-              lon: fetchedPlace.longitude,
-            });
+          
           } else {
             throw new Error("No address or coordinates available");
           }
@@ -135,7 +127,7 @@ const FichePlace = () => {
   const handleSendMessage = async () => {
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/messages",
+        "https://api.univerdog.site/api/messages",
         { place_id: id, content: message },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -153,8 +145,8 @@ const FichePlace = () => {
   const handleFavorite = async () => {
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/messages/favorite",
-        { place_id: id,  status: "En attente" },
+        "https://api.univerdog.site/api/messages/favorite",
+        { place_id: id, status: "En attente" },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -170,7 +162,7 @@ const FichePlace = () => {
   const handleReport = async () => {
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/messages/report",
+        "https://api.univerdog.site/api/messages/report",
         { place_id: id, content: "Signalement Ajouté", status: "En attente" },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -217,32 +209,31 @@ const FichePlace = () => {
         <div className="md:flex">
           <div className="md:w-1/2 p-4">
             <div className="relative h-96 mb-10">
-              {photos.length == 0 ? ( 
-                <img 
+              {photos.length == 0 ? (
+                <img
                   className="w-full h-full object-cover rounded-lg animate-fadeIn"
-                  src={`http://127.0.0.1:8000${photo}`}
+                  src={`https://api.univerdog.site${photo}`}
                   alt={title}
-                
                 />
               ) : (
-              <Slider {...settings}>
-                <div key="0" className="relative h-96 mb-4">
-                  <img
-                    className="w-full h-full object-cover rounded-lg animate-fadeIn"
-                    src={`http://127.0.0.1:8000${photo}`}
-                    alt={title}
-                  />
-                </div>
-                {photos.map((photo, index) => (
-                  <div key={index} className="relative h-96 mb-4">
+                <Slider {...settings}>
+                  <div key="0" className="relative h-96 mb-4">
                     <img
                       className="w-full h-full object-cover rounded-lg animate-fadeIn"
-                      src={`http://127.0.0.1:8000${photo.photo_path}`}
+                      src={`https://api.univerdog.site${photo}`}
                       alt={title}
                     />
                   </div>
-                ))}
-              </Slider>
+                  {photos.map((photo, index) => (
+                    <div key={index} className="relative h-96 mb-4">
+                      <img
+                        className="w-full h-full object-cover rounded-lg animate-fadeIn"
+                        src={`https://api.univerdog.site${photo.photo_path}`}
+                        alt={title}
+                      />
+                    </div>
+                  ))}
+                </Slider>
               )}
             </div>
             <div className="mb-32">
@@ -277,7 +268,7 @@ const FichePlace = () => {
 
                             <img
                               className="h-40 w-40 object-cover rounded-lg animate-fadeIn"
-                              src={`http://127.0.0.1:8000${photo}`}
+                              src={`https://api.univerdog.site${photo}`}
                               alt={title}
                             />
                           </div>
@@ -297,7 +288,7 @@ const FichePlace = () => {
                 <i className={`fas fa-${type} mr-2`}></i>
                 {title}
               </h2>
-              <div className="mb-6"   >
+              <div className="mb-6">
                 <StarRatings
                   rating={averageRating}
                   starRatedColor="#FFC107"
@@ -319,21 +310,19 @@ const FichePlace = () => {
                   <i className="far fa-clock mr-2"></i>Horaires
                 </h3>
                 <p className="text-gray-600">
-                  <i className="fas fa-clock text-yellow-500 mr-2"></i>Accessible
-                   selon les horaires fixer
-                  par le responsable
+                  <i className="fas fa-clock text-yellow-500 mr-2"></i>
+                  Accessible selon les horaires fixer par le responsable
                 </p>
-                
               </div>
               <div className="mb-6">
                 <h3 className="text-xl font-semibold mb-2 text-red-600">
                   <i className="fas fa-euro-sign mr-2"></i>Tarifs
                 </h3>
-                
+
                 <p className="text-gray-600">
-                  <i className="fas fa-credit-card text-purple-500 mr-2"></i>
-                 à partir de{" "}
-                  <TarifsComponent tarifs={price.toString()} /> par personne
+                  <i className="fas fa-credit-card text-purple-500 mr-2"></i>à
+                  partir de <TarifsComponent tarifs={price.toString()} /> par
+                  personne
                 </p>
               </div>
               <div className="flex space-x-4">

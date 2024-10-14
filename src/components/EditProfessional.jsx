@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { UserContext } from "../context/UserContext";
+import { Link } from "react-router-dom";
 
 const EditProfessional = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const EditProfessional = () => {
     const fetchProfessional = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/professionals/${id}`,
+          `https://api.univerdog.site/api/professionals/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -36,7 +37,10 @@ const EditProfessional = () => {
 
         setFormDataProfessional(professionalData);
       } catch (error) {
-        console.error("Erreur lors de la récupération du professionnel:", error);
+        console.error(
+          "Erreur lors de la récupération du professionnel:",
+          error
+        );
         navigate("/dashboard"); // Redirect on error
       } finally {
         setLoading(false); // Set loading to false after fetch is complete
@@ -51,7 +55,7 @@ const EditProfessional = () => {
 
     try {
       await axios.put(
-        `http://127.0.0.1:8000/api/professionals/${id}`,
+        `https://api.univerdog.site/api/professionals/${id}`,
         formDataProfessional,
         {
           headers: {
@@ -71,7 +75,16 @@ const EditProfessional = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-72">
-      <h1 className="text-3xl font-bold mb-8 text-black">Modifier la Société</h1>
+      {location.pathname !== "/dashboard" && (
+        <Link to="/dashboard">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-4">
+            <i className="fa-solid fa-arrow-left"></i> Retour
+          </button>
+        </Link>
+      )}
+      <h1 className="text-3xl font-bold mb-8 text-black dark:text-white">
+        Modifier la Société
+      </h1>
       <form
         onSubmit={handleSubmitPro}
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"

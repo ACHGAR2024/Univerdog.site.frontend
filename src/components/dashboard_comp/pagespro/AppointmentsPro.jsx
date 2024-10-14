@@ -56,9 +56,8 @@ const getDatesFromDayInRange = (day, start, end) => {
 };
 
 const AppointmentsPro = () => {
+  // my dog and professional choices
 
-  // mes choix chien et professionnel
-  
   const professionalId = proFetchProfessionalId();
   const [events, setEvents] = useState([]);
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -71,15 +70,15 @@ const AppointmentsPro = () => {
     dog_id: 45,
     professional_id: professionalId,
   });
-  
+
   const [token] = useState(localStorage.getItem("token"));
 
   useEffect(() => {
-    console.log(" professionalId : ======", professionalId);
+    //(" professionalId : ======", professionalId);
     const fetchAppointments = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/appointments",
+          "https://api.univerdog.site/api/appointments",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -89,7 +88,9 @@ const AppointmentsPro = () => {
 
         setEvents(
           response.data
-            .filter((appointment) => appointment.professional_id === professionalId)
+            .filter(
+              (appointment) => appointment.professional_id === professionalId
+            )
             .map((appointment) => {
               const appointmentEnd = new Date(
                 `${appointment.date_appointment}T${appointment.time_appointment}`
@@ -116,7 +117,7 @@ const AppointmentsPro = () => {
     const fetchAvailableSlots = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/availability_pro/${professionalId}`,
+          `https://api.univerdog.site/api/availability_pro/${professionalId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -210,7 +211,7 @@ const AppointmentsPro = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/appointments",
+        "https://api.univerdog.site/api/appointments",
         newEvent,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -272,16 +273,16 @@ const AppointmentsPro = () => {
     if (isSlotAvailable(dateFormatted, timeFormatted)) {
       return {
         style: {
-          backgroundColor: "#d4edda", // Couleur pour les créneaux disponibles
+          backgroundColor: "#d4edda", // Color for available time slots
           borderColor: "#28a745",
         },
       };
     } else {
       return {
         style: {
-          backgroundColor: "#f8d7da", // Couleur pour les créneaux non disponibles
+          backgroundColor: "#f8d7da", // Color for unavailable time slots
           borderColor: "#dc3545",
-          color: "black", // Couleur du texte
+          color: "black", // Text color
         },
       };
     }
@@ -293,16 +294,16 @@ const AppointmentsPro = () => {
 
     switch (event.status) {
       case "Confirmé":
-        backgroundColor = "#d4edda"; // Couleur pour les événements confirmés
+        backgroundColor = "#d4edda"; // Color for confirmed events
         borderColor = "#000000";
         break;
       case "Annulé":
-        backgroundColor = "#f8d7da"; // Couleur pour les événements annulés
+        backgroundColor = "#f8d7da"; // Color for canceled events
         borderColor = "#000000";
         break;
       case "En attente":
       default:
-        backgroundColor = "#fff3cd"; // Couleur pour les événements en attente
+        backgroundColor = "#fff3cd"; // Color for pending events
         borderColor = "#000000";
         break;
     }
@@ -311,82 +312,79 @@ const AppointmentsPro = () => {
       style: {
         backgroundColor,
         borderColor,
-        color: "black", // Couleur du texte
+        color: "black", // text color
         borderWidth: "2px",
       },
     };
   };
 
   return (
-   <>
-      
-      
-        <div
-          className="bg-white rounded-lg shadow-lg p-6"
-          style={{ height: "calc(200vh - 0px)" }}
-        >
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: "100%" }}
-            //selectable
-            onSelectSlot={handleSelectSlot}
-            onSelectEvent={handleEventClick}
-            messages={messages}
-            formats={formats}
-            defaultView="month"
-            culture="fr"
-            className="custom-calendar"
-            slotPropGetter={slotPropGetter}
-            eventPropGetter={eventPropGetter}
-            min={new Date(1970, 1, 1, 8, 0, 0)}
-          />
-        </div>
+    <>
+      <div
+        className="bg-white rounded-lg shadow-lg p-6"
+        style={{ height: "calc(200vh - 0px)" }}
+      >
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: "100%" }}
+          //selectable
+          onSelectSlot={handleSelectSlot}
+          onSelectEvent={handleEventClick}
+          messages={messages}
+          formats={formats}
+          defaultView="month"
+          culture="fr"
+          className="custom-calendar"
+          slotPropGetter={slotPropGetter}
+          eventPropGetter={eventPropGetter}
+          min={new Date(1970, 1, 1, 8, 0, 0)}
+        />
+      </div>
 
-        {showModal && (
-          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">
-                Ajouter un nouveau rendez-vous
-              </h2>
-              <form onSubmit={handleCreateEvent}>
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    Raison
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 p-2 rounded-lg"
-                    value={newEvent.reason}
-                    onChange={(e) =>
-                      setNewEvent({ ...newEvent, reason: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="flex justify-end">
-                  <button
-                    type="button"
-                    className="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2"
-                    onClick={handleCloseModal}
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-                  >
-                    Créer
-                  </button>
-                </div>
-              </form>
-            </div>
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">
+              Ajouter un nouveau rendez-vous
+            </h2>
+            <form onSubmit={handleCreateEvent}>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-semibold mb-2">
+                  Raison
+                </label>
+                <input
+                  type="text"
+                  className="w-full border border-gray-300 p-2 rounded-lg"
+                  value={newEvent.reason}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, reason: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2"
+                  onClick={handleCloseModal}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                >
+                  Créer
+                </button>
+              </div>
+            </form>
           </div>
-        )}
-     
-     </>
+        </div>
+      )}
+    </>
   );
 };
 

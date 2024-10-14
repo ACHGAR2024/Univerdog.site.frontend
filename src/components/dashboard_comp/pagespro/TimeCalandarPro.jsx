@@ -8,7 +8,7 @@ import AvailabilityList from "./AvailabilityList";
 
 import Notiflix from "notiflix";
 
-const apiUrl = `http://127.0.0.1:8000/api/availability`;
+const apiUrl = `https://api.univerdog.site/api/availability`;
 
 function TimeCalandarPro() {
   const { token } = useContext(AuthContext);
@@ -20,23 +20,24 @@ function TimeCalandarPro() {
   useEffect(() => {
     const fetchProfessionalId = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/professionals_pro", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/professionals_pro",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         const professionals = response.data || [];
         if (professionals.length > 0) {
           professionalId.current = professionals[0].id;
           fetchAvailabilities();
         } else {
-          console.error("No professional found for the current user");
-          Notiflix.Notify.failure("No professional found for the current user");
+          console.log("Professional not found");
         }
       } catch (error) {
-        console.error("Error fetching professional ID", error);
-        Notiflix.Notify.failure("Error fetching professional ID");
+        console.log("Error fetching professional ID", error);
       }
     };
 
@@ -48,11 +49,14 @@ function TimeCalandarPro() {
 
     try {
       const response = await axios.get(apiUrl);
-      setAvailabilities(
-        Array.isArray(response.data)
-          ? response.data.filter((a) => a.professional_id === professionalId.current)
-          : []
-      );
+      const filteredAvailabilities = Array.isArray(response.data)
+        ? response.data.filter(
+            (a) => a.professional_id === professionalId.current
+          )
+        : [];
+      setAvailabilities(filteredAvailabilities);
+      // Notify AvailabilityList of the updated availabilities
+      setSelectedAvailability(null); // Reset selected availability
     } catch (error) {
       console.error("Error fetching availabilities", error.message);
       alert(
@@ -67,12 +71,16 @@ function TimeCalandarPro() {
 
   const addAvailability = async (availability) => {
     try {
-      const response = await axios.post(apiUrl, { ...availability, professional_id: professionalId.current }, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.post(
+        apiUrl,
+        { ...availability, professional_id: professionalId.current },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       if (response.status === 201) {
         console.log("Availability added successfully", response.data);
         fetchAvailabilities();
@@ -81,7 +89,9 @@ function TimeCalandarPro() {
       }
     } catch (error) {
       console.error("Error adding availability", error.message);
-      alert("Failed to add availability. Please check your input and try again.");
+      alert(
+        "Failed to add availability. Please check your input and try again."
+      );
     }
   };
 
@@ -102,7 +112,9 @@ function TimeCalandarPro() {
       }
     } catch (error) {
       console.error("Error updating availability", error.message);
-      alert("Failed to update availability. Please check your input and try again.");
+      alert(
+        "Failed to update availability. Please check your input and try again."
+      );
     }
   };
 
@@ -122,10 +134,25 @@ function TimeCalandarPro() {
 
   return (
     <div className="my-6">
-      <h2 className="text-xl font-semibold my-4 dark:text-white">Disponibilités</h2>
-      
+      <h2 className="text-xl font-semibold my-4 dark:text-white">
+        Disponibilités
+      </h2>
+
       {availabilities.length === 0 ? (
-         <TimeCalandarPro_store onSubmit={handleRefresh} key={refreshKey} professionalId={professionalId.current} />
+        <>
+          <TimeCalandarPro_store
+            onSubmit={handleRefresh}
+            key={refreshKey}
+            professionalId={professionalId.current}
+          />
+          <button
+            onClick={fetchAvailabilities}
+            className="bg-blue-500 text-white p-2 rounded mb-4 hover:bg-blue-600 mt-5"
+          >
+            <i className="fa-solid fa-rotate-right"></i> Rafraîchir la liste des
+            disponibilités
+          </button>
+        </>
       ) : (
         <AvailabilityForm
           addAvailability={addAvailability}
@@ -134,7 +161,10 @@ function TimeCalandarPro() {
           setSelectedAvailability={setSelectedAvailability}
         />
       )}
-      <h2 className="text-xl font-semibold my-4 dark:text-white">Liste des Disponibilités</h2>
+      <h2 className="text-xl font-semibold my-4 dark:text-white">
+        Liste des Disponibilités
+      </h2>
+
       <AvailabilityList
         availabilities={availabilities}
         setSelectedAvailability={setSelectedAvailability}
@@ -227,13 +257,13 @@ const TimeCalandarPro_store = ({ onSubmit, professionalId }) => {
     for (const jour of jours) {
       if (!horaires[jour].ferme) {
         const dayMapping = {
-          Lundi: 'Lundi',
-          Mardi: 'Mardi',
-          Mercredi: 'Mercredi',
-          Jeudi: 'Jeudi',
-          Vendredi: 'Vendredi',
-          Samedi: 'Samedi',
-          Dimanche: 'Dimanche',
+          Lundi: "Lundi",
+          Mardi: "Mardi",
+          Mercredi: "Mercredi",
+          Jeudi: "Jeudi",
+          Vendredi: "Vendredi",
+          Samedi: "Samedi",
+          Dimanche: "Dimanche",
         };
 
         const requestData = [
@@ -275,9 +305,9 @@ const TimeCalandarPro_store = ({ onSubmit, professionalId }) => {
               Notiflix.Notify.success(`Données envoyées pour ${jour}:`);
             }
           }
-          // Appeler la fonction de rappel pour notifier le parent
+          // Call the callback function to notify the parent
           if (onSubmit) {
-            onSubmit(); // Appelle handleRefresh dans le composant parent pour rafraîchir la liste
+            onSubmit(); // Call handleRefresh in the parent component to refresh the list
           }
         } catch (error) {
           console.error("Erreur lors de la soumission des horaires:", error);
@@ -372,8 +402,6 @@ const TimeCalandarPro_store = ({ onSubmit, professionalId }) => {
 TimeCalandarPro_store.propTypes = {
   onSubmit: PropTypes.func,
   professionalId: PropTypes.number,
-
 };
-
 
 export default TimeCalandarPro;

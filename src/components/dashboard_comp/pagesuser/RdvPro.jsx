@@ -21,7 +21,7 @@ const RdvPro = () => {
     const fetchDogs = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/dogs_user/${user.id}`
+          `https://api.univerdog.site/api/dogs_user/${user.id}`
         );
         setDogs(response.data);
       } catch (error) {
@@ -32,7 +32,7 @@ const RdvPro = () => {
     const fetchSpecialty = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/speciality"
+          "https://api.univerdog.site/api/speciality"
         );
         setSpecialties(response.data); // Correct : Utilisez la fonction setSpecialties pour mettre à jour l'état
       } catch (error) {
@@ -43,18 +43,16 @@ const RdvPro = () => {
     const fetchProfessionals = async () => {
       try {
         const specialtyResponse = await axios.get(
-          "http://127.0.0.1:8000/api/speciality"
+          "https://api.univerdog.site/api/speciality"
         );
         const specialties = specialtyResponse.data;
 
         const vetSpecialties = specialties.filter(
-          (specialty) =>
-            specialty.name_speciality === "Clubs et écoles de dressage" ||
-            specialty.name_speciality === "Toiletteur canine"
+          (specialty) => specialty.name_speciality === "Toiletteur canine"
         );
 
         if (vetSpecialties.length === 0) {
-          console.error("Aucune spécialité 'Vétérinaire' trouvée.");
+          console.error("Aucune spécialité 'Toiletteur canine' trouvée.");
           return;
         }
 
@@ -63,7 +61,7 @@ const RdvPro = () => {
         );
 
         const professionalsResponse = await axios.get(
-          "http://127.0.0.1:8000/api/professionals"
+          "https://api.univerdog.site/api/professionals"
         );
         const allProfessionals = professionalsResponse.data;
 
@@ -88,7 +86,7 @@ const RdvPro = () => {
   const handleButtonClick = (serviceType) => {
     if (!firstSelect || !secondSelect) {
       Notiflix.Notify.warning(
-        "Veuillez selectionner un chien et un vétérinaire"
+        "Veuillez selectionner un chien et un Toiletteur canine"
       );
       return;
     }
@@ -100,7 +98,7 @@ const RdvPro = () => {
   const handleButtonClickCrud = () => {
     if (!firstSelect || !secondSelect) {
       Notiflix.Notify.warning(
-        "Veuillez selectionner un chien et un vétérinaire"
+        "Veuillez selectionner un chien et un Toiletteur canine"
       );
       return;
     }
@@ -145,7 +143,7 @@ const RdvPro = () => {
               <option value="">Sélectionnez un professionnel</option>
               {professionals.map((professional) => (
                 <option key={professional.id} value={professional.id}>
-                  Vétérinaire -{professional.company_name}
+                  Service canine -{professional.company_name}
                 </option>
               ))}
             </select>

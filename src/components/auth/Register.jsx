@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import axios from "../../config/axiosConfig";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const {
@@ -14,6 +15,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
+  const [selectedRole, setSelectedRole] = useState("user"); // Default role
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -26,14 +28,15 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      data.role = "user"; // Ajout de la valeur par défaut pour le champ 'role'
+      // Include the selected role in the data object
+      data.role = selectedRole;
 
       const response = await axios.post("/register", data);
       localStorage.setItem("token", response.data.access_token);
       setMessage("Utilisateur enregistré avec succès !");
       setErrorMessage("");
 
-      navigate("/login"); // Redirection vers la page de login après l'inscription réussie
+      navigate("/login");
     } catch (error) {
       setMessage("");
       if (error.response && error.response.data) {
@@ -68,7 +71,9 @@ const Register = () => {
             className="mb-4 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           />
           {errors.name && (
-            <span className="text-red-500 dark:text-red-400">Ce champ est requis</span>
+            <span className="text-red-500 dark:text-red-400">
+              Ce champ est requis
+            </span>
           )}
 
           <div className="input-group mb-4 relative">
@@ -84,7 +89,9 @@ const Register = () => {
             />
           </div>
           {errors.email && (
-            <span className="text-red-500 dark:text-red-400">Ce champ est requis</span>
+            <span className="text-red-500 dark:text-red-400">
+              Ce champ est requis
+            </span>
           )}
 
           <div className="input-group mb-4 relative">
@@ -114,7 +121,9 @@ const Register = () => {
             </span>
           </div>
           {errors.password && (
-            <span className="text-red-500 dark:text-red-400">Ce champ est requis</span>
+            <span className="text-red-500 dark:text-red-400">
+              Ce champ est requis
+            </span>
           )}
 
           <div className="input-group mb-4 relative">
@@ -140,16 +149,29 @@ const Register = () => {
             </span>
           </div>
           {errors.password_confirmation && (
-            <span className="text-red-500 dark:text-red-400">Ce champ est requis</span>
+            <span className="text-red-500 dark:text-red-400">
+              Ce champ est requis
+            </span>
           )}
 
-          {/* Champ 'role' invisible avec valeur par défaut */}
-          <input
-            type="hidden"
-            name="role"
-            value="user"
-            {...register("role", { required: true })}
-          />
+          <div className="mb-4">
+            <label
+              htmlFor="role"
+              className="block text-gray-200 dark:text-white"
+            >
+              Rôle
+            </label>
+            <select
+              id="role"
+              name="role"
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              className="form-select mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            >
+              <option value="user">Utilisateur</option>
+              <option value="professionnel">Professionnel</option>
+            </select>
+          </div>
 
           <button
             type="submit"
@@ -157,9 +179,20 @@ const Register = () => {
           >
             S&#39;enregistrer
           </button>
-
-          {message && <p className="text-green-500 dark:text-green-400">{message}</p>}
-          {errorMessage && <p className="text-red-500 dark:text-red-400">{errorMessage}</p>}
+          <Link to="/">
+            <button
+              type="button"
+              className="mt-3 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded w-full"
+            >
+              Retour
+            </button>
+          </Link>
+          {message && (
+            <p className="text-green-500 dark:text-green-400">{message}</p>
+          )}
+          {errorMessage && (
+            <p className="text-red-500 dark:text-red-400">{errorMessage}</p>
+          )}
         </form>
       </div>
     </header>

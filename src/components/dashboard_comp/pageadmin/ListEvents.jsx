@@ -7,12 +7,14 @@ import { AuthContext } from "../../../context/AuthContext";
 
 const ListEvents = () => {
   const [events, setEvents] = useState([]);
-  const { token } = useContext(AuthContext); // Assurez-vous d'avoir le token depuis le contexte
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/events");
+        const response = await axios.get(
+          "https://api.univerdog.site/api/events"
+        );
         setEvents(response.data.events || []);
       } catch (error) {
         console.error("Erreur lors de la récupération des événements", error);
@@ -24,9 +26,9 @@ const ListEvents = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/events/${id}`, {
+      await axios.delete(`https://api.univerdog.site/api/events/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // Ajoutez le token d'authentification ici
+          Authorization: `Bearer ${token}`,
         },
       });
       setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
@@ -88,13 +90,14 @@ const ListEvents = () => {
               >
                 <td className="py-3 px-6 text-left">
                   <img
-                    src={`http://127.0.0.1:8000${event.photo_event}`}
+                    src={`https://api.univerdog.site${event.photo_event}`}
                     alt={event.title_event}
                     className="w-8 h-8 rounded-full"
                   />
                 </td>
                 <td className="py-3 px-6 text-left">
-                  {event.title_event.substring(0, 10) + (event.title_event.length > 10 ? "..." : "")}
+                  {event.title_event.substring(0, 10) +
+                    (event.title_event.length > 10 ? "..." : "")}
                 </td>
                 <td className="py-3 px-6 text-center">
                   <div className="flex items-center justify-center">
@@ -113,9 +116,12 @@ const ListEvents = () => {
                   </div>
                 </td>
                 <td className="py-3 px-6 text-left">
-                  {event.content_event.substring(0, 10) + (event.content_event.length > 10 ? "..." : "")}
+                  {event.content_event.substring(0, 10) +
+                    (event.content_event.length > 10 ? "..." : "")}
                 </td>
-                <td className="py-3 px-6 text-left w-20">{event.address_event}</td>
+                <td className="py-3 px-6 text-left w-20">
+                  {event.address_event}
+                </td>
                 <td className="py-3 px-6 text-left">{event.event_date}</td>
                 <td className="py-3 px-6 text-left">{event.event_end_date}</td>
                 <td className="py-3 px-6 text-left">{event.price_event}</td>

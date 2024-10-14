@@ -12,13 +12,16 @@ const LieuPlacesRecherche = () => {
       if (!token) return;
 
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/places", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/places",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
         setPlaces(response.data.places || []);
       } catch (error) {
         console.error("Erreur lors de la récupération des places", error);
@@ -63,7 +66,7 @@ const LieuPlacesRecherche = () => {
               className="text-blue-500 hover:text-blue-700"
             >
               <img
-                src={`http://127.0.0.1:8000${place.photo}`}
+                src={`https://api.univerdog.site${place.photo}`}
                 alt={place.title}
                 className="w-full h-64 object-cover mb-4"
               />

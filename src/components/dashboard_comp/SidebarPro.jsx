@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 
-
 const Sidebar = ({
   isOpen = false,
   toggleSidebar,
@@ -12,7 +11,7 @@ const Sidebar = ({
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth >= 768); // Définissez la largeur pour le mobile ici
+      setIsMobile(window.innerWidth >= 768); // Set mobile width here
     };
 
     window.addEventListener("resize", handleResize);
@@ -22,9 +21,19 @@ const Sidebar = ({
   }, []);
 
   return (
-    <aside className={`sidebar ${isOpen ? "dark:bg-slate-300 dark:text-black" : "sidebar-hidden"}`}>
+    <aside
+      className={`sidebar ${
+        isOpen ? "dark:bg-slate-300 dark:text-black" : "sidebar-hidden"
+      }`}
+    >
       <div className="p-3 dark:bg-slate-300 dark:text-black text-md">
-      <a href="/"><img src="src/images/logo.png" alt="logo" className="mx-auto w-20 z-50" /></a>
+        <a href="/">
+          <img
+            src="src/images/logo.png"
+            alt="logo"
+            className="mx-auto w-20 z-50"
+          />
+        </a>
         <h2 className="text-xl font-bold mb-6 text-center">UniverDog</h2>
         <nav>
           <ul className="left-0">
@@ -44,8 +53,7 @@ const Sidebar = ({
                 Tableau de bord
               </button>
             </li>
-          
-           
+
             <li className="mb-1">
               <button
                 className={`${
@@ -92,7 +100,6 @@ const Sidebar = ({
               >
                 <i className="fa-regular fa-calendar-check mr-3"></i>
                 Gestion RDV
-                
               </button>
             </li>
             <li className="mb-1">
@@ -109,7 +116,6 @@ const Sidebar = ({
               >
                 <i className="fa-solid fa-calendar-days mr-3"></i>
                 Disponibilités
-                
               </button>
             </li>
             <li className="mb-1">

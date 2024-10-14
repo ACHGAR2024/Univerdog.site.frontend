@@ -14,9 +14,14 @@ const DashboardCount = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/messages", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/messages",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setCountMessage(response.data);
       } catch (error) {
         console.error("Erreur lors de la récupération des messages", error);

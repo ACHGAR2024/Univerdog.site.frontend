@@ -2,18 +2,16 @@ import { useState, useEffect } from "react";
 import { Carousel } from "flowbite-react";
 import Nav from "../../components/nav_footer/Nav";
 import Footer from "../../components/nav_footer/Footer";
-
+import { FaAndroid, FaApple } from "react-icons/fa"; // Importez les icônes
 function HomeContent() {
   const [showModal, setShowModal] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
- 
-
 
   const handleRefuseCookies = () => {
     setShowModal(false);
-    // Enregistrer le refus dans localStorage avec une durée de validité de 12 mois
+    // Save refusal in localStorage with a 12 months validity
     const expirationDate = new Date();
-    expirationDate.setMonth(expirationDate.getMonth() + 12); // Durée de 12 mois
+    expirationDate.setMonth(expirationDate.getMonth() + 12); // 12 months validity
     localStorage.setItem(
       "cookieConsent",
       JSON.stringify({
@@ -24,8 +22,8 @@ function HomeContent() {
   };
 
   const handleManagePreferences = () => {
-    // Rediriger vers la page de préférences des cookies
-    window.location.href = '/cookie_preferences';
+    // Redirect to cookie preferences page
+    window.location.href = "/cookie_preferences";
   };
 
   useEffect(() => {
@@ -54,9 +52,9 @@ function HomeContent() {
   };
 
   const handleConsent = () => {
-    // Enregistrez le consentement dans le localStorage avec une durée de validité de 12 mois
+    // Save consent in localStorage with a 12 months validity
     const expirationDate = new Date();
-    expirationDate.setMonth(expirationDate.getMonth() + 12); // Durée de 12 mois
+    expirationDate.setMonth(expirationDate.getMonth() + 12); // 12 months validity
     localStorage.setItem(
       "cookieConsent",
       JSON.stringify({
@@ -88,17 +86,17 @@ function HomeContent() {
               J&#39;accepte
             </button>
             <button
-            className="mr-2 bg-red-500 hover:bg-jaune_univerdog_01 hover:text-black text-white font-bold py-2 px-4 rounded"
-            onClick={handleRefuseCookies}
-          >
-            Refuser
-          </button>
-          <button
-            className="bg-gray-300 text-gray-950 hover:bg-red-500  font-bold py-2 px-4 rounded"
-            onClick={handleManagePreferences}
-          >
-            Gérer les préférences
-          </button>
+              className="mr-2 bg-red-500 hover:bg-jaune_univerdog_01 hover:text-black text-white font-bold py-2 px-4 rounded"
+              onClick={handleRefuseCookies}
+            >
+              Refuser
+            </button>
+            <button
+              className="bg-gray-300 text-gray-950 hover:bg-red-500  font-bold py-2 px-4 rounded"
+              onClick={handleManagePreferences}
+            >
+              Gérer les préférences
+            </button>
           </div>
         </div>
       )}
@@ -114,7 +112,7 @@ function HomeContent() {
       >
         <section className="relative isolate w-full grid grid-cols-1 md:grid-cols-2 min-h-min">
           {/* Text Div */}
-          <div className="flex flex-col justify-center text-left p-8 order-1 md:order-none">
+          <div className="flex flex-col justify-center text-left p-6 order-1 md:order-none mt-14 ml-14">
             <h1 className="font-headline text-5xl text-orange-500 mx-auto w-full font-semibold text-violet caret-amber-600 ">
               UniverDog
             </h1>
@@ -129,7 +127,7 @@ function HomeContent() {
             {/* Button Partez explorer */}
             <a href="/login">
               <p className="ml-auto mr-28 text-right w-full">
-                <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 mr-8 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
                   Partez explorer
                 </button>
               </p>
@@ -226,6 +224,18 @@ function HomeContent() {
             </div>
           </div>
         </section>
+
+        {/* Alerte "Site en construction" */}
+        <div className="mt-4 bottom-0 left-0 right-0 z-50 bg-yellow-400 text-black py-2 px-4 text-center font-bold shadow-md">
+          <p className="animate-pulse">🚧 Site en construction 🚧</p>
+        </div>
+        {/* Bannière pour les applications mobiles */}
+        <div className="mt-4 bottom-0 left-0 right-0 z-50 bg-gray-800 bg-opacity-0 text-white py-2 px-4 text-center font-bold shadow-md flex justify-center items-center space-x-4">
+          <p>Applications mobiles </p>
+          <FaAndroid className="text-2xl text-green-500" />
+          <FaApple className="text-2xl text-gray-300" />
+          <p> bientôt disponibles !</p>
+        </div>
       </header>
 
       <Footer />

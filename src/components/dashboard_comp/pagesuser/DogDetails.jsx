@@ -7,14 +7,14 @@ import {
   FaCalendarAlt,
   FaWeight,
   FaSyringe,
-} from "react-icons/fa"; 
+} from "react-icons/fa";
 
 const DogDetails = () => {
   const { dogIdcrypted } = useParams();
   const [dog, setDog] = useState(null);
   const [dogPhoto, setDogPhoto] = useState(null);
 
-  // Fonction pour décrypter l'ID du chien
+ 
   const decryptDogId = (dogIdcrypted) => {
     return Math.round(parseInt(dogIdcrypted) / 3456);
   };
@@ -23,7 +23,9 @@ const DogDetails = () => {
     const fetchDogDetails = async () => {
       try {
         const dogId = decryptDogId(dogIdcrypted);
-        const response = await fetch(`http://127.0.0.1:8000/api/dogs/${dogId}`);
+        const response = await fetch(
+          `https://api.univerdog.site/api/dogs/${dogId}`
+        );
         if (!response.ok) {
           throw new Error(
             "Erreur lors de la récupération des détails du chien"
@@ -32,9 +34,9 @@ const DogDetails = () => {
         const data = await response.json();
         setDog(data);
 
-        // Récupérer la photo du chien
+        // Fetch the dog's photo
         const photosResponse = await fetch(
-          `http://127.0.0.1:8000/api/dogs-photos`
+          `https://api.univerdog.site/api/dogs-photos`
         );
         if (!photosResponse.ok) {
           throw new Error(
@@ -75,9 +77,9 @@ const DogDetails = () => {
     return `${age} ans ${months} mois`;
   };
   return (
-    <div className="container w-2/3 mx-auto p-8">
+    <div className="container w-full mx-auto p-4">
       <div className="bg-white shadow-md rounded-lg p-6">
-        <div className="flex flex-col items-center mb-6 ">
+        <div className="flex flex-col items-center mb-6">
           <img
             src="../src/images/logo.png"
             alt="logo"
@@ -89,7 +91,7 @@ const DogDetails = () => {
           <div className="flex flex-col items-center mb-6">
             {dogPhoto && (
               <img
-                src={`http://127.0.0.1:8000/storage/dogs_photos/${dogPhoto.photo_name_dog}`}
+                src={`https://api.univerdog.site/storage/dogs_photos/${dogPhoto.photo_name_dog}`}
                 alt={`Photo de ${dog.name_dog}`}
                 className="mt-4 w-2/3 object-cover rounded-t-lg "
               />
@@ -107,19 +109,24 @@ const DogDetails = () => {
               {dog.sex === "male" ? "Mâle" : "Femelle"}
             </div>
             <div className="flex items-center mt-2 text-gray-600">
-              <FaCalendarAlt className="mr-2" /> Né le :  {new Date(dog.birth_date).toLocaleDateString("fr-FR")}
+              <FaCalendarAlt className="mr-2" /> Né le :{" "}
+              {new Date(dog.birth_date).toLocaleDateString("fr-FR")}
             </div>
             <div className="flex items-center mt-2 text-gray-600">
-              <FaCalendarAlt className="mr-2" /> Age  : {calculateAge(dog.birth_date)} 
+              <FaCalendarAlt className="mr-2" /> Age :{" "}
+              {calculateAge(dog.birth_date)}
             </div>
             <div className="flex items-center mt-2 text-gray-600">
               <FaWeight className="mr-2" /> {dog.weight} kg
             </div>
           </div>{" "}
-        </div> <p><FaSyringe className="mr-2  text-red-600" /><h3> Infos médicales et autres :</h3></p> 
+        </div>{" "}
+        <p>
+          <FaSyringe className="mr-2  text-red-600" />
+          <h3> Infos médicales et autres :</h3>
+        </p>
         <div className="flex items-center p-8 mt-2 text-gray-600 bg-slate-200 rounded-md">
-          
-           {dog.medical_info}
+          {dog.medical_info}
         </div>
       </div>
     </div>

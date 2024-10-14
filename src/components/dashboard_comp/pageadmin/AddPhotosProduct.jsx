@@ -15,13 +15,13 @@ const AddPhotosProduct = ({ productId }) => {
   const [error, setError] = useState(null);
   const [productPhotos, setProductPhotos] = useState([]);
 
-  // Récupération des photos du produit spécifique
+  // Retrieve photos of the specific product
   useEffect(() => {
-    console.log("product photos...",productId);
+    //("product photos...", productId);
     const fetchProductPhotos = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/products-photos`,
+          `https://api.univerdog.site/api/products-photos`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -29,19 +29,20 @@ const AddPhotosProduct = ({ productId }) => {
             },
           }
         );
-        console.log('Fetched photos:', response.data);
-        
-        setProductPhotos(response.data.filter(photo => photo.product_id === productId));
-        
+        //("Fetched photos:", response.data);
+
+        setProductPhotos(
+          response.data.filter((photo) => photo.product_id === productId)
+        );
       } catch (error) {
         setError("Erreur lors de la sélection des photos du produit.");
-        console.error('Error fetching photos:', error);
+        console.error("Error fetching photos:", error);
       }
     };
     fetchProductPhotos();
   }, [productId, token]);
 console.log(error);
-  // Gestion du changement de photo
+  // Handle photo change
   const handlePhotoChange = (e) => {
     const selectedFile = e.target.files[0];
     setPhoto(selectedFile);
@@ -50,25 +51,24 @@ console.log(error);
     setPhotoPreview(filePreview);
   };
 
-  // Retrait de la photo sélectionnée
+  // Remove the selected photo
 
+  // Submit the form to add a photo
 
-  // Soumission du formulaire d'ajout de photo
-// Soumission du formulaire d'ajout de photo
-const handlePhotoSubmit = async (e) => {
+  const handlePhotoSubmit = async (e) => {
     e.preventDefault();
     if (!photo) {
       Notification.error("Veuillez sélectionner une photo.");
       return;
     }
-  
+
     const formDataToSend = new FormData();
     formDataToSend.append("product_id", productId);
     formDataToSend.append("photo_name_product", photo);
-  
+
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/products-photos`,
+        `https://api.univerdog.site/api/products-photos`,
         formDataToSend,
         {
           headers: {
@@ -77,15 +77,14 @@ const handlePhotoSubmit = async (e) => {
           },
         }
       );
-  
+
       Notification.success("Photo ajoutée avec succès !");
       setPhoto(null);
       setPhotoPreview(null);
-  
-      // Ajouter la nouvelle photo à l'état productPhotos
-      const newPhoto = response.data; // Assurez-vous que la réponse contient la photo ajoutée
-      setProductPhotos((prevPhotos) => [...prevPhotos, newPhoto]);
 
+      // Add the new photo to the productPhotos state
+      const newPhoto = response.data; // Make sure the response contains the added photo
+      setProductPhotos((prevPhotos) => [...prevPhotos, newPhoto]);
     } catch (error) {
       console.error(
         "Erreur lors de l'upload de la photo :",
@@ -94,14 +93,13 @@ const handlePhotoSubmit = async (e) => {
       Notification.error("Erreur lors de l'upload de la photo");
     }
   };
-  
 
-  // Récupération des informations du produit
+  // Retrieve product information
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/products/${productId}`,
+          `https://api.univerdog.site/api/products/${productId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -109,50 +107,49 @@ const handlePhotoSubmit = async (e) => {
             },
           }
         );
-        console.log('Fetched product:', response.data.product);
+        //("Fetched product:", response.data.product);
         setProduct(response.data.product);
       } catch (error) {
         setError("Erreur lors de la récupération du produit.");
-        console.error('Error fetching product:', error);
+        console.error("Error fetching product:", error);
       }
     };
 
     fetchProduct();
   }, [productId, token]);
 
-  // Vérification des autorisations utilisateur
+  // Check user authorization
   if (product && user && user.id !== product.user_id) {
     return (
       <div className="container mx-auto px-4 py-8 mt-20 mb-72 w-1/2">
         <h2 className="text-2xl font-bold mb-4 text-black">
-          Vous n&apos;êtes pas autorisé à modifier ce produit.
+          You are not authorized to modify this product.
         </h2>
       </div>
     );
   }
 
-
- // suppression de la photo du produit
- const handleRemovePhoto = async (photoId) => {
-  try {
-   await axios.delete(
-     `http://127.0.0.1:8000/api/products-photos/${photoId}`,
-     {
-       headers: {
-         Authorization: `Bearer ${token}`,
-         "Content-Type": "application/json",
-       },
-     }
-   );
-   setProductPhotos(productPhotos.filter((photo) => photo.id !== photoId));
-   Notification.success("Photo supprimée avec succès !");
-   setPhoto(null);
-   setPhotoPreview(null);
-  } catch (error) {
-   console.error("Erreur lors de la suppression de la photo", error);
-   Notification.error("Erreur lors de la suppression de la photo");
-  }
- }
+  // delete product photo
+  const handleRemovePhoto = async (photoId) => {
+    try {
+      await axios.delete(
+        `https://api.univerdog.site/api/products-photos/${photoId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProductPhotos(productPhotos.filter((photo) => photo.id !== photoId));
+      Notification.success("Photo supprimée avec succès !");
+      setPhoto(null);
+      setPhotoPreview(null);
+    } catch (error) {
+      console.error("Erreur lors de la suppression de la photo", error);
+      Notification.error("Erreur lors de la suppression de la photo");
+    }
+  };
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-wrap justify-center">
@@ -160,7 +157,7 @@ const handlePhotoSubmit = async (e) => {
           productPhotos.map((photoproduct) => (
             <div key={photoproduct.id} className="m-4">
               <img
-                src={`http://127.0.0.1:8000/storage/products_photos/${photoproduct.photo_name_product}`}
+                src={`https://api.univerdog.site/storage/products_photos/${photoproduct.photo_name_product}`}
                 alt={photoproduct.photo_name_product}
                 className="w-20 h-20 rounded-xl"
               />
@@ -173,7 +170,9 @@ const handlePhotoSubmit = async (e) => {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500">Aucune photo pour ce produit.</p>
+          <p className="text-center text-gray-500">
+            Aucune photo pour ce produit.
+          </p>
         )}
       </div>
       <h2 className="text-xl font-bold mb-2 text-black">
@@ -238,7 +237,6 @@ const handlePhotoSubmit = async (e) => {
 
 AddPhotosProduct.propTypes = {
   productId: PropTypes.number.isRequired,
-
 };
 
 export default AddPhotosProduct;

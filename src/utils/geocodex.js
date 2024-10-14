@@ -1,5 +1,5 @@
 export const getCityCoordinates = async (cityName) => {
-  console.log(`Fetching coordinates for: ${cityName}`);
+  //(`Fetching coordinates for: ${cityName}`);
   try {
     const response = await fetch(
       `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(
@@ -12,7 +12,7 @@ export const getCityCoordinates = async (cityName) => {
     }
 
     const data = await response.json();
-    console.log("Response Data:", data);
+    //("Response Data:", data);
 
     if (data.length > 0) {
       const { lat, lon } = data[0];

@@ -7,15 +7,15 @@ import { UserContext } from "../context/UserContext";
 
 const AddPhotosPlace = () => {
   const navigate = useNavigate();
-  const { id} = useParams();
+  const { id } = useParams();
   const { token } = useContext(AuthContext);
   const user = useContext(UserContext);
-  
+
   const [photos, setPhotos] = useState([]);
   const [photoPreviews, setPhotoPreviews] = useState([]);
   const [place, setPlace] = useState(null);
-  const [error, setError] = useState(null); // Pour gérer les erreurs d'autorisation
-  
+  const [error, setError] = useState(null); // To handle authorization errors
+
   const handlePhotoChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     setPhotos(selectedFiles);
@@ -46,7 +46,7 @@ const AddPhotosPlace = () => {
 
     try {
       await axios.post(
-        `http://127.0.0.1:8000/api/places/${id}/photos`,
+        `https://api.univerdog.site/api/places/${id}/photos`,
         formDataToSend,
         {
           headers: {
@@ -67,8 +67,8 @@ const AddPhotosPlace = () => {
       Notification.error("Erreur lors de l'upload des photos");
     }
     if (error !== null) {
-      console.error('Erreur lors de la mise à jour des photos:', error);
-      // Ajoutez ici votre logique pour gérer l'erreur
+      console.error("Erreur lors de la mise à jour des photos:", error);
+      
     }
   };
 
@@ -76,7 +76,7 @@ const AddPhotosPlace = () => {
     const fetchPlace = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/places/${id}`,
+          `https://api.univerdog.site/api/places/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -86,20 +86,16 @@ const AddPhotosPlace = () => {
         );
         const { place } = response.data;
         setPlace(place);
-     
       } catch (error) {
         setError("Erreur lors de la récupération de la place");
         console.error(error);
       }
     };
 
-
-
     fetchPlace();
-    
   }, [id, token]);
 
-  // Vérification si l'utilisateur connecté est bien le propriétaire de la place
+  // Checking if the connected user is the owner of the place
   if (place && user && user.id !== place.user_id) {
     return (
       <div className="container mx-auto px-4 py-8 mt-20 mb-72 w-1/2">

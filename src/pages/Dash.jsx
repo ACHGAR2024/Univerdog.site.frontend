@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "../config/axiosConfig"; // Assurez-vous que l'instance Axios est configurée correctement
+import axios from "../config/axiosConfig"; // Make sure the Axios instance is configured correctly
 import { useNavigate } from "react-router-dom";
 
 function Dash() {
@@ -11,22 +11,22 @@ function Dash() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // Récupérer le token depuis le localStorage
+        // Get the token from localStorage
         const token = localStorage.getItem("token");
 
         if (!token) {
           setError("Token non disponible");
-          navigate("/login"); // Redirige vers la page de connexion si pas de token
+          navigate("/login"); // Redirect to login page if no token is available
           return;
         }
 
-        // Configurer les en-têtes pour la requête
+        // Configure the headers for the request
         const headers = {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         };
 
-        // Appeler l'API pour obtenir les informations de l'utilisateur
+        // Call the API to get the user's information
         const response = await axios.get("/user", { headers });
         setUser(response.data);
       } catch (error) {
@@ -37,7 +37,7 @@ function Dash() {
         setError(
           "Erreur lors de la récupération des informations de l'utilisateur"
         );
-        navigate("/login"); // Redirige vers la page de connexion en cas d'erreur
+        navigate("/login"); // Redirect to login page in case of error
       } finally {
         setLoading(false);
       }
@@ -47,7 +47,7 @@ function Dash() {
   }, [navigate]);
 
   const handleLogout = () => {
-    // Effacer le token du localStorage et rediriger vers la page de connexion
+    // Clear the token from localStorage and redirect to the login page
     localStorage.removeItem("token");
     navigate("/login");
   };

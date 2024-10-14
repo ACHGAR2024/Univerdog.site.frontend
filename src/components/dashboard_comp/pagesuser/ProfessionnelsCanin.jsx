@@ -1,7 +1,21 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-
+const tab_cat_place = {
+  Vétérinaire: "stethoscope",
+  "Parcs à chiens": "tree",
+  "Cliniques vétérinaires": "medkit",
+  "Spas pour chiens": "spa",
+  "Sentiers de randonnée": "hiking",
+  "Plages autorisées aux chiens": "umbrella-beach",
+  "Campings dog-friendly": "campground",
+  "Restaurants et cafés acceptant les chiens": "utensils",
+  "Magasins et centres commerciaux acceptant les chiens": "shopping-bag",
+  "Clubs et écoles de dressage": "graduation-cap",
+  "Toiletteur canine": "bone",
+  "Aires de repos sur autoroutes": "gas-pump",
+  "Hôtels et hébergements acceptant les chiens": "hotel",
+};
 const ProfessionnelsCanin = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -19,9 +33,7 @@ const ProfessionnelsCanin = () => {
   useEffect(() => {
     const fetchPlaces = async () => {
       try {
-        const url = category
-          ? `http://127.0.0.1:8000/api/places/category/${category}`
-          : "http://127.0.0.1:8000/api/places";
+        const url = "https://api.univerdog.site/api/places";
 
         const response = await axios.get(url, {
           headers: {
@@ -29,9 +41,13 @@ const ProfessionnelsCanin = () => {
             Accept: "application/json",
           },
         });
-
-        setPlaces(response.data.places || []);
-        setFilteredPlaces(response.data.places || []);
+        let filteredPlaces = response.data.places;
+        if (category) {
+          filteredPlaces = filteredPlaces.filter(
+            (place) => place.type === category
+          );
+        }
+        setPlaces(filteredPlaces);
       } catch (error) {
         console.error("Erreur lors de la récupération des places", error);
       }
@@ -45,7 +61,7 @@ const ProfessionnelsCanin = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/categories",
+          "https://api.univerdog.site/api/categories",
           {
             headers: {
               "Content-Type": "application/json",
@@ -72,6 +88,15 @@ const ProfessionnelsCanin = () => {
       );
     }
 
+    if (category) {
+      const selectedCategory = categories.find((cat) => cat.id === category);
+      if (selectedCategory) {
+        result = result.filter(
+          (place) => place.type === selectedCategory.name_cat
+        );
+      }
+    }
+
     if (sortOrder) {
       result = result.sort((a, b) =>
         sortOrder === "asc" ? a.price - b.price : b.price - a.price
@@ -79,7 +104,7 @@ const ProfessionnelsCanin = () => {
     }
 
     setFilteredPlaces(result);
-  }, [searchTerm, sortOrder, places]);
+  }, [searchTerm, sortOrder, places, category, categories]);
 
   // Handling category change
   const handleCategoryClick = (cat) => {
@@ -104,7 +129,7 @@ const ProfessionnelsCanin = () => {
         >
           <option value="">Toutes les catégories</option>
           {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
+            <option key={cat.id} value={tab_cat_place[cat.name_cat]}>
               {cat.name_cat}
             </option>
           ))}
@@ -136,42 +161,48 @@ const ProfessionnelsCanin = () => {
             {categories.map((cat) => (
               <div
                 key={cat.id}
-                onClick={() => handleCategoryClick(cat.id)}
+                onClick={() => handleCategoryClick(tab_cat_place[cat.name_cat])}
                 className={`dark:text-gray-900 bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300 cursor-pointer ${
-                  category === cat.id ? "bg-gray-200" : ""
+                  category === tab_cat_place[cat.name_cat] ? "bg-gray-200" : ""
                 }`}
               >
                 <i
                   className={`fa fa-${
                     {
-                      "Vétérinaire": "stethoscope",
+                      Vétérinaire: "stethoscope",
                       "Parcs à chiens": "tree",
+                      "Cliniques vétérinaires": "medkit",
+                      "Spas pour chiens": "spa",
                       "Sentiers de randonnée": "hiking",
                       "Plages autorisées aux chiens": "umbrella-beach",
                       "Campings dog-friendly": "campground",
                       "Restaurants et cafés acceptant les chiens": "utensils",
-                      "Magasins et centres commerciaux acceptant les chiens": "shopping-bag",
+                      "Magasins et centres commerciaux acceptant les chiens":
+                        "shopping-bag",
                       "Clubs et écoles de dressage": "graduation-cap",
                       "Toiletteur canine": "bone",
-                      "Cliniques vétérinaires et spas pour chiens": "medkit",
                       "Aires de repos sur autoroutes": "gas-pump",
                       "Hôtels et hébergements acceptant les chiens": "hotel",
                     }[cat.name_cat] || "question-circle"
                   } 
                   ${
                     {
-                      "Vétérinaire": "text-blue-600",
+                      Vétérinaire: "text-blue-600",
                       "Parcs à chiens": "text-green-600",
+                      "Cliniques vétérinaires": "text-red-600",
+                      "Spas pour chiens": "text-purple-600",
                       "Sentiers de randonnée": "text-yellow-600",
                       "Plages autorisées aux chiens": "text-blue-300",
                       "Campings dog-friendly": "text-green-300",
-                      "Restaurants et cafés acceptant les chiens": "text-yellow-300",
-                      "Magasins et centres commerciaux acceptant les chiens": "text-blue-300",
+                      "Restaurants et cafés acceptant les chiens":
+                        "text-yellow-300",
+                      "Magasins et centres commerciaux acceptant les chiens":
+                        "text-blue-300",
                       "Clubs et écoles de dressage": "text-red-600",
                       "Toiletteur canine": "text-green-300",
-                      "Cliniques vétérinaires et spas pour chiens": "text-red-300",
                       "Aires de repos sur autoroutes": "text-yellow-300",
-                      "Hôtels et hébergements acceptant les chiens": "text-blue-300",
+                      "Hôtels et hébergements acceptant les chiens":
+                        "text-blue-300",
                     }[cat.name_cat] || "text-gray-600"
                   } 
                   mb-4 text-3xl`}
@@ -186,19 +217,25 @@ const ProfessionnelsCanin = () => {
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {filteredPlaces.map((place) => (
           <Link key={place.id} to={`/fiche-place/${place.id}`}>
-            <div className="bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 hover:transform hover:-translate-y-2">
-              <div
-                className="h-48 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(http://127.0.0.1:8000${place.photo})`,
-                }}
-              ></div>
-              <div className="p-4">
-                <div className="dark:text-gray-900 font-semibold mb-2">
+            <div className="bg-white rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={`https://api.univerdog.site${place.photo}`}
+                  alt={place.title}
+                  className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-110"
+                />
+              </div>
+              <div className="p-4 bg-gradient-to-b from-slate-200 to-slate-300">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">
                   {place.title}
-                </div>
-                <div className="dark:text-gray-900 text-accent font-bold">
-                  {place.price} €
+                </h3>
+                <div className="flex items-center justify-between">
+                  <span className="text-accent font-bold text-gl">
+                    {place.address}
+                  </span>
+                  <button className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    Plus d&apos;infos
+                  </button>
                 </div>
               </div>
             </div>

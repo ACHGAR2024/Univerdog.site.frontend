@@ -29,15 +29,19 @@ const DeposerCategorie = () => {
       const formDataToSend = new FormData();
       formDataToSend.append("name_cat", formData.name_cat);
 
-      await axios.post("http://127.0.0.1:8000/api/categories", formDataToSend, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        "https://api.univerdog.site/api/categories",
+        formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       Notification.success("Categorie ajouter avec succès !");
       navigate("/dashboard");
-      //console.log('Réponse de création de categorie :', response.data);
+      
 
       setFormData({
         name_cat: "",

@@ -9,22 +9,22 @@ import { useContext } from "react";
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 
+
+
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // ** CSS Imports **
 import "./index.css";
 
-// ** Component Imports **
-// Layout Components
-//import Nav from "./components/nav_footer/Nav";
-//import Footer from "./components/nav_footer/Footer";
 
 // Authentication Components
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
+import SignIn from "./pages/auth/SignIn";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import UserProfileUpdate from "./components/auth/UserProfileUpdate";
 import ProProfileUpdate from "./components/auth/ProProfileUpdate";
+import ProfilGoogle from "./components/ProfilGoogle";
 
 // Place Management Components
 import EditPlace from "./components/EditPlace";
@@ -36,9 +36,8 @@ import ReservationForm from "./components/ReservationForm";
 import EventForm from "./components/EventForm";
 import EditEvent from "./components/EditEvent";
 
-// Page Components
+// Pages Components
 
-import Dashboard from "./pages/Dashboard";
 import RechercherPlace from "./pages/RechercherPlace";
 import DeposerPlace from "./pages/DeposerPlace";
 import DeposerCategorie from "./pages/DeposerCategorie";
@@ -50,51 +49,51 @@ import Aide from "./pages/Aide";
 import Aide_pro from "./pages/Aide_pro";
 
 import LieuPlacesRecherche from "./pages/LieuPlacesRecherche";
-
 import PlacesReservations from "./pages/PlacesReservations";
-
-import ListeReservationsAdmin from "./components/dashboard_comp/pageadmin/ListeReservationsAdmin";
-import ListEvents from "./components/dashboard_comp/pageadmin/ListEvents";
-
-
-import LieuxLyon from "./pages/LieuxLyon";
-import Restaurants from "./pages/Restaurants";
-import Musees from "./pages/Musees";
 import Evenements from "./pages/Evenements";
 import AddPhotosPlace from "./pages/AddPhotosPlace";
 
-// ** Context Imports **
-import { AuthProvider, AuthContext } from "./context/AuthContext";
-import { UserProvider } from "./context/UserContext";
-import { DarkModeProvider } from "./context/DarkModeContext";
-
-// ** Main Application Component **
-import Terms from "./pages/public/Terms";
-import About from "./pages/public/About";
-import Privacy from "./pages/public/Privacy";
-import Contact from "./pages/public/Contact";
-import HomeContent from "./pages/public/HomeContent";
-import MentionsLegales from "./pages/public/MentionsLegales";
-import CGPVfile from "./pages/public/CGPVfile";
-import  CookiePreferences from "./pages/public/CookiePreferences";
+import Dashboard from "./pages/Dashboard";
+import Dash from "./pages/Dash";
+import DashDog from "./pages/DashDog";
 
 import Inscription from "./pages/Inscription";
 import Forgotpw from "./pages/Forgotpw";
 import Resetpw from "./pages/Resetpw";
 import RegisterForm from "./pages/RegisterForm";
-
-import ProfilGoogle from "./components/ProfilGoogle";
-
-import SignIn from "./pages/auth/SignIn";
 import GoogleCallback from "./pages/GoogleCallback";
-import Dash from "./pages/Dash";
-import DashDog from "./pages/DashDog";
-//import DashboardContent from "components/dashboard_comp/DashboardContent";
+
+//  Admin Components
+import ListeReservationsAdmin from "./components/dashboard_comp/pageadmin/ListeReservationsAdmin";
+import ListEvents from "./components/dashboard_comp/pageadmin/ListEvents";
+
+
+//  Context Imports 
+import { AuthProvider, AuthContext } from "./context/AuthContext";
+import { UserProvider } from "./context/UserContext";
+import { DarkModeProvider } from "./context/DarkModeContext";
+
+//  Public pages
+import HomeContent from "./pages/public/HomeContent";
+import About from "./pages/public/About";
+import Contact from "./pages/public/Contact";
+import MentionsLegales from "./pages/public/MentionsLegales";
+import CGPVfile from "./pages/public/CGPVfile";
+import Terms from "./pages/public/Terms";
+import Privacy from "./pages/public/Privacy";
+
+import  CookiePreferences from "./pages/public/CookiePreferences";
+
+//  User pages
+
 import DogDetails from "./components/dashboard_comp/pagesuser/DogDetails";
 import ProfilsDogs from "./components/dashboard_comp/pagesuser/ProfilsDogs";
 import CartePlaces from "./components/dashboard_comp/pagesuser/CartePlaces";
 import FichePlaceDogPro from "./components/dashboard_comp/pagesuser/FichePlaceDogPro";
 import Carte from "./components/dashboard_comp/pagesuser/Carte";
+
+
+//  Professional pages
 import DeposerLieuPro from "./components/dashboard_comp/pagespro/DeposerLieuPro";
 import EditProfessional from "./components/EditProfessional";
 
@@ -121,14 +120,13 @@ const Home = () => {
   const { isAuthenticated, login } = useContext(AuthContext);
   {
     /*, logout*/
+     
   }
 
   return (
     <>
       <Router>
-        {/*{!window.location.pathname.includes("/dashboard") && (
-          <Nav isAuthenticated={isAuthenticated} handleLogout={logout} />
-        )}*/}
+       
         <PageWrapper>
           <Routes>
             <Route path="/about" element={<About />} />
@@ -154,9 +152,6 @@ const Home = () => {
             <Route path="/carte-places" element={<CartePlaces />} />
             <Route path="/lieux-places" element={<LieuPlacesRecherche />} />
             <Route path="/carte" element={<Carte />} />
-            <Route path="/lieux-lyon" element={<LieuxLyon />} />
-            <Route path="/restaurants" element={<Restaurants />} />
-            <Route path="/musees" element={<Musees />} />
             <Route path="/evenements" element={<Evenements />} />
             <Route path="/dog/:dogIdcrypted" element={<DogDetails />} />
 
@@ -345,7 +340,7 @@ const Home = () => {
             )}
           </Routes>
         </PageWrapper>
-        {/*{!window.location.pathname.includes("/dashboard") && <Footer />}*/}
+        
       </Router>
     </>
   );

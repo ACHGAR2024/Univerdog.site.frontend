@@ -6,7 +6,7 @@ const PlacesReservations = () => {
   const [places_reservations, setPlaces] = useState([]);
   const location = useLocation();
 
-  // Fonction pour obtenir les paramètres de l'URL
+  // Function to get the URL parameters
   const getQueryParams = (query) => {
     return query
       .substring(1)
@@ -25,7 +25,7 @@ const PlacesReservations = () => {
     const fetchPlaces = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/places_reservations",
+          "https://api.univerdog.site/api/places_reservations",
           {
             headers: {
               "Content-Type": "application/json",

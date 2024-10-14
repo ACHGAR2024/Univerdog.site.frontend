@@ -95,13 +95,16 @@ const DashboardAdminContent = () => {
       if (!user || !user.id) return;
 
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/places", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/places",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
         setCountPlaces(response.data.places.length);
       } catch (error) {
@@ -115,13 +118,16 @@ const DashboardAdminContent = () => {
   useEffect(() => {
     const fetchMessagesCount = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/messages", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/messages",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
         setCountMessages(response.data.length);
 
@@ -275,7 +281,7 @@ const DashboardAdminContent = () => {
                     user.google_id === null && user.image === null
                       ? "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                       : user.image
-                      ? `http://127.0.0.1:8000${user.image}`
+                      ? `https://api.univerdog.site${user.image}`
                       : user.avatar
                   }
                   alt="professionnel"

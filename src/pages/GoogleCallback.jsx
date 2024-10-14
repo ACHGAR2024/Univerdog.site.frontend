@@ -8,7 +8,7 @@ function GoogleCallback() {
   // On page load, we take "search" parameters
   // and proxy them to /api/auth/callback on our Laravel API
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/auth/callback${location.search}`, {
+    fetch(`https://api.univerdog.site/api/auth/callback${location.search}`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -25,7 +25,7 @@ function GoogleCallback() {
   // Helper method to fetch User data for authenticated user
   // Watch out for "Authorization" header that is added to this call
   function fetchUserData() {
-    fetch(`http://127.0.0.1:8000/api/user`, {
+    fetch(`https://api.univerdog.site/api/user`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

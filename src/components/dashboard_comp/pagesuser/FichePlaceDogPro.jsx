@@ -62,32 +62,27 @@ const FichePlaceDogPro = () => {
 
   const [comments, setComments] = useState([]);
 
-
   useEffect(() => {
     const fetchPlace = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/places/${id}`
+          `https://api.univerdog.site/api/places/${id}`
         );
         const fetchedPlace = response.data.place;
         setPlace(fetchedPlace);
-        //console.log("Fetched place:", fetchedPlace);
+        
 
         // Fetch photos
-        console.log(
-          `Fetching photos from: http://127.0.0.1:8000/api/places/${id}/photos`
-        );
+       
         const photosResponse = await axios.get(
-          `http://127.0.0.1:8000/api/places/${id}/photos`
+          `https://api.univerdog.site/api/places/${id}/photos`
         );
-        //("Photos response:", photosResponse);
+       
         setPhotos(photosResponse.data); // Changed this line
-        //console.log("Fetched photos:", photosResponse.data);
-
-        //*************** commentaires place */
+        
         // Fetch comments for the place
         const commentsResponseComment = await axios.get(
-          `http://127.0.0.1:8000/api/messages`, // Fetch comments specific to the place
+          `https://api.univerdog.site/api/messages`, // Fetch comments specific to the place
           {
             headers: {
               headers: { Authorization: `Bearer ${token}` },
@@ -107,7 +102,7 @@ const FichePlaceDogPro = () => {
 
         // Fetch messages for ratings
         const messagesResponse = await axios.get(
-          "http://127.0.0.1:8000/api/messages",
+          "https://api.univerdog.site/api/messages",
 
           {
             headers: {
@@ -122,13 +117,10 @@ const FichePlaceDogPro = () => {
           if (fetchedPlace.address) {
             const { lat, lon } = await getCityCoordinates(fetchedPlace.address);
             setPosition([lat, lon]);
-            //console.log("Coordinates from address:", { lat, lon });
+            ////("Coordinates from address:", { lat, lon });
           } else if (fetchedPlace.latitude && fetchedPlace.longitude) {
             setPosition([fetchedPlace.latitude, fetchedPlace.longitude]);
-            console.log("Coordinates from latitude and longitude:", {
-              lat: fetchedPlace.latitude,
-              lon: fetchedPlace.longitude,
-            });
+           
           } else {
             throw new Error("No address or coordinates available");
           }
@@ -138,10 +130,7 @@ const FichePlaceDogPro = () => {
           );
           if (fetchedPlace.latitude && fetchedPlace.longitude) {
             setPosition([fetchedPlace.latitude, fetchedPlace.longitude]);
-            console.log("Fallback coordinates from latitude and longitude:", {
-              lat: fetchedPlace.latitude,
-              lon: fetchedPlace.longitude,
-            });
+           
           } else {
             throw new Error("No address or coordinates available");
           }
@@ -157,11 +146,10 @@ const FichePlaceDogPro = () => {
     fetchPlace();
   }, [id, token]);
 
-
   const handleSendMessage = async () => {
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/messages",
+        "https://api.univerdog.site/api/messages",
         { place_id: id, content: message },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -179,7 +167,7 @@ const FichePlaceDogPro = () => {
   const handleFavorite = async () => {
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/messages/favorite",
+        "https://api.univerdog.site/api/messages/favorite",
         { place_id: id, status: "En attente" },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -196,7 +184,7 @@ const FichePlaceDogPro = () => {
   const handleReport = async () => {
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/messages/report",
+        "https://api.univerdog.site/api/messages/report",
         { place_id: id, status: "En attente" },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -252,7 +240,7 @@ const FichePlaceDogPro = () => {
               {photos.length == 0 ? (
                 <img
                   className="w-full h-full object-cover rounded-lg animate-fadeIn"
-                  src={`http://127.0.0.1:8000${photo}`}
+                  src={`https://api.univerdog.site${photo}`}
                   alt={title}
                 />
               ) : (
@@ -260,7 +248,7 @@ const FichePlaceDogPro = () => {
                   <div key="0" className="relative h-96 mb-4">
                     <img
                       className="w-full h-full object-cover rounded-lg animate-fadeIn"
-                      src={`http://127.0.0.1:8000${photo}`}
+                      src={`https://api.univerdog.site${photo}`}
                       alt={title}
                     />
                   </div>
@@ -268,7 +256,7 @@ const FichePlaceDogPro = () => {
                     <div key={index} className="relative h-96 mb-4">
                       <img
                         className="w-full h-full object-cover rounded-lg animate-fadeIn"
-                        src={`http://127.0.0.1:8000${photo.photo_path}`}
+                        src={`https://api.univerdog.site${photo.photo_path}`}
                         alt={title}
                       />
                     </div>
@@ -308,7 +296,7 @@ const FichePlaceDogPro = () => {
 
                             <img
                               className="h-40 w-40 object-cover rounded-lg animate-fadeIn"
-                              src={`http://127.0.0.1:8000${photo}`}
+                              src={`https://api.univerdog.site${photo}`}
                               alt={title}
                             />
                           </div>
@@ -444,7 +432,7 @@ const FichePlaceDogPro = () => {
               </div>
 
               <CommentsUser comments={comments} places={parseInt(id, 10)} />
-             
+
               <div></div>
             </div>
           </div>

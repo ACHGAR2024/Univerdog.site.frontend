@@ -1,21 +1,22 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
-//import { Link } from "react-router-dom";
 import Notiflix from "notiflix";
 
 const ListeCategoriesProducts = () => {
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState({ name_product_cat: "" });
+  const [currentCategory, setCurrentCategory] = useState({
+    name_product_cat: "",
+  });
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/products-categories",
+          "https://api.univerdog.site/api/products-categories",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -35,12 +36,15 @@ const ListeCategoriesProducts = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/products-categories/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      await axios.delete(
+        `https://api.univerdog.site/api/products-categories/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setCategories(categories.filter((categorie) => categorie.id !== id));
     } catch (error) {
       console.error("Erreur lors de la suppression de la catégorie", error);
@@ -64,7 +68,7 @@ const ListeCategoriesProducts = () => {
     try {
       if (isEditMode) {
         await axios.put(
-          `http://127.0.0.1:8000/api/products-categories/${currentCategory.id}`,
+          `https://api.univerdog.site/api/products-categories/${currentCategory.id}`,
           currentCategory,
           {
             headers: {
@@ -75,7 +79,7 @@ const ListeCategoriesProducts = () => {
         );
       } else {
         await axios.post(
-          "http://127.0.0.1:8000/api/products-categories",
+          "https://api.univerdog.site/api/products-categories",
           currentCategory,
           {
             headers: {
@@ -88,12 +92,21 @@ const ListeCategoriesProducts = () => {
       setIsModalOpen(false);
       setCurrentCategory({ name_product_cat: "" });
       // Re-fetch categories
-      const response = await axios.get("http://127.0.0.1:8000/api/products-categories", {
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      });
+      const response = await axios.get(
+        "https://api.univerdog.site/api/products-categories",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setCategories(response.data || []);
     } catch (error) {
-      console.error("Erreur lors de l'ajout/mise à jour de la catégorie", error);
+      console.error(
+        "Erreur lors de l'ajout/mise à jour de la catégorie",
+        error
+      );
     }
   };
 

@@ -15,7 +15,7 @@ const ListeReservationsAdmin = ({ isEditing }) => {
     const fetchReservations = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/places_reservations",
+          "https://api.univerdog.site/api/places_reservations",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -32,13 +32,16 @@ const ListeReservationsAdmin = ({ isEditing }) => {
 
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/events", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/events",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
         setEvents(response.data.events || []);
       } catch (error) {
         console.error("Erreur lors de la récupération des événements", error);
@@ -52,7 +55,7 @@ const ListeReservationsAdmin = ({ isEditing }) => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(
-        `http://127.0.0.1:8000/api/places_reservations/${id}`,
+        `https://api.univerdog.site/api/places_reservations/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -62,12 +65,15 @@ const ListeReservationsAdmin = ({ isEditing }) => {
         }
       );
 
-      setReservations(reservations.filter((reservation) => reservation.id !== id));
+      setReservations(
+        reservations.filter((reservation) => reservation.id !== id)
+      );
       Notification.success("Réservation supprimée avec succès !");
     } catch (error) {
       console.error("Erreur lors de la suppression de la réservation:", error);
       Notification.error(
-        error.response?.data?.message || "Erreur inconnue lors de la suppression de la réservation. Veuillez réessayer."
+        error.response?.data?.message ||
+          "Erreur inconnue lors de la suppression de la réservation. Veuillez réessayer."
       );
     }
   };
@@ -110,7 +116,9 @@ const ListeReservationsAdmin = ({ isEditing }) => {
               <th className="py-3 px-6 text-center">Actions</th>
               <th className="py-3 px-6 text-left">Adresse</th>
               <th className="py-3 px-6 text-left">Date de début réservation</th>
-              <th className="py-3 px-6 text-left">Date de fin de réservation</th>
+              <th className="py-3 px-6 text-left">
+                Date de fin de réservation
+              </th>
               <th className="py-3 px-6 text-left">Événement</th>
               <th className="py-3 px-6 text-left">Téléphone</th>
             </tr>
@@ -172,7 +180,7 @@ const ListeReservationsAdmin = ({ isEditing }) => {
 };
 
 ListeReservationsAdmin.propTypes = {
-  isEditing: PropTypes.func, // Mettez à jour ici si isEditing est une fonction
+  isEditing: PropTypes.func, 
 };
 
 export default ListeReservationsAdmin;

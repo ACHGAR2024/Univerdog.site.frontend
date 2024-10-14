@@ -43,7 +43,7 @@ const EventForm = () => {
     data.append("user_id", formData.user_id);
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/events", data, {
+      await axios.post("https://api.univerdog.site/api/events", data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -103,7 +103,9 @@ const EventForm = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-72 w-2/3">
-      <h1 className="text-2xl font-bold mb-8 text-black dark:text-white">Créer un événement</h1>
+      <h1 className="text-2xl font-bold mb-8 text-black dark:text-white">
+        Créer un événement
+      </h1>
 
       {error && <div className="mb-4 text-red-600">{error}</div>}
 
@@ -152,7 +154,7 @@ const EventForm = () => {
             htmlFor="type_event"
           >
             Type d&apos;événement
-          </label> 
+          </label>
           <select
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="type_event"
@@ -163,7 +165,7 @@ const EventForm = () => {
           >
             <option value="">Choisir un type d&apos;événement</option>
             <option value="voyage">Voyage</option>
-            <option value="competition">Compétition canine</option>
+            <option value="compétition">Compétition canine</option>
             <option value="Séminaire">Séminaire</option>
             <option value="Autre">Autre</option>
           </select>

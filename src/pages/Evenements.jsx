@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Evenements = () => {
   const [events, setPlaces] = useState([]);
@@ -8,14 +9,24 @@ const Evenements = () => {
   useEffect(() => {
     const fetchPlaces = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/events", {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/events",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
-        setPlaces(response.data.events || []);
+        // Filter events to only keep those of type "Competition" or "Seminar"
+        const filteredEvents = response.data.events.filter(
+          (event) =>
+            event.type_event === "Compétition" ||
+            event.type_event === "Séminaire"
+        );
+
+        setPlaces(filteredEvents || []);
       } catch (error) {
         console.error("Erreur lors de la récupération des events", error);
       }
@@ -30,7 +41,17 @@ const Evenements = () => {
   };
 
   return (
-    <div style={{ height: "100vh", width: "100%" }} className="mt-14 mb-24">
+    <div
+      style={{ height: "100vh", width: "100%" }}
+      className="mt-4 md:mt-14 mb-24"
+    >
+      <div className="hidden lg:block">
+        <Link to="/dashboard">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-4 ml-20">
+            <i className="fa-solid fa-arrow-left"></i> Retour
+          </button>
+        </Link>
+      </div>
       <main className="container mx-auto px-4 py-8">
         <h2 className="text-3xl font-bold text-red-600 mb-8 text-center animate-slideIn">
           <i className="fas fa-bell-o mr-2"></i>Les événements programmés
@@ -52,7 +73,7 @@ const Evenements = () => {
                   }`}
                 >
                   <img
-                    src={`http://127.0.0.1:8000${event.photo_event}`}
+                    src={`https://api.univerdog.site${event.photo_event}`}
                     alt={event.title_event}
                     className="w-full h-48 object-cover"
                   />
@@ -69,6 +90,7 @@ const Evenements = () => {
                         {new Date(event.event_end_date).toLocaleDateString()}
                       </span>
                     </p>
+                    <p className="text-sm text-gray-500">{event.type_event}</p>
                     <h3
                       className={`text-xl font-semibold mb-2 ${
                         isPassed ? "text-gray-400" : "text-gray-800"
@@ -78,13 +100,15 @@ const Evenements = () => {
                       {event.title_event}
                     </h3>
                     <p className="text-gray-600 text-sm mb-4">
-                      {event.content_event.substring(0, 150) +
-                        (event.content_event.length > 150 ? "..." : "")}
+                      {event.content_event.substring(0, 700) +
+                        (event.content_event.length > 700 ? "..." : "")}
                     </p>
                     <div className="flex justify-between items-center">
                       {!isPassed && (
                         <a
-                          href={`/places-reservations?event=${event.id}`}
+                          href={event.link_event}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="bg-sky-600 text-white px-5 py-1 rounded-full hover:bg-purple-600 transition duration-300"
                         >
                           <i className="fas fa-ticket-alt mr-2"></i>Réserver

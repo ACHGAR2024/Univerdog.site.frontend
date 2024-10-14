@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 
 const ListEvents = () => {
   const [events, setEvents] = useState([]);
-  const { token } = useContext(AuthContext); // Assurez-vous d'avoir le token depuis le contexte
+  const { token } = useContext(AuthContext); // Ensure the token is available from the context
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -26,7 +26,7 @@ const ListEvents = () => {
     try {
       await axios.delete(`http://127.0.0.1:8000/api/events/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // Ajoutez le token d'authentification ici
+          Authorization: `Bearer ${token}`, // Add the authentication token here
         },
       });
       setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));

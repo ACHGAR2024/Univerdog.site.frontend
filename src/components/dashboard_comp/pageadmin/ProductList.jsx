@@ -2,40 +2,43 @@ import { useState, useEffect, useCallback, useRef, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import ProductForm from "./ProductForm";
-import AddPhotosProduct from "./AddPhotosProduct"; // Import du composant d'ajout de photos
-  import Notiflix from "notiflix";
- 
+import AddPhotosProduct from "./AddPhotosProduct"; // Import the AddPhotosProduct component
+import Notiflix from "notiflix";
+
 const ProductList = () => {
   const { token } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null); // Pour l'édition
-  const [isNewProduct, setIsNewProduct] = useState(false); // Flag pour savoir si c'est un ajout ou une mise à jour
-  const [showAddPhotos, setShowAddPhotos] = useState(false); // Flag pour afficher le formulaire d'ajout de photos
-  const [productIdForPhotos, setProductIdForPhotos] = useState(null); // ID du produit pour lequel ajouter des photos
-  const [searchTerm, setSearchTerm] = useState(""); // État pour le texte de recherche
+  const [selectedProduct, setSelectedProduct] = useState(null); // For editing
+  const [isNewProduct, setIsNewProduct] = useState(false); // Flag to know if it's an add or update
+  const [showAddPhotos, setShowAddPhotos] = useState(false); // Flag to show the add photos form
+  const [productIdForPhotos, setProductIdForPhotos] = useState(null); // ID of the product to add photos to
+  const [searchTerm, setSearchTerm] = useState(""); // State for search text
 
-  const formRef = useRef(null); // Référence vers ProductForm
+  const formRef = useRef(null); // Reference to ProductForm
 
-  // Fonction pour récupérer les produits
+  // Function to fetch products
   const fetchProducts = useCallback(async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/products", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "https://api.univerdog.site/api/products",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setProducts(response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des produits", error);
     }
   }, [token]);
 
-  // Fonction pour ajouter un produit
+  // Function to add a product
   const createProduct = async (newProduct) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/products",
+        "https://api.univerdog.site/api/products",
         newProduct,
         {
           headers: {
@@ -49,10 +52,10 @@ const ProductList = () => {
     }
   };
 
-  // Fonction pour supprimer un produit
+  // Function to delete a product
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/products/${id}`, {
+      await axios.delete(`https://api.univerdog.site/api/products/${id}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -64,38 +67,38 @@ const ProductList = () => {
     }
   };
 
-  // Fonction pour éditer un produit
+  // Edit a product
   const handleEdit = (product) => {
     setSelectedProduct(product);
-    setIsNewProduct(false); // C'est une mise à jour, donc flag à false
+    setIsNewProduct(false); // This is an update, so flag to false
   };
 
-  // Fonction pour ajouter un nouveau produit
+  // Add a new product
   const handleAddNew = () => {
-    setSelectedProduct(null); // Désélectionne le produit en cours
-    setIsNewProduct(true); // Indique qu'un nouveau produit est en cours d'ajout
-    formRef.current.resetForm(); // Appelle la réinitialisation du formulaire
+    setSelectedProduct(null); // Deselect the current product
+    setIsNewProduct(true); // Indicates that a new product is being added
+    formRef.current.resetForm(); // Call the form reset
   };
 
-  // Fonction pour gérer l'ajout des photos
+  // Add photos to a product
   const handleAddPhotos = (productId) => {
     setProductIdForPhotos(productId);
-    setShowAddPhotos(true); // Affiche le formulaire d'ajout de photos
+    setShowAddPhotos(true); // Show the add photos form
   };
 
-  // Fonction à appeler lors du succès d'une opération (ajout ou mise à jour)
+  // Function to call on success of an operation (add or update)
   const handleSuccess = () => {
     fetchProducts();
     setSelectedProduct(null);
-    setIsNewProduct(false); // Réinitialise le flag après le succès
-    setShowAddPhotos(false); // Cache le formulaire après ajout de photos
+    setIsNewProduct(false); // Reset the flag after success
+    setShowAddPhotos(false); // Hide the add photos form after adding photos
   };
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
-  // Filtrer les produits en fonction du texte de recherche
+  // Filter products based on the search term
   const filteredProducts = products.filter((product) =>
     product.name_product.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -124,18 +127,18 @@ const ProductList = () => {
         Ajouter un produit
       </button>
 
-      {/* Champ de recherche */}
+      {/* Search field */}
       <div className="mb-4">
         <input
           type="text"
-          placeholder="Rechercher un produit"
+          placeholder="Search a product"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="border border-gray-300 rounded-md px-4 py-2 w-full"
         />
       </div>
 
-      {/* Formulaire pour ajouter ou modifier un produit */}
+      {/* Form to add or edit a product */}
       {(selectedProduct !== null || isNewProduct) && (
         <div
           className="fixed z-10 inset-0 overflow-y-auto"
@@ -177,7 +180,7 @@ const ProductList = () => {
                 </button>
               </div>
               <ProductForm
-                ref={formRef} // Passe la référence ici
+                ref={formRef} // Pass the reference here
                 product={selectedProduct}
                 onSuccess={handleSuccess}
                 isNewProduct={isNewProduct}
@@ -192,7 +195,7 @@ const ProductList = () => {
         <thead>
           <tr className="bg-gray-100">
             <th className="px-4 py-2">Nom</th>
-            <th className="px-4 py-2">Prix</th>
+            <th className="px-4 py-2 w-20">Prix</th>
             <th className="px-4 py-2">Actions</th>
             <th className="px-4 py-2">Description</th>
             <th className="px-4 py-2">Link affiliation</th>
@@ -205,28 +208,29 @@ const ProductList = () => {
               <td className="px-4 py-2">{product.name_product}</td>
               <td className="px-4 py-2">{product.price} €</td>
               <td className="px-4 py-2">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleEdit(product)}
-                  className="bg-yellow-200 px-4 py-2 rounded-md flex items-center"
-                >
-                  <i className="fas fa-edit mr-2"></i> Modifier
-                </button>
-                <button
-                  onClick={() => confirmDelete(product.id)}
-                  className="bg-red-500 px-4 py-2 rounded-md flex items-center"
-                >
-                  <i className="fas fa-trash-alt mr-2"></i> Supprimer
-                </button>
-                <button
-                  onClick={() => handleAddPhotos(product.id)}
-                  className="bg-green-500 px-4 py-2 rounded-md flex items-center"
-                >
-                  <i className="fas fa-camera mr-2"></i> Ajouter Photos
-                </button>
-              </div></td>
-              <td className="px-4 py-2">{product.description_product}</td>
-              <td className="px-4 py-2">{product.affiliation_link}</td>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEdit(product)}
+                    className="bg-yellow-200 px-4 py-2 rounded-md flex items-center"
+                  >
+                    <i className="fas fa-edit mr-2"></i> Modifier
+                  </button>
+                  <button
+                    onClick={() => confirmDelete(product.id)}
+                    className="bg-red-500 px-4 py-2 rounded-md flex items-center"
+                  >
+                    <i className="fas fa-trash-alt mr-2"></i> Supprimer
+                  </button>
+                  <button
+                    onClick={() => handleAddPhotos(product.id)}
+                    className="bg-green-500 px-4 py-2 rounded-md flex items-center"
+                  >
+                    <i className="fas fa-camera mr-2"></i> Ajouter Photos
+                  </button>
+                </div>
+              </td>
+              <td className="px-4 py-2">{product.description_product.substring(0, 100)} ...</td>
+              <td className="px-4 py-2">{product.affiliation_link.substring(0, 50)} ...</td>
               {/*<td className="px-4 py-2">{product.products_category_id}</td> */}
               <td className="px-4 py-2"></td>
             </tr>
@@ -234,7 +238,7 @@ const ProductList = () => {
         </tbody>
       </table>
 
-      {/* Formulaire d'ajout de photos */}
+      {/* Add photos form */}
       {showAddPhotos && productIdForPhotos && (
         <div
           className="fixed z-10 inset-0 overflow-y-auto"
@@ -257,7 +261,7 @@ const ProductList = () => {
                   className="text-gray-400 hover:text-gray-500 transition ease-in-out duration-150"
                   onClick={() => {
                     setShowAddPhotos(false);
-                    setProductIdForPhotos(null); // Réinitialise l'ID du produit
+                    setProductIdForPhotos(null); // Reset the product ID
                   }}
                 >
                   <svg
@@ -276,11 +280,11 @@ const ProductList = () => {
                 </button>
               </div>
               <AddPhotosProduct
-                productId={productIdForPhotos} // Passe productId au composant AddPhotosProduct
+                productId={productIdForPhotos} // Passes productId to AddPhotosProduct component
                 onSuccess={() => {
-                  setShowAddPhotos(false); // Ferme le formulaire après succès
-                  setProductIdForPhotos(null); // Réinitialise l'ID du produit
-                  fetchProducts(); // Rafraîchit la liste des produits
+                  setShowAddPhotos(false); // Closes the form after success
+                  setProductIdForPhotos(null); // Resets the product ID
+                  fetchProducts(); // Refreshes the list of products
                 }}
               />
             </div>

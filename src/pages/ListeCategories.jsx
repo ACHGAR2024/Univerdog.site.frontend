@@ -58,7 +58,7 @@ const ListeCategories = () => {
         handleDelete(id);
       },
       () => {
-        // Action à prendre si l'utilisateur annule la suppression
+        // Action to take if the user cancels the deletion
       }
     );
   };

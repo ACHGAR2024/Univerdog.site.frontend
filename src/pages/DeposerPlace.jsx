@@ -28,7 +28,7 @@ const DeposerPlace = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/categories",
+          "https://api.univerdog.site/api/categories",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -61,7 +61,7 @@ const DeposerPlace = () => {
           `https://api-adresse.data.gouv.fr/search/?q=${searchQuery}&limit=1`
         );
         setSuggestedCities(response.data.features || []);
-        console.log("data adresse", response.data.features);
+        //("data adresse", response.data.features);
       } catch (error) {
         console.error("Erreur lors de la recherche adresse", error);
       }
@@ -72,7 +72,7 @@ const DeposerPlace = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("MON USER ID:", useridrecup.id);
+    //("MON USER ID:", useridrecup.id);
     if (!useridrecup.id) {
       console.error("Erreur : ID utilisateur non disponible");
       Notification.error("ID utilisateur non disponible");
@@ -89,7 +89,7 @@ const DeposerPlace = () => {
       formDataToSend.append("latitude", formData.latitude);
       formDataToSend.append("longitude", formData.longitude);
       formDataToSend.append("type", formData.type);
-      formDataToSend.append("user_id", useridrecup.id); // Utilisation de `myIdUser`   
+      formDataToSend.append("user_id", useridrecup.id); // Use the `myIdUser` context value
 
       const currentDate = new Date()
         .toISOString()
@@ -103,13 +103,17 @@ const DeposerPlace = () => {
         JSON.stringify(formData.category_ids)
       );
 
-      await axios.post("http://127.0.0.1:8000/api/places", formDataToSend, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log("Reponse de création de place :", formDataToSend);
+      await axios.post(
+        "https://api.univerdog.site/api/places",
+        formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      //("Reponse de création de place :", formDataToSend);
       Notification.success("Place ajoutée avec succès !");
       //navigate("/dashboard");
 

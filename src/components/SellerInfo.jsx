@@ -9,9 +9,9 @@ const SellerInfo = ({ sellerId }) => {
   useEffect(() => {
     const fetchSellerInfo = async () => {
       try {
-        // Requête de infos du vendeur avec l'API axios
+       
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/user/${sellerId}`,
+          `https://api.univerdog.site/api/user/${sellerId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -58,7 +58,7 @@ const SellerInfo = ({ sellerId }) => {
             className="h-10 w-10 rounded-full"
             src={
               image
-                ? `http://127.0.0.1:8000${image}`
+                ? `https://api.univerdog.site${image}`
                 : `https://ui-avatars.com/api/?name=${name}&background=random`
             }
             alt={name}

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import Notiflix from 'notiflix';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Notiflix from "notiflix";
 
 const ProfessionalIdComponent = () => {
   const [professionalId, setProfessionalId] = useState(null);
@@ -10,12 +10,13 @@ const ProfessionalIdComponent = () => {
   useEffect(() => {
     const fetchProfessionals = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/professionals_pro");
-        console.log("Réponse de l'API:", response.data);
+        const response = await axios.get(
+          "https://api.univerdog.site/api/professionals_pro"
+        );
+        //("Réponse de l'API:", response.data);
 
-        // Assurez-vous que les données sont au format attendu
         if (Array.isArray(response.data) && response.data.length > 0) {
-          setProfessionalId(response.data[0]?.id || null); // Ajustez en fonction du format de réponse
+          setProfessionalId(response.data[0]?.id || null);
         } else {
           const errorMessage = "Aucun professionnel trouvé";
           console.error(errorMessage);

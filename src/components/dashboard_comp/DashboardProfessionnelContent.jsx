@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "../../context/AuthContext";
@@ -14,7 +13,7 @@ import DarkModeToggle from "../DarkModeToggle";
 import axios from "axios";
 import useFetchProfessionalId from "./pagespro/hooks/proFetchProfessionalId";
 
-const BASE_URL = "http://127.0.0.1:8000/api/appointments_pro";
+const BASE_URL = "https://api.univerdog.site/api/appointments_pro";
 
 const DashboardProfessionnelContent = () => {
   const professionalId = useFetchProfessionalId();
@@ -24,37 +23,37 @@ const DashboardProfessionnelContent = () => {
   const [appointmentsAwaiting, setAppointmentsAwaiting] = useState(0);
   const { logout } = useContext(AuthContext);
   const user = useContext(UserContext);
-  const [isLoadingProfessionalId, setIsLoadingProfessionalId] = useState(true); // État de chargement
+  const [isLoadingProfessionalId, setIsLoadingProfessionalId] = useState(true); // Loading state
 
-  // Fonction pour récupérer les rendez-vous
+  // Function to fetch appointments
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        if (professionalId !== null) { // Vérifiez que professionalId est chargé
+        if (professionalId !== null) {
+          // Check that professionalId is loaded
           const response = await axios.get(`${BASE_URL}/${professionalId}`);
           const appointmentsData = response.data;
-  
-          // Filtrer et compter les rendez-vous en attente
+
+          // Filter and count awaiting appointments
           const awaitingCount = appointmentsData.filter(
             (appointment) => appointment.status === "En attente"
           ).length;
-  
-          setAppointments(appointmentsData); // Stocker tous les rendez-vous
-          setAppointmentsAwaiting(awaitingCount); // Stocker le nombre de RDV en attente
+
+          setAppointments(appointmentsData); // Store all appointments
+          setAppointmentsAwaiting(awaitingCount); // Store the number of awaiting appointments
         }
       } catch (error) {
-        console.error("Erreur lors de la récupération des rendez-vous:", error);
+        console.error("Error when fetching appointments:", error);
       }
     };
-  
+
     // Call the fetchAppointments function
     fetchAppointments();
   }, [professionalId]);
 
   useEffect(() => {
-    // Chargez professionalId
+    // Load professionalId
     const fetchProId = async () => {
-      
       setIsLoadingProfessionalId(false);
     };
 
@@ -62,8 +61,8 @@ const DashboardProfessionnelContent = () => {
   }, []);
 
   useEffect(() => {
-    if (!isLoadingProfessionalId) { // Ne lancez la récupération que si le professionalId est chargé
-      
+    if (!isLoadingProfessionalId) {
+      // Only launch the fetch if professionalId is loaded
     }
   }, [professionalId, isLoadingProfessionalId, appointments, setAppointments]);
 
@@ -71,7 +70,7 @@ const DashboardProfessionnelContent = () => {
   const handleLogout = () => {
     logout();
     window.location.href = "/";
-    console.log(appointments);
+    //(appointments);
   };
 
   const renderContent = () => {
@@ -124,7 +123,12 @@ const DashboardProfessionnelContent = () => {
               Dashboard Professionnelle
             </h1>
             <div className="flex items-center">
-              <button className="relative hover: transition duration-200">
+              <button
+                onClick={() => {
+                  setCurrentSection("AppointmentsManagerPro");
+                }}
+                className="relative hover: transition duration-200 mr-2"
+              >
                 <span className="bg-amber-400 text-black px-2 py-1 rounded-full text-xs absolute  opacity-90">
                   {appointmentsAwaiting}
                 </span>
@@ -152,11 +156,11 @@ const DashboardProfessionnelContent = () => {
                     user.image === null
                       ? "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                       : user.image
-                      ? `http://127.0.0.1:8000${user.image}`
+                      ? `https://api.univerdog.site${user.image}`
                       : user.avatar
                   }
                   alt="User avatar"
-                  className="w-8 h-8 rounded-full"
+                  className="w-10 h-10 rounded-full"
                 />
               </button>
               <div className="ml-4">
@@ -181,7 +185,7 @@ const DashboardProfessionnelContent = () => {
             </div>
           </header>
 
-          {/* Contenu principal */}
+          {/* Main content */}
           {renderContent()}
         </main>
       </div>

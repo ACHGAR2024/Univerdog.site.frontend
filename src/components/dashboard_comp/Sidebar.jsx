@@ -12,7 +12,7 @@ const Sidebar = ({
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth >= 768); // Définissez la largeur pour le mobile ici
+      setIsMobile(window.innerWidth >= 768); 
     };
 
     window.addEventListener("resize", handleResize);

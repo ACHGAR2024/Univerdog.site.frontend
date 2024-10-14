@@ -21,7 +21,6 @@ const CartePlaces = ({ apiKey }) => {
   useEffect(() => {
     if (userData && userData.address) {
       setAdresseDepart(`${userData.address} ${userData.postal_code} le Mans`);
-      
     }
   }, [userData]);
 
@@ -45,7 +44,9 @@ const CartePlaces = ({ apiKey }) => {
   useEffect(() => {
     const fetchLieux = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/places");
+        const response = await axios.get(
+          "https://api.univerdog.site/api/places"
+        );
         const lieuxData = response.data.places || [];
 
         const marqueursAvecCoordonnees = await Promise.all(
@@ -127,13 +128,20 @@ const CartePlaces = ({ apiKey }) => {
     }
   };
 
- 
   const userHomeMarker = coordDepart
     ? {
         position: coordDepart,
-        popup: adresseDepart === `${userData.address} ${userData.postal_code} le Mans` ? "Votre adresse" : "Nouvelle adresse",
+        popup:
+          adresseDepart ===
+          `${userData.address} ${userData.postal_code} le Mans`
+            ? "Votre adresse"
+            : "Nouvelle adresse",
         icon: new L.divIcon({
-          html: adresseDepart === `${userData.address} ${userData.postal_code} le Mans` ?`<i class="fas fa-home text-2xl text-blue-700 mt-1 ml-1"></i>`:`<i class="fas fa-map-marker text-2xl text-red-700 mt-1 ml-2"></i>`,
+          html:
+            adresseDepart ===
+            `${userData.address} ${userData.postal_code} le Mans`
+              ? `<i class="fas fa-home text-2xl text-blue-700 mt-1 ml-1"></i>`
+              : `<i class="fas fa-map-marker text-2xl text-red-700 mt-1 ml-2"></i>`,
           iconSize: [38, 40],
           iconAnchor: [20, 40],
           popupAnchor: [0, -40],
@@ -163,62 +171,57 @@ const CartePlaces = ({ apiKey }) => {
           className="text-xs p-1 m-1 bg-blue-500 text-white rounded ml-2"
         >
           Calculer l&apos;itinéraire
-        </button><input
-        type="text"
-        placeholder="Rechercher..."
-        value={termeRecherche}
-        onChange={(e) => setTermeRecherche(e.target.value)}
-        className="mt-4 md:ml-10 -ml-2  text-xs md:w-56 opacity-80 rounded border z-50 bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-white"
-        style={{ zIndex: 1000 }}
-      />
+        </button>
+        <input
+          type="text"
+          placeholder="Rechercher..."
+          value={termeRecherche}
+          onChange={(e) => setTermeRecherche(e.target.value)}
+          className="mt-4 md:ml-10 -ml-2  text-xs md:w-56 opacity-80 rounded border z-50 bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-white"
+          style={{ zIndex: 1000 }}
+        />
       </form>
 
-      
-
       <div className="flex flex-row">
-
         <div
           className="h-1/2 w-48 text-xs absolute  bottom-5 left-5 mb-4 mr-4 transform overflow-y-auto opacity-80 rounded border z-50 bg-white dark:bg-gray-800 text-black dark:text-white border-black dark:border-white"
           style={{ zIndex: 1000, maxHeight: "calc(100vh - 11rem)" }}
         >
           <div className="info-panel   border-b-4 text-center p-4 overflow-y-auto">
-          {routeData?.features[0]?.properties ? (
-            <div>
-              <p>
-                <strong>
-                  <i className="fas fa-map-marker-alt"></i> Distance:
-                </strong>{" "}
-                {(
-                  routeData.features[0].properties.summary.distance / 1000
-                ).toFixed(2)}{" "}
-                km
-              </p>
-              <p>
-                <i className="fas fa-bicycle"></i>
-                <strong> Durée:</strong>{" "}
-                {(
-                  routeData.features[0].properties.summary.duration / 60
-                ).toFixed(2)}{" "}
-                minutes
-              </p>
-            </div>
-          ) : (
-            <p className="text-red-500">Veuillez cliquer sur un lieu</p>
-          )}
-        </div>
+            {routeData?.features[0]?.properties ? (
+              <div>
+                <p>
+                  <strong>
+                    <i className="fas fa-map-marker-alt"></i> Distance:
+                  </strong>{" "}
+                  {(
+                    routeData.features[0].properties.summary.distance / 1000
+                  ).toFixed(2)}{" "}
+                  km
+                </p>
+                <p>
+                  <i className="fas fa-bicycle"></i>
+                  <strong> Durée:</strong>{" "}
+                  {(
+                    routeData.features[0].properties.summary.duration / 60
+                  ).toFixed(2)}{" "}
+                  minutes
+                </p>
+              </div>
+            ) : (
+              <p className="text-red-500">Veuillez cliquer sur un lieu</p>
+            )}
+          </div>
           <ul className="list-disc ">
-            
             {marqueurs
               .filter((lieu) =>
-                lieu.title
-                  .toLowerCase()
-                  .includes(termeRecherche.toLowerCase())
+                lieu.title.toLowerCase().includes(termeRecherche.toLowerCase())
               )
               .map((lieu) => (
                 <li key={lieu.id} className="flex items-center border-b-2 ">
                   <img
                     className="h-10 w-10 m-2 object-cover rounded-lg animate-fadeIn"
-                    src={`http://127.0.0.1:8000${lieu.photo}`}
+                    src={`https://api.univerdog.site${lieu.photo}`}
                     alt={lieu.title}
                   />
                   <div>
@@ -228,17 +231,14 @@ const CartePlaces = ({ apiKey }) => {
                     >
                       {lieu.title}
                     </Link>
-                   
                   </div>
-                   
-                  
                 </li>
               ))}
           </ul>
         </div>
 
         <MapContainer
-          center={coordDepart || [48.00622, 0.19501]} 
+          center={coordDepart || [48.00622, 0.19501]}
           zoom={12}
           style={{ height: "100vh", width: "100%" }}
         >
@@ -303,7 +303,7 @@ const CartePlaces = ({ apiKey }) => {
                       <div className="flex items-center justify-center mt-3">
                         <img
                           className="h-10 object-cover rounded-lg animate-fadeIn"
-                          src={`http://127.0.0.1:8000${marqueur.photo}`}
+                          src={`https://api.univerdog.site${marqueur.photo}`}
                           alt={marqueur.title}
                         />
                       </div>

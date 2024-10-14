@@ -15,7 +15,7 @@ const ListeCategories = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/categories",
+          "https://api.univerdog.site/api/categories",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -35,7 +35,7 @@ const ListeCategories = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/categories/${id}`, {
+      await axios.delete(`https://api.univerdog.site/api/categories/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const ListeCategories = () => {
     try {
       if (isEditMode) {
         await axios.put(
-          `http://127.0.0.1:8000/api/categories/${currentCategory.id}`,
+          `https://api.univerdog.site/api/categories/${currentCategory.id}`,
           currentCategory,
           {
             headers: {
@@ -75,7 +75,7 @@ const ListeCategories = () => {
         );
       } else {
         await axios.post(
-          "http://127.0.0.1:8000/api/categories",
+          "https://api.univerdog.site/api/categories",
           currentCategory,
           {
             headers: {
@@ -87,12 +87,21 @@ const ListeCategories = () => {
       }
       setIsModalOpen(false);
       setCurrentCategory({ name_cat: "" });
-      const response = await axios.get("http://127.0.0.1:8000/api/categories", {
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      });
+      const response = await axios.get(
+        "https://api.univerdog.site/api/categories",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setCategories(response.data.categories || []);
     } catch (error) {
-      console.error("Erreur lors de l'ajout/mise à jour de la catégorie", error);
+      console.error(
+        "Erreur lors de l'ajout/mise à jour de la catégorie",
+        error
+      );
     }
   };
 
@@ -107,7 +116,9 @@ const ListeCategories = () => {
       id="categories"
       className="text-xs dark:bg-zinc-400 dark:text-gray-900 mt-8 bg-white rounded-lg shadow-md animate-slideIn mb-8 pt-5 w-screen md:p-9 sm:p-4"
     >
-      <h1 className="text-xl font-bold mb-6 dark:text-gray-800 pl-8">Liste des catégories</h1>
+      <h1 className="text-xl font-bold mb-6 dark:text-gray-800 pl-8">
+        Liste des catégories
+      </h1>
 
       <button
         onClick={() => openModal()}

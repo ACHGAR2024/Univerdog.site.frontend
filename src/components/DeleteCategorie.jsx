@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Notification from "../components/Notification"; // Assurez-vous que ce chemin est correct
+import Notification from "../components/Notification";
 
 const DeleteCategorie = () => {
   const { id } = useParams();
@@ -11,7 +11,7 @@ const DeleteCategorie = () => {
   useEffect(() => {
     const deleteCategorie = async () => {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/categories/${id}`, {
+        await axios.delete(`https://api.univerdog.site/api/categories/${id}`, {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",

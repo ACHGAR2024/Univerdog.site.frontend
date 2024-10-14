@@ -4,6 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import Notification from "./Notification";
+import { Link } from "react-router-dom";
 
 const EditPlace = () => {
   const { id } = useParams();
@@ -23,7 +24,7 @@ const EditPlace = () => {
     longitude: "",
     type: "",
   });
-  const [error, setError] = useState(null); // Ajout d'état pour gérer les erreurs
+  const [error, setError] = useState(null); // Add state to handle errors
 
   const { token } = useContext(AuthContext);
   const user = useContext(UserContext);
@@ -32,7 +33,7 @@ const EditPlace = () => {
     const fetchPlace = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/places/${id}`,
+          `https://api.univerdog.site/api/places/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -63,7 +64,7 @@ const EditPlace = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/categories`,
+          `https://api.univerdog.site/api/categories`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -82,7 +83,7 @@ const EditPlace = () => {
     fetchCategories();
   }, [id, token]);
 
-  // Vérification si l'utilisateur connecté est bien le propriétaire de la place
+  // Checking if the connected user is the owner of the place
   if (place && user && user.id !== place.user_id) {
     return (
       <div className="container mx-auto px-4 py-8 mt-20 mb-72 w-1/2">
@@ -157,7 +158,7 @@ const EditPlace = () => {
       formDataToSend.append("_method", "PUT");
 
       await axios.post(
-        `http://127.0.0.1:8000/api/places/${id}`,
+        `https://api.univerdog.site/api/places/${id}`,
         formDataToSend,
         {
           headers: {
@@ -207,7 +208,16 @@ const EditPlace = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-72 w-2/3">
-      <h1 className="text-3xl font-bold mb-8 text-black">Modifier place</h1>
+      {location.pathname !== "/dashboard" && (
+        <Link to="/dashboard">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-4">
+            <i className="fa-solid fa-arrow-left"></i> Retour
+          </button>
+        </Link>
+      )}
+      <h1 className="text-3xl font-bold mb-8 text-black dark:text-white">
+        Modifier place
+      </h1>
 
       {error && <div className="mb-4 text-red-600">{error}</div>}
 

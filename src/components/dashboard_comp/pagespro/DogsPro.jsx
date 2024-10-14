@@ -1,16 +1,16 @@
-import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import { useState, useEffect, useContext } from "react";
+import axios from "axios";
 import useFetchProfessionalId from "./hooks/proFetchProfessionalId";
 
 import { AuthContext } from "../../../context/AuthContext";
 
 const DogsPro = () => {
-    const { token } = useContext(AuthContext);
-    const professionalId = useFetchProfessionalId();
+  const { token } = useContext(AuthContext);
+  const professionalId = useFetchProfessionalId();
   const [patients, setPatients] = useState([]);
   const [photos, setPhotos] = useState([]);
   const [owners, setOwners] = useState({});
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true); // Optional: For loading state
 
   const generateSecureQRCodeURL = (dogId) => {
@@ -27,7 +27,7 @@ const DogsPro = () => {
 
         // Fetch appointments for this professional
         const appointmentsResponse = await axios.get(
-          `http://127.0.0.1:8000/api/appointments_pro/${professionalId}`,
+          `https://api.univerdog.site/api/appointments_pro/${professionalId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -45,13 +45,16 @@ const DogsPro = () => {
         ];
 
         // Fetch dogs data
-        const dogsResponse = await axios.get('http://127.0.0.1:8000/api/dogs', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const dogsResponse = await axios.get(
+          "https://api.univerdog.site/api/dogs",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
         // Filter dogs that have appointments with this professional
         const dogsData = dogsResponse.data.filter((dog) =>
@@ -60,7 +63,7 @@ const DogsPro = () => {
 
         // Fetch dogs' photos
         const photosResponse = await axios.get(
-          'http://127.0.0.1:8000/api/dogs-photos',
+          "https://api.univerdog.site/api/dogs-photos",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -74,13 +77,15 @@ const DogsPro = () => {
         // Get owners' data
         const userIds = [...new Set(dogsData.map((dog) => dog.user_id))];
         const ownerPromises = userIds.map((id) =>
-          axios.get(`http://127.0.0.1:8000/api/user/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          }).then((res) => ({ id, name: res.data.name }))
+          axios
+            .get(`https://api.univerdog.site/api/user/${id}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            })
+            .then((res) => ({ id, name: res.data.name }))
         );
         const ownersData = await Promise.all(ownerPromises);
 
@@ -95,7 +100,7 @@ const DogsPro = () => {
         setOwners(ownersMap);
         setLoading(false); // Stop loading
       } catch (error) {
-        console.error('Error fetching dogs, photos, or owners:', error);
+        console.error("Error fetching dogs, photos, or owners:", error);
         setLoading(false); // Stop loading in case of error
       }
     };
@@ -105,11 +110,13 @@ const DogsPro = () => {
 
   const getPhotoUrl = (dogId) => {
     const photo = photos.find((photo) => photo.dog_id === dogId);
-    return photo ? `http://127.0.0.1:8000/storage/dogs_photos/${photo.photo_name_dog}` : null;
+    return photo
+      ? `https://api.univerdog.site/storage/dogs_photos/${photo.photo_name_dog}`
+      : null;
   };
 
   const filteredPatients = patients.filter((patient) => {
-    const ownerName = owners[patient.user_id] || 'Inconnu';
+    const ownerName = owners[patient.user_id] || "Inconnu";
     return (
       patient.name_dog.toLowerCase().includes(searchTerm.toLowerCase()) ||
       ownerName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -168,11 +175,13 @@ const DogsPro = () => {
                 />
               </td>
               <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                <p className="text-gray-900 whitespace-no-wrap">{patient.name_dog}</p>
+                <p className="text-gray-900 whitespace-no-wrap">
+                  {patient.name_dog}
+                </p>
               </td>
               <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                 <p className="text-gray-900 whitespace-no-wrap">
-                  {owners[patient.user_id] || 'Inconnu'}
+                  {owners[patient.user_id] || "Inconnu"}
                 </p>
               </td>
               <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -180,7 +189,7 @@ const DogsPro = () => {
                   href={generateSecureQRCodeURL(patient.id)}
                   className="text-blue-600 hover:text-blue-800"
                 >
-                  {patient.sex === 'Femelle'
+                  {patient.sex === "Femelle"
                     ? `Clique ici pour accéder à toutes les informations sur cette chienne ${patient.name_dog.toUpperCase()} !`
                     : `Clique ici pour accéder à toutes les informations sur ce chien ${patient.name_dog.toUpperCase()} !`}
                 </a>
@@ -192,7 +201,5 @@ const DogsPro = () => {
     </div>
   );
 };
-
-
 
 export default DogsPro;

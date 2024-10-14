@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function Forgotpw() {
   const [email, setEmail] = useState("");
@@ -9,30 +10,32 @@ function Forgotpw() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Afficher l'indicateur de chargement
+    setIsLoading(true); // Show the loading indicator
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/forgotpw/" + email
+        "https://api.univerdog.site/api/forgotpw/" + email
       );
-      //alert("Email de réinitialisation envoyé, valable pour 60 minutes.");
-      console.log(response.data); // Afficher les données de la réponse
+
+      //(response.data); // Display the response data
       setMessage(
         response.data.message ||
-          "Un email de réinitialisation de mot de passe a été envoyé. valable pour 60 minutes."
+          "An email to reset your password has been sent. Valid for 60 minutes."
       );
       setErrorMessage("");
-      // Redirection ou affichage d'un message de confirmation
+      // Redirect or display a confirmation message
     } catch (error) {
       if (error.response) {
-        // Gérer les erreurs spécifiques du serveur
+        // Handle server specific errors
         switch (error.response.status) {
-          case 422: // Validation error (ex: email invalide)
+          case 422: // Validation error (ex: invalid email)
             setErrorMessage(error.response.data.errors.email[0]);
             console.error(error);
             break;
-          case 404: // Email non trouvé
-            setErrorMessage("Aucun compte trouvé avec cet email.");
+          case 404: // Email not found
+            setErrorMessage(
+              "Aucun compte n'a été associé avec cette adresse e-mail."
+            );
             console.error(error);
             break;
           default:
@@ -47,7 +50,7 @@ function Forgotpw() {
       }
       console.error(error);
     } finally {
-      setIsLoading(false); // Cacher l'indicateur de chargement
+      setIsLoading(false); // Hide the loading indicator
     }
   };
 
@@ -106,6 +109,14 @@ function Forgotpw() {
                 "Envoyer"
               )}
             </button>
+            <Link to="/">
+              <button
+                type="button"
+                className="mt-3 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded w-full"
+              >
+                Retour
+              </button>
+            </Link>
           </div>
           {message && (
             <p className="text-green-500 text-center mt-2">{message}</p>

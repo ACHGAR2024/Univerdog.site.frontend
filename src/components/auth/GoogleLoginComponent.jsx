@@ -5,13 +5,10 @@ const GoogleLoginComponent = () => {
   const handleSuccess = (response) => {
     const token = response.credential;
     const user = jwt_decode(token);
-    console.log("Utilisateur connecté avec succès : ", user);
-    // Vous pouvez gérer l'utilisateur ici (par exemple, en le sauvegardant dans un état ou dans un contexte)
+    console.log("Utilisateur connecté avec succès : ", user.id);
   };
 
-  const handleError = () => {
-    console.log("Erreur lors de la connexion");
-  };
+  const handleError = () => {};
 
   return (
     <GoogleOAuthProvider clientId="505686323657-h36l1ttme6v4rev761odsejfgovehm04.apps.googleusercontent.com">

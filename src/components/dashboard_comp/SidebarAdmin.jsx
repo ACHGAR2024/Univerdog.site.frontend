@@ -1,24 +1,18 @@
-import { useContext, /*useState*/  } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { AuthContext } from "../../context/AuthContext";
 
-const SidebarAdmin = ({
-  isSidebarOpen,
-  setCurrentSection,
-  currentSection,
-  //toggleSidebar,
-}) => {
+const SidebarAdmin = ({ isSidebarOpen, setCurrentSection, currentSection }) => {
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  //const [isMobile] = useState(false);
+
   const handleLogout = () => {
     logout(navigate);
   };
 
   const handleNavigation = (section) => {
     setCurrentSection(section);
-    //if (!isSidebarOpen) toggleSidebar();
   };
   return (
     <aside
@@ -30,11 +24,11 @@ const SidebarAdmin = ({
       <div className="mt-5 pl-6">
         <div className="flex justify-center mb-5">
           <a href="/">
-          <img
-            src="src/images/logo.png"
-            alt="UniverDog Logo"
-            className=" mr-5 w-20 h-14 rounded-full"
-          />
+            <img
+              src="src/images/logo.png"
+              alt="UniverDog Logo"
+              className=" mr-5 w-20 h-14 rounded-full"
+            />
           </a>
         </div>
         <nav className="space-y-1 text-xs">
@@ -44,10 +38,8 @@ const SidebarAdmin = ({
                 ? "css-1x3v3vy flex items-center px-2 py-2 rounded-lg"
                 : "flex items-center hover:bg-gray-700 hover:dark:bg-slate-5000 px-2 py-2 rounded-lg transition duration-200"
             }`}
-            
             onClick={() => {
               setCurrentSection("AdminDashboard");
-              //if (!isMobile) toggleSidebar(false);
             }}
           >
             <i className="fas fa-magic fa-fw mr-1"></i>
@@ -64,7 +56,6 @@ const SidebarAdmin = ({
             }`}
             onClick={() => {
               setCurrentSection("ListeCategories");
-              //if (!isMobile) toggleSidebar(false);
             }}
           >
             <i className="fa fa-list fa-fw mr-2"></i>
@@ -122,7 +113,6 @@ const SidebarAdmin = ({
             }`}
             onClick={() => {
               setCurrentSection("ListeCategoriesProducts");
-              //if (!isMobile) toggleSidebar(false);
             }}
           >
             <i className="fa fa-list-alt fa-fw mr-2"></i>

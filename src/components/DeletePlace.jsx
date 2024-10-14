@@ -14,16 +14,19 @@ const DeletePlace = () => {
     const deletePlace = async () => {
       try {
         // Delete all photos associated with the place
-        await axios.delete(`http://127.0.0.1:8000/api/places/${id}/photos`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        await axios.delete(
+          `https://api.univerdog.site/api/places/${id}/photos`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
         // Delete the place itself
-        await axios.delete(`http://127.0.0.1:8000/api/places/${id}`, {
+        await axios.delete(`https://api.univerdog.site/api/places/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

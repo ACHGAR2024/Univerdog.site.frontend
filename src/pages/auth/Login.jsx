@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function Login() {
+  const location = useLocation();
   const handeleSubmit = (e) => {
     e.preventDefault();
-    console.log(new FormData(e.target));
+    //(new FormData(e.target));
   };
 
   return (
@@ -104,19 +105,27 @@ function Login() {
         <div className="text-center mt-4">
           <p className="text-white text-xs">
             En vous connectant, vous acceptez nos{" "}
-            <a
-              href="/terms"
-              className="text-orange_univerdog hover:text-jaune_univerdog_01"
+            <Link
+              to="/terms"
+              className={
+                location.pathname === "/terms"
+                  ? "hover:text-white"
+                  : "text-orange_univerdog hover:text-jaune_univerdog_01"
+              }
             >
               Conditions d&apos;utilisation
-            </a>{" "}
+            </Link>{" "}
             et notre{" "}
-            <a
-              href="/privacy"
-              className="text-orange_univerdog hover:text-jaune_univerdog_01"
+            <Link
+              to="/privacy"
+              className={
+                location.pathname === "/privacy"
+                  ? "hover:text-white"
+                  : "text-orange_univerdog hover:text-jaune_univerdog_01"
+              }
             >
               Politique de confidentialité
-            </a>
+            </Link>
             .
           </p>
         </div>

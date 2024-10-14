@@ -4,8 +4,6 @@ import Notiflix from "notiflix";
 import Notification from "../../../components/Notification";
 import { UserContext } from "../../../context/UserContext";
 
-//import { Link } from "react-router-dom";
-
 const MessagesAdmin = () => {
   const [messages, setMessages] = useState([]);
   const [places, setPlaces] = useState([]);
@@ -14,13 +12,15 @@ const MessagesAdmin = () => {
   const [replyContent, setReplyContent] = useState("");
   const [notification, setNotification] = useState(null);
   const U_id = useContext(UserContext);
- 
 
   const fetchMessages = useCallback(async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/messages", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const response = await axios.get(
+        "https://api.univerdog.site/api/messages",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       setMessages(response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des messages", error);
@@ -32,9 +32,12 @@ const MessagesAdmin = () => {
 
   const fetchPlaces = useCallback(async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/places", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const response = await axios.get(
+        "https://api.univerdog.site/api/places",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       setPlaces(response.data.places || response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des places", error);
@@ -65,14 +68,10 @@ const MessagesAdmin = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/messages/${id}`, {
+      await axios.delete(`https://api.univerdog.site/api/messages/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setMessages(messages.filter((message) => message.id !== id));
-      
-      
-       
-    
     } catch (error) {
       console.error("Erreur lors de la suppression du message", error);
       setNotification({
@@ -94,7 +93,7 @@ const MessagesAdmin = () => {
         setReplyContent("");
       },
       () => {
-        // Action à prendre si l'utilisateur annule la suppression
+        // Action to take if the user cancels the deletion
       },
       {
         width: "320px",
@@ -119,9 +118,8 @@ const MessagesAdmin = () => {
     e.preventDefault();
     if (replyContent.trim()) {
       try {
-        //console.log('Submitting reply...');
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/messages",
+          "https://api.univerdog.site/api/messages",
           {
             place_id: messages.find((m) => m.id === replyToId)?.place_id,
             content: replyContent,
@@ -133,12 +131,11 @@ const MessagesAdmin = () => {
             },
           }
         );
-        //console.log('Reply submitted:', response.data);
+
         setMessages([...messages, response.data]);
         setReplyToId(null);
         setReplyContent("");
         Notiflix.Notify.success("Réponse envoyée avec succès.");
-       
       } catch (error) {
         console.error("Erreur lors de la soumission de la réponse", error);
         Notiflix.Notify.failure("Erreur lors de la soumission de la réponse.");
@@ -151,18 +148,19 @@ const MessagesAdmin = () => {
     return (
       found || {
         title: "Place inconnue",
-        photo: "https://example.com/default.jpg",
+        photo: "https://picsum.photos/200/300",
       }
     );
   };
 
   return (
     <div className="container mx-auto px-4 py-8  mb-20 dark:text-gray-900">
-     
       {notification && (
         <Notification type={notification.type} message={notification.message} />
       )}
-      <h1 className="text-xl font-bold mb-6 dark:text-white">Gestion des Messages</h1>
+      <h1 className="text-xl font-bold mb-6 dark:text-white">
+        Gestion des Messages
+      </h1>
 
       <div className="mb-4">
         <label className="mr-2 dark:text-white">Filtrer par:</label>
@@ -186,9 +184,6 @@ const MessagesAdmin = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ID
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Place
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -209,9 +204,6 @@ const MessagesAdmin = () => {
               return (
                 <React.Fragment key={message.id}>
                   <tr className="animate-fadeIn">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {message.id}
-                    </td>
                     <td className="px-6 py-4">
                       <a
                         href={`/fiche-place/${place.id}`}
@@ -221,16 +213,13 @@ const MessagesAdmin = () => {
                           <div className="flex-shrink-0 h-10 w-10">
                             <img
                               className="h-12 w-12 rounded"
-                              src={`http://127.0.0.1:8000${place.photo}`}
+                              src={`https://api.univerdog.site${place.photo}`}
                               alt={place.title}
                             />
                           </div>
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900">
                               {place.title}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              ID: {message.place_id}
                             </div>
                           </div>
                         </div>

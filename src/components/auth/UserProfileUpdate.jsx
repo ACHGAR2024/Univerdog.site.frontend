@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom"; //, useNavigate
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 import { UserContext } from "../../context/UserContext";
 import Notification from "../../components/Notification";
-//import { useNavigate } from "react-router-dom";
+
 import { Link } from "react-router-dom";
 
 const UserProfileUpdate = () => {
@@ -22,18 +22,20 @@ const UserProfileUpdate = () => {
   const { token } = useContext(AuthContext);
   const user = useContext(UserContext);
   const { id } = useParams();
-//const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/user", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/user",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
         if (response.data && response.data.data && response.data.data.user) {
           setUserData({
@@ -95,13 +97,8 @@ const UserProfileUpdate = () => {
         throw new Error("Authentication token not defined");
       }
 
-      console.log(
-        "Submitting form with data:",
-        Object.fromEntries(formData.entries())
-      );
-
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/update/${userId}`,
+        `https://api.univerdog.site/api/update/${userId}`,
         formData,
         {
           headers: {
@@ -112,14 +109,14 @@ const UserProfileUpdate = () => {
         }
       );
 
-      console.log("Response:", response.data);
+      //("Response:", response.data);
 
       if (response.status === 200) {
         Notification.success("Compte modifié avec succès !");
-        
+
         /*setTimeout(() => {
-          navigate("/dashboard");
-        }, 2000);*/
+          window.location.reload(false);
+        }, 720);*/
 
         const updatedUser = response.data.user;
         setUserData({
@@ -132,9 +129,8 @@ const UserProfileUpdate = () => {
           postal_code: updatedUser.postal_code,
           phone: updatedUser.phone,
         });
-        
-          //navigate("/dashboard");
-       
+
+        //navigate("/dashboard");
       } else {
         throw new Error("Failed to update user profile");
       }
@@ -165,26 +161,25 @@ const UserProfileUpdate = () => {
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
         encType="multipart/form-data"
       >
-        {/* Photo de profil /storage/images/avatar_1724322794.png */}
+        {/* Photo profil /storage/images/avatar_1724322794.png */}
         <div className="text-right mb-4">
-         
-            { !userData.image ? (
-              <img
-                src={`http://127.0.0.1:8000${user.image}`}
-                alt="Photo de profil"
-                className="w-24 h-24 rounded-full border-4 border-white shadow-lg"
-              />
-            ):(
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                alt="Photo de profil"
-                className="w-24 h-24 rounded-full border-4 border-white shadow-lg"
-              />
-            )}
-              
-         </div>
+          {!userData.image ? (
+            <img
+              src={`https://api.univerdog.site${user.image}`}
+              alt="Photo de profil"
+              className="w-24 h-24 rounded-full border-4 border-white shadow-lg"
+            />
+          ) : (
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+              alt="Photo de profil"
+              className="w-24 h-24 rounded-full border-4 border-white shadow-lg"
+            />
+          )}
+        </div>
 
-        <div className="mb-4">{/*"https://cdn-icons-png.flaticon.com/512/149/149071.png"*/}
+        <div className="mb-4">
+          {/*"https://cdn-icons-png.flaticon.com/512/149/149071.png"*/}
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
             htmlFor="name"
@@ -233,7 +228,7 @@ const UserProfileUpdate = () => {
           />
         </div>
 
-        {/* Champs supplémentaires */}
+        {/* Additional fields */}
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"

@@ -16,31 +16,34 @@ const UserProvider = ({ children }) => {
     }
     const fetchUser = async () => {
       if (!token) {
-        console.log("______    ____      ______   ");
-        console.log("|  _  |  |  _  |   |  ___ |  ");
-        console.log("| | | |  | | | |   | |  __     ");
-        console.log("| | | |  | | | |   | | |_ |  ");
-        console.log("| |/ /   | |_| |   | |__| |  ");
-        console.log("|___/    |_____|   |______/   ");
-        console.log("       UniverDog");
+        //("______    ____      ______   ");
+        //("|  _  |  |  _  |   |  ___ |  ");
+        //("| | | |  | | | |   | |  __     ");
+        //("| | | |  | | | |   | | |_ |  ");
+        //("| |/ /   | |_| |   | |__| |  ");
+        //("|___/    |_____|   |______/   ");
+        //("       UniverDog");
 
         return;
       }
 
-      // Configurer les en-têtes pour la requête
+      // Configure headers for the request
       try {
-        console.log("Authorization", `Bearer ${token}`);
+        //("Authorization", `Bearer ${token}`);
 
-        const response = await axios.get("http://127.0.0.1:8000/api/user", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/user",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+            },
+          }
+        );
 
-        console.log("Response Data:", response.data);
+        //("Response Data:", response.data);
         setUser(response.data.data.user);
       } catch (error) {
         console.error(

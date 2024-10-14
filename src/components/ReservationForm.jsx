@@ -26,7 +26,7 @@ const ReservationForm = ({ isEditing }) => {
       const fetchReservation = async () => {
         try {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/places_reservations/${id}`,
+            `https://api.univerdog.site/api/places_reservations/${id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -55,12 +55,15 @@ const ReservationForm = ({ isEditing }) => {
 
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/events`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          `https://api.univerdog.site/api/events`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        );
         setEvents(response.data.events);
       } catch (error) {
         setError("Erreur lors de la récupération des événements");
@@ -76,8 +79,8 @@ const ReservationForm = ({ isEditing }) => {
 
     try {
       const endpoint = isEditing
-        ? `http://127.0.0.1:8000/api/places_reservations/${id}`
-        : "http://127.0.0.1:8000/api/places_reservations";
+        ? `https://api.univerdog.site/api/places_reservations/${id}`
+        : "https://api.univerdog.site/api/places_reservations";
 
       const method = isEditing ? "put" : "post";
 

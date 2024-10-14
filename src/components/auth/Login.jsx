@@ -2,20 +2,20 @@ import { useForm } from "react-hook-form";
 import axios from "../../config/axiosConfig";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 
 const Login = ({ onLogin }) => {
-  
+  const location = useLocation();
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loginUrl, setLoginUrl] = useState(null); // Correction ici
+  const [loginUrl, setLoginUrl] = useState(null);
 
   useEffect(() => {
-    // Récupérer l'URL de connexion Google
-    fetch("http://127.0.0.1:8000/api/auth/google", {
+    // Retrieve Google login URL
+    fetch("https://api.univerdog.site/api/auth/google", {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -31,10 +31,10 @@ const Login = ({ onLogin }) => {
       })
       .then((data) => {
         setLoginUrl(data.url);
-        loginUrl; // Mettre à jour l'URL de connexion Google
+        loginUrl; // Update Google login URL
       })
       .catch((error) => console.error(error));
-  }, [ setLoginUrl, loginUrl]);
+  }, [setLoginUrl, loginUrl]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -106,35 +106,40 @@ const Login = ({ onLogin }) => {
     >
       <div className="flex flex-col items-center justify-center h-screen">
         <div className="flex flex-col items-center justify-center max-w-md mx-auto bg-black shadow-md rounded-md px-4 pt-4 pb-4 text-sm bg-opacity-60 dark:bg-gray-800">
-          <form onSubmit={handleSubmit(onSubmit)} className="w-96 max-w-md mx-auto bg-black shadow-md rounded-md px-4 pt-4 pb-4 text-sm bg-opacity-60 dark:bg-gray-800 dark:text-white">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-96 max-w-md mx-auto bg-black shadow-md rounded-md px-4 pt-4 pb-4 text-sm bg-opacity-60 dark:bg-gray-800 dark:text-white"
+          >
             <div className="mb-4">
-              <label className="block text-gray-200 dark:text-gray-300">Email</label>
+              <label className="block text-gray-200 dark:text-gray-300">
+                Email
+              </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                   <i className="fa fa-envelope-o fa-fw pr-1 dark:text-gray-400"></i>
                 </span>
                 <input
-                className="form-control pl-10 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                type="text"
-                placeholder="Adresse e-mail"
-                {...register("email", { required: true })}
-              />
+                  className="form-control pl-10 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  type="text"
+                  placeholder="Adresse e-mail"
+                  {...register("email", { required: true })}
+                />
               </div>
             </div>
             <div className="mb-4">
-            <label className="block text-gray-200 dark:text-gray-300">
-              Mot de passe
-            </label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <i className="fa fa-key fa-fw pr-1 dark:text-gray-400"></i>
-              </span>
-              <input
-                className="form-control pl-10 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                type={showPassword ? "text" : "password"}
-                placeholder="Mot de passe"
-                {...register("password", { required: true })}
-              />
+              <label className="block text-gray-200 dark:text-gray-300">
+                Mot de passe
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                  <i className="fa fa-key fa-fw pr-1 dark:text-gray-400"></i>
+                </span>
+                <input
+                  className="form-control pl-10 p-2 rounded-md w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Mot de passe"
+                  {...register("password", { required: true })}
+                />
                 <span
                   className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                   onClick={togglePasswordVisibility}
@@ -173,38 +178,54 @@ const Login = ({ onLogin }) => {
             </div>
           </form>
           <div className="text-center mt-4">
-          <button
-  className="bg-white hover:bg-gray-100 text-gray-800 font-medium py-2 px-4 rounded-md inline-flex items-center"
-  onClick={() => login()}
-> <span>Se connecter avec &nbsp;</span>
-  <img
-    src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" 
-    alt="Google logo"
-    width="50"
-    height="50"
-    className="mr-2"
-  />
- 
-</button>
+            <button
+              className="bg-white hover:bg-gray-100 text-gray-800 font-medium py-2 px-4 rounded-md inline-flex items-center"
+              onClick={() => login()}
+            >
+              {" "}
+              <span>Se connecter avec &nbsp;</span>
+              <img
+                src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+                alt="Google logo"
+                width="50"
+                height="50"
+                className="mr-2"
+              />
+            </button>
             {message && <p className="text-red-500 mt-8">{message}</p>}
           </div>
           <div className="text-center mt-4">
             <p className="text-white text-xs">
               En vous connectant, vous acceptez nos{" "}
-              <a
-                href="/terms"
-                className="text-orange_univerdog hover:text-jaune_univerdog_01"
+              <Link
+                to="/terms"
+                className={
+                  location.pathname === "/terms"
+                    ? "hover:text-white"
+                    : "text-orange_univerdog hover:text-jaune_univerdog_01"
+                }
               >
-                Conditions d&#39;utilisation
-              </a>{" "}
+                Conditions d&apos;utilisation
+              </Link>{" "}
               et notre{" "}
-              <a
-                href="/privacy"
-                className="text-orange_univerdog hover:text-jaune_univerdog_01"
+              <Link
+                to="/privacy"
+                className={
+                  location.pathname === "/privacy"
+                    ? "hover:text-white"
+                    : "text-orange_univerdog hover:text-jaune_univerdog_01"
+                }
               >
                 Politique de confidentialité
-              </a> 
-              
+              </Link>
+              <Link to="/">
+                <button
+                  type="button"
+                  className="mt-3 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded w-full"
+                >
+                  Retour
+                </button>
+              </Link>
             </p>
           </div>
         </div>

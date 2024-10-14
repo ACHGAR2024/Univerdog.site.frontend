@@ -9,11 +9,11 @@ const RegisterForm = () => {
   });
 
   useEffect(() => {
-    console.log("checkedItems", checkedItems);
+    //("checkedItems", checkedItems);
   }, [checkedItems]);
 
   const handleFormData = (data) => {
-    console.log("data", data);
+    //("data", data);
     setLocationData({
       city: data.city,
       departement: data.departement,
@@ -22,7 +22,6 @@ const RegisterForm = () => {
 
   return (
     <div className="UserEdit">
-    
       <form>
         <h2>Vos Coordonnées</h2>
 
@@ -44,7 +43,10 @@ const RegisterForm = () => {
 
         {/* Other form fields can go here */}
 
-        <button type="submit" className="ml-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">
+        <button
+          type="submit"
+          className="ml-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+        >
           Soumettre
         </button>
       </form>

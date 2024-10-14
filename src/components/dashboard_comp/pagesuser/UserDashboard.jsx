@@ -41,10 +41,10 @@ const QuickActions = () => (
     <h2 className="text-2xl font-bold mb-4 dark:text-black">Actions rapides</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <a
-        href="/dogs"
+        href="/evenements"
         className="bg-blue-500 hover:bg-blue-600  font-bold py-2 px-4 rounded transition-colors duration-300 text-center"
       >
-        <i className="fa fa-plus-circle fa-fw pr-1"></i> Ajouter un chien
+        <i className="fa fa-plus-circle fa-fw pr-1"></i> Evénements et séjours
       </a>
       <a
         href="/messages-management"
@@ -68,31 +68,31 @@ const QuickActions = () => (
   </div>
 );
 const UserDashboard = () => {
-  
-
-
   const [totalPatients, setUniqueDogs] = useState(0); // Initialisation à 0
   const [appointmentsThisWeek, setAppointmentsThisWeekConfirmed] = useState(0); // Initialisation à 0
 
   const [totalAppointments, setAppointmentsAwaiting] = useState(0); // Initialisation à 0
 
-  const [totalProfessionals,setTotalProfessionals] = useState(0);
+  const [totalProfessionals, setTotalProfessionals] = useState(0);
   const { token } = useContext(AuthContext);
   const user = useContext(UserContext);
- const [MyDogs, setMyDogs] = useState([]);
+  const [MyDogs, setMyDogs] = useState([]);
 
   useEffect(() => {
     const fetchTotalDogUsers = async () => {
       if (!user || !user.id) return;
-    
+
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/dogs", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/dogs",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
         const MyDogs = response.data.filter((dog) => dog.user_id === user.id);
         setMyDogs(MyDogs);
         const totalDogs = response.data.filter(
@@ -100,21 +100,20 @@ const UserDashboard = () => {
         ).length;
         setUniqueDogs(totalDogs);
         const dogsList = response.data
-          .filter(dog => dog.user_id === user.id)
-          .map(dog => ({id: dog.id, name: dog.name_dog}));
-        console.log("Liste des chiens de l'utilisateur", dogsList);
-    
+          .filter((dog) => dog.user_id === user.id)
+          .map((dog) => ({ id: dog.id, name: dog.name_dog }));
+
         // Appel de fetchDashboardData avec dogsList
         fetchDashboardData(dogsList);
       } catch (error) {
         console.error("Erreur lors de la création de la page", error);
       }
     };
-    
+
     const fetchDashboardData = async (dogsList) => {
       try {
         const appointmentsResponse = await axios.get(
-          `http://127.0.0.1:8000/api/appointments`,
+          `https://api.univerdog.site/api/appointments`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -129,36 +128,42 @@ const UserDashboard = () => {
             appointment.status === "En attente" &&
             dogsList.some((dog) => dog.id === appointment.dog_id)
         );
-        console.log("awaitingAppointments ==========>", awaitingAppointments);
+
         setAppointmentsAwaiting(awaitingAppointments.length);
-    
+
         // Set the total number of appointments this week confirmed
         const thisWeekConfirmedAppointments = appointmentsResponse.data.filter(
           (appointment) =>
             new Date(appointment.date_appointment).getWeekNumber() ===
-              new Date().getWeekNumber() && appointment.status === "Confirmé" &&
-              dogsList.some((dog) => dog.id === appointment.dog_id)
+              new Date().getWeekNumber() &&
+            appointment.status === "Confirmé" &&
+            dogsList.some((dog) => dog.id === appointment.dog_id)
         ).length;
-        console.log("thisWeekConfirmedAppointments ==========>", thisWeekConfirmedAppointments);
+
         setAppointmentsThisWeekConfirmed(thisWeekConfirmedAppointments);
       } catch (error) {
         console.error("Erreur lors de la création de la page", error);
       }
     };
-    
-    
+
     const fetchTotalProfessionals = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/professionals", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/professionals",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
         setTotalProfessionals(response.data.length);
       } catch (error) {
-        console.error("Erreur lors de la récupération du nombre total de professionnels", error);
+        console.error(
+          "Erreur lors de la récupération du nombre total de professionnels",
+          error
+        );
       }
     };
     fetchTotalProfessionals();
@@ -169,7 +174,6 @@ const UserDashboard = () => {
   return (
     <>
       <React.Fragment>
-      
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-5">
           {totalPatients !== undefined && (
             <DashboardCard2
@@ -210,7 +214,7 @@ const UserDashboard = () => {
 
           <DashboardCard2
             title="Professionnels sur le site"
-            value={totalProfessionals} 
+            value={totalProfessionals}
             icon={{
               name: "fa-user-plus",
               bg: "bg-red-100",
@@ -222,30 +226,25 @@ const UserDashboard = () => {
         <QuickActions />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-10">
-         {MyDogs.map ((dog) => (
-           <DashboardCard 
-           key={dog.id}
-           title={dog.sex}
-          
-           name={dog.name_dog}
-           icon={{
-             name: "fa-dog",
-             bg: "bg-red-100",
-             color: "text-red-500",
-           }}
-           change={{ text: "", color: "text-red-500" }}
-           />
-         ))}
-       
-         
+          {MyDogs.map((dog) => (
+            <DashboardCard
+              key={dog.id}
+              title={dog.sex}
+              name={dog.name_dog}
+              icon={{
+                name: "fa-dog",
+                bg: "bg-red-100",
+                color: "text-red-500",
+              }}
+              change={{ text: "", color: "text-red-500" }}
+            />
+          ))}
         </div>
       </React.Fragment>
       <div></div>
     </>
   );
 };
-
-
 
 DashboardCard2.propTypes = {
   title: PropTypes.string.isRequired,
@@ -263,7 +262,7 @@ DashboardCard2.propTypes = {
 
 DashboardCard.propTypes = {
   title: PropTypes.string.isRequired,
-  name : PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
   icon: PropTypes.shape({
     bg: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,

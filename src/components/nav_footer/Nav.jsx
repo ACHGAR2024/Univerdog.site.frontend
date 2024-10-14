@@ -8,6 +8,7 @@ import { AuthContext } from "../../context/AuthContext";
 const Nav = () => {
   const [showMenu, setShowMenu] = useState(false);
   const location = useLocation();
+  
   const { logout } = useContext(AuthContext);
   const { token } = useContext(AuthContext);
   const navigate = useNavigate();

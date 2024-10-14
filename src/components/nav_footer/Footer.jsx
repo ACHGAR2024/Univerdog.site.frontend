@@ -1,14 +1,34 @@
+import { Link, useLocation } from "react-router-dom";
 function Footer() {
+  const location = useLocation();
   return (
     <>
       <footer className="fixed bottom-0 w-full bg-opacity-30 bg-slate-700 text-white text-xs poetsen-one-regular pb-2">
         <div className="flex justify-between items-center w-full px-4 py-2">
           {/* Copyright */}
           <div className="flex items-center mt-1">Copyright © 2024</div>
-          {/* Mentions legales */}
-          <div className="flex items-center mt-1 hover:text-orange-400"><a href="/mentions_legales">Mentions légales</a></div>
-         {/* CCGPV */}
-          <div className="flex items-center mt-1 hover:text-orange-400"><a href="/cgpv">CCGPV</a></div>
+          {/* Legal notices */}
+          <Link
+            to="/mentions_legales"
+            className={`
+              ${
+                location.pathname === "/mentions_legales"
+                  ? "hover:text-white"
+                  : ""
+              }
+            `}
+          >
+            Mentions légales
+          </Link>
+          {/* CCGPV */}
+          <Link
+            to="/cgpv"
+            className={`
+              ${location.pathname === "/cgpv" ? "hover:text-white" : ""}
+            `}
+          >
+            CCGPV
+          </Link>
           <div className="flex items-center pb-1">
             {/* Linkedin */}
             <a

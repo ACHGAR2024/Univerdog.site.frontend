@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const SectionContext = createContext();
 
 const SectionProvider = ({ children }) => {
-  const [currentSection, setCurrentSection] = useState('userdashboard'); // Valeur initiale 'userdashboard'
+  const [currentSection, setCurrentSection] = useState('userdashboard'); // Initial value 'userdashboard'
 
   return (
     <SectionContext.Provider value={{ currentSection, setCurrentSection }}>

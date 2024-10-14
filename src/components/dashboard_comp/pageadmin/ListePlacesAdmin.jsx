@@ -6,31 +6,34 @@ import Notiflix from "notiflix";
 
 const ListePlacesAdmin = () => {
   const [places, setPlaces] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // État pour le terme de recherche
+  const [searchTerm, setSearchTerm] = useState(""); 
   const { token } = useContext(AuthContext);
 
   const fetchPlaces = useCallback(async () => {
     try {
-        const response = await axios.get("http://127.0.0.1:8000/api/places", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-        });
-        setPlaces(response.data.places || []);
+      const response = await axios.get(
+        "https://api.univerdog.site/api/places",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      setPlaces(response.data.places || []);
     } catch (error) {
-        console.error("Erreur lors de la récupération des places", error);
+      console.error("Erreur lors de la récupération des places", error);
     }
-}, [token]);
+  }, [token]);
 
-useEffect(() => {
+  useEffect(() => {
     fetchPlaces();
-}, [fetchPlaces]);
+  }, [fetchPlaces]);
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/places/${id}`, {
+      await axios.delete(`https://api.univerdog.site/api/places/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -42,7 +45,7 @@ useEffect(() => {
     }
 
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/places/${id}/photos`, {
+      await axios.delete(`https://api.univerdog.site/api/places/${id}/photos`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -50,7 +53,10 @@ useEffect(() => {
       });
       fetchPlaces();
     } catch (error) {
-      console.error("Erreur lors de la suppression des photos de la place", error);
+      console.error(
+        "Erreur lors de la suppression des photos de la place",
+        error
+      );
     }
   };
 
@@ -64,15 +70,16 @@ useEffect(() => {
         handleDelete(id);
       },
       () => {
-        // Action à prendre si l'utilisateur annule la suppression
+        // Action to take if the user cancels the deletion
       }
     );
   };
 
-  // Filtrer les lieux selon le terme de recherche
-  const filteredPlaces = places.filter((place) =>
-    place.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    place.description.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filter places according to search term
+  const filteredPlaces = places.filter(
+    (place) =>
+      place.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      place.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -84,7 +91,7 @@ useEffect(() => {
         Gestion des lieux pour chien
       </h1>
 
-      {/* Champ de recherche */}
+      {/* Search field */}
       <div className="mb-4 px-8">
         <input
           type="text"
@@ -116,11 +123,11 @@ useEffect(() => {
                 <td className="py-3 px-6 text-left whitespace-nowrap">
                   <span className="font-medium">
                     <img
-                      src={`http://127.0.0.1:8000${place.photo}`}
+                      src={`https://api.univerdog.site${place.photo}`}
                       alt={place.title}
                       className="w-20 h-20 rounded-lg object-cover hover:cursor-zoom-in"
                       onClick={() =>
-                        window.open(`http://127.0.0.1:8000${place.photo}`)
+                        window.open(`https://api.univerdog.site${place.photo}`)
                       }
                     />
                   </span>
@@ -168,7 +175,9 @@ useEffect(() => {
                   </span>
                 </td>
                 <td className="py-3 px-6 text-center">
-                  <span className="font-medium">{place.description.substring(0, 20)}...</span>
+                  <span className="font-medium">
+                    {place.description.substring(0, 20)}...
+                  </span>
                 </td>
               </tr>
             ))}

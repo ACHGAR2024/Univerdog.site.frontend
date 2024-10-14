@@ -13,7 +13,9 @@ const VenteProduits = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/products");
+        const response = await axios.get(
+          "https://api.univerdog.site/api/products"
+        );
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -23,7 +25,7 @@ const VenteProduits = () => {
     const fetchProductPhotos = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/products-photos"
+          "https://api.univerdog.site/api/products-photos"
         );
         setProductPhotos(response.data);
       } catch (error) {
@@ -34,7 +36,7 @@ const VenteProduits = () => {
     const fetchProductCategories = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/products-categories"
+          "https://api.univerdog.site/api/products-categories"
         );
         setProductCategories(response.data);
       } catch (error) {
@@ -127,10 +129,10 @@ const VenteProduits = () => {
                 <p>Aucune image disponible</p>
               ) : findProductPhoto(product.id).length === 1 ? (
                 // Afficher directement l'image s'il n'y en a qu'une
-                <div  className="relative h-40 mb-1">
+                <div className="relative h-40 mb-1">
                   <img
                     className="w-full h-full object-cover rounded-lg animate-fadeIn"
-                    src={`http://127.0.0.1:8000/storage/products_photos/${
+                    src={`https://api.univerdog.site/storage/products_photos/${
                       findProductPhoto(product.id)[0]
                     }`}
                     alt={product.name_product}
@@ -143,7 +145,7 @@ const VenteProduits = () => {
                     <div key={index} className="relative h-40 mb-1">
                       <img
                         className="w-full h-full object-cover rounded-lg animate-fadeIn"
-                        src={`http://127.0.0.1:8000/storage/products_photos/${photo}`}
+                        src={`https://api.univerdog.site/storage/products_photos/${photo}`}
                         alt={product.name_product}
                       />
                     </div>
@@ -152,12 +154,15 @@ const VenteProduits = () => {
               )}
             </div>
 
-            <h3 className="text-xl font-bold mb-2 flex items-center dark:text-black">
+            <h3 className="h-24 text-xl font-bold mb-2 flex items-center dark:text-black">
               {product.name_product}
             </h3>
-            <p className="text-gray-600 mb-4">{product.description_product}</p>
-            <p className="text-gray-600 mb-4">
-              <i className="fa-solid fa-money-bill mr-2"></i> {product.price} €
+            <p className="text-gray-600 mb-4 h-72">
+              {product.description_product.substring(0, 700) + "..."}
+            </p>
+            <p className=" mb-4 text-xl text-orange-500">
+              <i className="fa-solid fa-money-bill mr-2 mt-5  "></i>{" "}
+              {product.price} €
             </p>
             <a
               href={product.affiliation_link}

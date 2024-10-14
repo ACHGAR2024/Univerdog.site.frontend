@@ -110,11 +110,11 @@ const ProDashboard = () => {
   const [favoriteCount, setFavoriteCount] = useState(0);
   const [reportCount, setReportCount] = useState(0);
 
-  const [totalPatients, setUniqueDogs] = useState(0); // Initialisation à 0
-  const [appointmentsThisWeek, setAppointmentsThisWeekConfirmed] = useState(0); // Initialisation à 0
- 
-  const [professionalsOnSite, setProfessionalsOnSite] = useState(0); // Initialisation à 0
-  const [totalAppointments, setAppointmentsAwaiting] = useState(0); // Initialisation à 0
+  const [totalPatients, setUniqueDogs] = useState(0);
+  const [appointmentsThisWeek, setAppointmentsThisWeekConfirmed] = useState(0);
+
+  const [professionalsOnSite, setProfessionalsOnSite] = useState(0);
+  const [totalAppointments, setAppointmentsAwaiting] = useState(0);
 
   const { token } = useContext(AuthContext);
   const user = useContext(UserContext);
@@ -126,13 +126,16 @@ const ProDashboard = () => {
       if (!user || !user.id) return;
 
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/places", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/places",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
         const userPlaces = response.data.places.filter(
           (place) => place.user_id === user.id
@@ -152,16 +155,19 @@ const ProDashboard = () => {
       if (!user || !user.id) return;
 
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/messages", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/messages",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
         const placesResponse = await axios.get(
-          "http://127.0.0.1:8000/api/places",
+          "https://api.univerdog.site/api/places",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -205,7 +211,7 @@ const ProDashboard = () => {
 
       try {
         const professionalsResponse = await axios.get(
-          "http://127.0.0.1:8000/api/professionals",
+          "https://api.univerdog.site/api/professionals",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -215,9 +221,9 @@ const ProDashboard = () => {
           }
         );
         setProfessionalsOnSite(professionalsResponse.data.length);
-        console.log("pro_id ==========>", professionalId);
+        //("pro_id ==========>", professionalId);
         const appointmentsResponse = await axios.get(
-          `http://127.0.0.1:8000/api/appointments_pro/${professionalId}`,
+          `https://api.univerdog.site/api/appointments_pro/${professionalId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -241,9 +247,12 @@ const ProDashboard = () => {
         setAppointmentsThisWeekConfirmed(thisWeekConfirmedAppointments);
 
         // Set the total number of unique dogs
-        const uniqueDogs = [...new Set(appointmentsResponse.data.map(appointment => appointment.dog_id))];
+        const uniqueDogs = [
+          ...new Set(
+            appointmentsResponse.data.map((appointment) => appointment.dog_id)
+          ),
+        ];
         setUniqueDogs(uniqueDogs.length);
-
       } catch (error) {
         console.error("Erreur lors de la création de la page", error);
       }
@@ -252,20 +261,18 @@ const ProDashboard = () => {
     fetchMessagesCount();
     fetchDashboardData();
   }, [token, professionalId, user]);
-   
 
   return (
     <>
       <React.Fragment>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <a href="#mesplaces">
-            <DashboardCard
-              title="Mes adresses"
-              icon="fa fa-map-location"
-              value={countPlaces}
-              color="text-blue-600"
-            />
-          </a>
+          <DashboardCard
+            title="Mes adresses"
+            icon="fa fa-map-location"
+            value={countPlaces}
+            color="text-blue-600"
+          />
+
           <DashboardCard
             title="Messages"
             icon="fa fa-envelope"
@@ -300,7 +307,7 @@ const ProDashboard = () => {
           )}
 
           <DashboardCard2
-            title="Mes RDV prochains"
+            title="Mes RDV prochains de cette semaine"
             value={appointmentsThisWeek}
             icon={{
               name: "fa-calendar",

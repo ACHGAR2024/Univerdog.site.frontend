@@ -12,7 +12,7 @@ const Logout = () => {
       await axios.post("/logout");
       logout();
       navigate("/");
-      console.log("Logout successful");
+      //("Logout successful");
       window.location.reload();
     } catch (error) {
       console.error("Logout failed", error);

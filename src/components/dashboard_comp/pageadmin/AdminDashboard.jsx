@@ -31,14 +31,14 @@ const DashboardCard2 = ({ title, value, icon, change }) => (
       <div className={`p-3 rounded-full ${icon.bg}`}>
         <i className={`fas ${icon.name} text-xl ${icon.color}`}></i>
       </div>
-      <span className={`text-sm font-medium ${change.color}`}>{change.text}</span>
+      <span className={`text-sm font-medium ${change.color}`}>
+        {change.text}
+      </span>
     </div>
     <h3 className="text-2xl font-bold mb-1 dark:text-black">{value}</h3>
     <p className=" text-sm dark:text-black">{title}</p>
   </div>
 );
-
-
 
 const AdminDashboard = () => {
   const [countDogs, setCountDogs] = useState(0);
@@ -46,9 +46,9 @@ const AdminDashboard = () => {
   const [favoriteCount, setFavoriteCount] = useState(0);
   const [reportCount, setReportCount] = useState(0);
   const [countPlaces, setCountPlaces] = useState(0);
-  const [professionalsOnSite, setProfessionalsOnSite] = useState(0); // Initialisation à 0
-  const [totalAppointments, setAppointmentsAwaiting] = useState(0); // Initialisation à 0
-  const [Appointments, setAppointments] = useState(0); // Initialisation à 0
+  const [professionalsOnSite, setProfessionalsOnSite] = useState(0);
+  const [totalAppointments, setAppointmentsAwaiting] = useState(0);
+  const [Appointments, setAppointments] = useState(0);
 
   const { token } = useContext(AuthContext);
   const user = useContext(UserContext);
@@ -58,16 +58,17 @@ const AdminDashboard = () => {
       if (!user || !user.id) return;
 
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/dogs", {
-          headers: {
-            
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/dogs",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
         setCountDogs(response.data.length);
-        //console.log("Count Places:", response.data.length);
       } catch (error) {
         console.error("Erreur lors de la récupération des chiens", error);
       }
@@ -81,51 +82,50 @@ const AdminDashboard = () => {
       if (!user || !user.id) return;
 
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/messages", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const response = await axios.get(
+          "https://api.univerdog.site/api/messages",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
-        ////console.log('Response Data:', response.data);
-        ////console.log('User id:', user.id);
-
-        // Récupérer toutes les places pour cet utilisateur
-        const responseuserPlaces = await axios.get("http://127.0.0.1:8000/api/places", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const responseuserPlaces = await axios.get(
+          "https://api.univerdog.site/api/places",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
         const userPlaces = responseuserPlaces.data.places;
 
         setCountPlaces(userPlaces.length);
 
-
         const userMessages = response.data;
-
-        //console.log('Filtered Messages:', userMessages);
 
         setCountMessages(userMessages.length);
 
-        // Filtrer les messages favoris
+        // Filter favorite messages
         const userFavoriteMessages = userMessages.filter(
           (message) => message.is_favorite === 1
         );
 
-        // Compter le nombre de messages favoris
+        // Count the number of favorite messages
         setFavoriteCount(userFavoriteMessages.length);
 
-        // Filtrer les messages signaleés
+        // Filter reported messages
         const userReportedMessages = userMessages.filter(
           (message) => message.is_report === 1
         );
 
-        // Compter le nombre de messages signaleés
+        // Count the number of reported messages
         setReportCount(userReportedMessages.length);
       } catch (error) {
         console.error("Erreur lors de la récupération des messages", error);
@@ -135,11 +135,9 @@ const AdminDashboard = () => {
       }
     };
     const fetchDashboardData = async () => {
-    
-
       try {
         const professionalsResponse = await axios.get(
-          "http://127.0.0.1:8000/api/professionals",
+          "https://api.univerdog.site/api/professionals",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -149,9 +147,9 @@ const AdminDashboard = () => {
           }
         );
         setProfessionalsOnSite(professionalsResponse.data.length);
-        
+
         const appointmentsResponse = await axios.get(
-          `http://127.0.0.1:8000/api/appointments`,
+          `https://api.univerdog.site/api/appointments`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -160,7 +158,7 @@ const AdminDashboard = () => {
             },
           }
         );
-        // Set the total number of appointments awaiting
+
         // Set the total number of appointments awaiting
         const awaitingAppointments = appointmentsResponse.data.filter(
           (appointment) => appointment.status === "En attente"
@@ -170,67 +168,69 @@ const AdminDashboard = () => {
         // Set the total number of appointments awaiting
         const totalAppointments = appointmentsResponse.data;
         setAppointments(totalAppointments.length);
-  
-        
-  
       } catch (error) {
         console.error("Erreur lors de la création de la page", error);
       }
     };
-  
+
     fetchMessagesCount();
     fetchDashboardData();
     fetchMessagesCount();
   }, [token, user]);
 
-
-  
   return (
     <>
-    <React.Fragment>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 ">
-        <a href="#mesplaces">
+      <React.Fragment>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 ">
+          <a href="#mesplaces">
+            <DashboardCard
+              title="Total chiens"
+              icon="fa fa-bolt"
+              value={countDogs}
+              color="text-blue-600"
+            />
+          </a>
           <DashboardCard
-            title="Total chiens"
-            icon="fa fa-bolt"
-            value={countDogs}
-            color="text-blue-600"
+            title="Total Messages"
+            icon="fa fa-envelope"
+            value={countMessages}
+            color="text-green-600"
           />
-        </a>
-        <DashboardCard
-          title="Total Messages"
-          icon="fa fa-envelope"
-          value={countMessages}
-          color="text-green-600"
-        />
-        <DashboardCard
-          title="Total Lieux Favoris"
-          icon="fa fa-star"
-          value={favoriteCount}
-          color="text-yellow-400"
-        />
-        <DashboardCard
-          title="Total Signalements"
-          icon="fa fa-flag"
-          value={reportCount}
-          color="text-red-600"
-        />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-5">
-        
-         <DashboardCard2 
-             title="Total Adresses" 
-             value={countPlaces} 
-             icon={{name: "fa-users", bg: "bg-blue-100", color: "text-blue-500"}}
-             change={{text: "", color: "text-green-500"}}
-         />
-         <DashboardCard2 
-             title="Total Rendez-vous" 
-             value={Appointments}
-             icon={{name: "fa-calendar", bg: "bg-green-100", color: "text-green-500"}}
-             change={{text: "", color: "text-green-500"}}
-         />
-         {totalAppointments !== undefined && (
+          <DashboardCard
+            title="Total Lieux Favoris"
+            icon="fa fa-star"
+            value={favoriteCount}
+            color="text-yellow-400"
+          />
+          <DashboardCard
+            title="Total Signalements"
+            icon="fa fa-flag"
+            value={reportCount}
+            color="text-red-600"
+          />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-5">
+          <DashboardCard2
+            title="Total Adresses"
+            value={countPlaces}
+            icon={{
+              name: "fa-users",
+              bg: "bg-blue-100",
+              color: "text-blue-500",
+            }}
+            change={{ text: "", color: "text-green-500" }}
+          />
+          <DashboardCard2
+            title="Total Rendez-vous"
+            value={Appointments}
+            icon={{
+              name: "fa-calendar",
+              bg: "bg-green-100",
+              color: "text-green-500",
+            }}
+            change={{ text: "", color: "text-green-500" }}
+          />
+          {totalAppointments !== undefined && (
             <DashboardCard2
               title="Les RDV en attente"
               value={totalAppointments}
@@ -254,16 +254,12 @@ const AdminDashboard = () => {
               change={{ text: "", color: "text-red-500" }}
             />
           )}
-     </div>
-      
-  <MessagesAdmin />
-      
-    </React.Fragment>
-     <div>
-    
-    
- </div>
- </>
+        </div>
+
+        <MessagesAdmin />
+      </React.Fragment>
+      <div></div>
+    </>
   );
 };
 
@@ -287,6 +283,5 @@ DashboardCard2.propTypes = {
     color: PropTypes.string.isRequired,
   }).isRequired,
 };
-
 
 export default AdminDashboard;

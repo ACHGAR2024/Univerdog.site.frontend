@@ -21,11 +21,14 @@ function CookiePreferences() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-xl font-bold mb-4">Gérer les préférences des cookies</h1>
+      <h1 className="text-xl font-bold mb-4">
+        Gérer les préférences des cookies
+      </h1>
       <div className="mb-4">
-        <button  className="bg-blue-500 text-white py-2 px-4 rounded">
-            <a href="/">
-          <i className="fas fa-arrow-left"></i> Retour</a>
+        <button className="bg-blue-500 text-white py-2 px-4 rounded">
+          <a href="/">
+            <i className="fas fa-arrow-left"></i> Retour
+          </a>
         </button>
       </div>
       <div className="mb-4">
@@ -50,11 +53,7 @@ function CookiePreferences() {
       </div>
       <div className="mb-4">
         <label>
-          <input
-            type="checkbox"
-            checked={preferences.essential}
-            disabled
-          />
+          <input type="checkbox" checked={preferences.essential} disabled />
           Cookies essentiels (toujours activés)
         </label>
       </div>

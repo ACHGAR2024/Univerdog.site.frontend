@@ -1,13 +1,12 @@
 import { useEffect, useRef } from "react";
 import { useContext } from "react";
-import { UserContext } from "../../../context/UserContext"; // Import the UserContext
-import { AuthContext } from "../../../context/AuthContext"; // Import the AuthContext
+import { UserContext } from "../../../context/UserContext";
+import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
-import Notiflix from "notiflix";
 
 const FetchProfessionalId = () => {
   const professionalId = useRef(null);
-  const user = useContext(UserContext); // Use the UserContext to access the user object
+  const user = useContext(UserContext);
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
@@ -18,7 +17,7 @@ const FetchProfessionalId = () => {
 
     try {
       const response = axios.get(
-        "http://127.0.0.1:8000/api/professionals_pro",
+        "https://api.univerdog.site/api/professionals_pro",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -27,25 +26,20 @@ const FetchProfessionalId = () => {
         }
       );
 
-      console.log("Response from professionals_pro API:", response.data);
+      //("Response from professionals_pro API:", response.data);
 
       const professionals = response.data || [];
       const professional = professionals.find((p) => p.user_id === user.id);
       if (professional) {
         professionalId.current = professional.id;
-        console.log("Professional ID set to:", professionalId.current);
+        //("Professional ID set to:", professionalId.current);
       } else {
-        Notiflix.Notify.failure(
-          "Aucun professionnel trouvé pour l'utilisateur actuel"
-        );
+        console.log("Professional not found");
       }
     } catch (error) {
       console.error(
         "Erreur lors de la récupération de l'ID du professionnel",
         error
-      );
-      Notiflix.Notify.failure(
-        "Erreur lors de la récupération de l'ID du professionnel"
       );
     }
   }, [user, token]);

@@ -16,7 +16,7 @@ const EditCategorieForm = () => {
     const fetchCategorie = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/categories/${id}`,
+          `https://api.univerdog.site/api/categories/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -26,10 +26,10 @@ const EditCategorieForm = () => {
           }
         );
 
-        //console.log('Réponse de l\'API:', response.data); // journal pour vérifier la structure de la réponse
+        
 
         if (response.data && response.data.category) {
-          setCategorie({ name_cat: response.data.category.name_cat }); // mise à jour l'état avec les données de la catégorie
+          setCategorie({ name_cat: response.data.category.name_cat }); // update the state with category data
         } else {
           console.error("Données de catégorie non trouvées ou incorrectes");
         }
@@ -55,18 +55,22 @@ const EditCategorieForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://127.0.0.1:8000/api/categories/${id}`, categorie, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      });
-      // Affichage de message de succès avec Notiflix
-      Notification.success("Place modifiée avec succès !");
+      await axios.put(
+        `https://api.univerdog.site/api/categories/${id}`,
+        categorie,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      // Display success message with Notiflix
+      Notification.success("Category updated successfully!");
       setTimeout(() => {
         navigate("/dashboard");
-      }, 2000); // Redirection après 2 secondes // Redirige vers la page dashboard après la mise à jour
+      }, 2000); // Redirect after 2 seconds // Redirect to the dashboard page after update
     } catch (error) {
       console.error("Erreur lors de la mise à jour de la catégorie", error);
     }

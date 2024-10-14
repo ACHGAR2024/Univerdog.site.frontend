@@ -21,10 +21,10 @@ import html2canvas from "html2canvas";
 
 const generateSecureQRCodeURL = (dogId) => {
   const dogIdcrypted = (dogId * 3456).toString();
-  return `http://localhost:5174/dog/${dogIdcrypted}`;
+  return `https://univerdog.site/dog/${dogIdcrypted}`;
 };
-const API_URL = "http://127.0.0.1:8000/api/dogs-photos";
-const DOGS_API_URL = "http://127.0.0.1:8000/api/dogs";
+const API_URL = "https://api.univerdog.site/api/dogs-photos";
+const DOGS_API_URL = "https://api.univerdog.site/api/dogs";
 
 const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
   const [showQR, setShowQR] = useState(false);
@@ -34,7 +34,9 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/dogs-photos`);
+        const response = await fetch(
+          `https://api.univerdog.site/api/dogs-photos`
+        );
 
         if (!response.ok)
           throw new Error("Erreur lors de la récupération des photos du chien");
@@ -119,9 +121,9 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
           console.error("Erreur lors du partage du QR Code :", error)
         );
     } else {
-      // Fallback pour les navigateurs qui ne supportent pas navigator.share
-      console.log("Partage non supporté par ce navigateur.");
-      // Vous pouvez copier le lien dans le presse-papiers ou afficher un message d'erreur
+      // Fallback for browsers that do not support navigator.share
+      //("Sharing not supported by this browser.");
+      // You can copy the link to the clipboard or display an error message
     }
   };
 
@@ -153,7 +155,7 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
             <li key={photo.id} className="flex space-x-4 relative -mb-10 z-40">
               <img
                 id="imgdog"
-                src={`http://127.0.0.1:8000/storage/dogs_photos/${photo.photo_name_dog}?t=${photo.timestamp}`}
+                src={`https://api.univerdog.site/storage/dogs_photos/${photo.photo_name_dog}?t=${photo.timestamp}`}
                 alt={`Dog ${photo.dog_id}`}
                 className="w-56 h-56 object-cover rounded-full border-4 border-orange-500 shadow-lg"
               />
@@ -175,12 +177,13 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
           <h3 className="text-xl font-bold mb-2 text-gray-800 flex items-center">
             <FaDog className="mr-2" /> {dog.name_dog}
           </h3>
-          
+
           <p className="text-gray-600 mb-4">
             <strong>Race:</strong> {dog.breed}
           </p>
           <p className="text-gray-600 mb-4">
-            <strong>Date de naissance :</strong> {new Date(dog.birth_date).toLocaleDateString("fr-FR")}
+            <strong>Date de naissance :</strong>{" "}
+            {new Date(dog.birth_date).toLocaleDateString("fr-FR")}
           </p>
           <p className="text-gray-600 mb-4">
             <strong>Âge:</strong> {calculateAge(dog.birth_date)}
@@ -194,8 +197,6 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
           <p className="text-gray-600 mb-4">
             <strong>Informations médicales:</strong> {dog.medical_info}
           </p>
-          
-          
 
           <div className="flex justify-between items-center mb-4 p-8">
             <button
@@ -210,8 +211,7 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
             >
               <FaTrashAlt className="mr-2" /> Supprimer
             </button>
-           
-          </div> 
+          </div>
           <button
             onClick={() => setShowQR(!showQR)}
             className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full mb-2 flex items-center justify-center"
@@ -242,7 +242,6 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
                   <h4 className="text-lg">
                     n&apos;hésitez pas à les consulter !
                   </h4>
-                 
                 </div>
                 <canvas
                   id={`qr-${dog.id}`}
@@ -262,20 +261,19 @@ const DogCard = ({ dog, onEdit, onDelete, photoUpdateKey }) => {
                 >
                   <FaFilePdf className="mr-2" /> Télécharger PDF
                 </button>
-                
               </div>
               <div className="flex justify-center mt-2">
-              <p className="mt-2">
-                    <a
-                      href={generateSecureQRCodeURL(dog.id)}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      {dog.sex === "Femelle"
-                        ? "Clique ici pour accéder à toutes les informations sur ma chienne "
-                        : "Clique ici pour accéder à toutes les informations sur mon chien "}
-                      {dog.name_dog.toUpperCase()} !
-                    </a>
-                  </p>
+                <p className="mt-2">
+                  <a
+                    href={generateSecureQRCodeURL(dog.id)}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    {dog.sex === "Femelle"
+                      ? "Clique ici pour accéder à toutes les informations sur ma chienne "
+                      : "Clique ici pour accéder à toutes les informations sur mon chien "}
+                    {dog.name_dog.toUpperCase()} !
+                  </a>
+                </p>
               </div>
             </>
           )}
@@ -307,7 +305,7 @@ const ProfilsDogs = () => {
     weight: "",
     sex: "",
     medical_info: "",
-    qr_code:"",
+    qr_code: "",
     user_id: user.id,
   });
   const [selectedDog, setSelectedDog] = useState(null);
@@ -395,17 +393,17 @@ const ProfilsDogs = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    console.log("Form submitted");
+    //("Form submitted");
 
     try {
       const token = localStorage.getItem("token");
-      console.log("Token retrieved:", token);
+      //("Token retrieved:", token);
 
       let dogData = { ...newDog };
-      console.log("Dog data:", dogData);
+      //("Dog data:", dogData);
 
       if (selectedDog) {
-        console.log("Selected dog for update:", selectedDog);
+        //("Selected dog for update:", selectedDog);
 
         // Mise à jour des informations du chien
         const updateDogResponse = await axios.put(
@@ -419,7 +417,7 @@ const ProfilsDogs = () => {
 
         // Si une nouvelle photo est sélectionnée pour modification
         if (editPhoto) {
-          console.log("Photo edit mode enabled. Selected file:", selectedFile);
+          //("Photo edit mode enabled. Selected file:", selectedFile);
 
           // Extraction de l'ID de photo depuis selectedDog
           const photoId =
@@ -427,13 +425,13 @@ const ProfilsDogs = () => {
               ? selectedDog.photos[0].id
               : null;
           const photoUpdateUrl = `${API_URL}/${photoId}`;
-          console.log("Photo update URL:", photoUpdateUrl);
+          //("Photo update URL:", photoUpdateUrl);
 
           const formData = new FormData();
           formData.append("photo_name_dog", selectedFile);
           formData.append("dog_id", selectedDog.id);
           formData.append("_method", "PUT");
-          console.log("FormData created for photo update:", formData);
+          //("FormData created for photo update:", formData);
 
           try {
             const photoUpdateResponse = await axios.post(
@@ -446,7 +444,7 @@ const ProfilsDogs = () => {
                 },
               }
             );
-            console.log("Photo update response:", photoUpdateResponse);
+            //("Photo update response:", photoUpdateResponse);
 
             // Mettre à jour l'état `dogs`
             const updatedDogs = dogs.map((dog) => {
@@ -485,25 +483,25 @@ const ProfilsDogs = () => {
           setEditPhoto(false);
           // ... après la mise à jour de l'image ...
           setDogs([...dogs]);
-          console.log("editPhoto reset to false");
+          //("editPhoto reset to false");
         }
       } else {
-        console.log("Adding new dog");
+        //("Adding new dog");
 
         // Ajout d'un nouveau chien
         const response = await axios.post(DOGS_API_URL, dogData, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("New dog add response:", response);
+        //("New dog add response:", response);
 
         // Si une photo est sélectionnée pour le nouveau chien
         if (selectedFile) {
-          console.log("New photo selected for the new dog:", selectedFile);
+          //("New photo selected for the new dog:", selectedFile);
 
           const formData = new FormData();
           formData.append("photo_name_dog", selectedFile);
           formData.append("dog_id", response.data.id);
-          console.log("FormData created for new dog photo:", formData);
+          //("FormData created for new dog photo:", formData);
 
           try {
             const photoAddResponse = await axios.post(API_URL, formData, {
@@ -527,19 +525,19 @@ const ProfilsDogs = () => {
       }
 
       // Mise à jour de la liste des chiens après ajout/mise à jour
-      console.log("Fetching updated dog list");
+      //("Fetching updated dog list");
       const updatedDogsResponse = await fetch(DOGS_API_URL);
       const updatedDogsData = await updatedDogsResponse.json();
-      console.log("Updated dog list response:", updatedDogsData);
+      //("Updated dog list response:", updatedDogsData);
       setPhotoUpdateKey(Date.now());
       const filteredDogs = updatedDogsData.filter(
         (dog) => dog.user_id === user.id
       );
-      console.log("Filtered dog list:", filteredDogs);
+      //("Filtered dog list:", filteredDogs);
 
       setDogs(filteredDogs);
       setShowAddForm(false);
-      console.log("Form closed, new dog data cleared");
+      //("Form closed, new dog data cleared");
 
       setNewDog({
         name_dog: "",
@@ -557,7 +555,7 @@ const ProfilsDogs = () => {
       Notiflix.Notify.success(
         "Profil de chien ajouté ou modifié avec succès !"
       );
-      console.log("Success notification sent");
+      //("Success notification sent");
     } catch (error) {
       console.error("Erreur lors de la soumission du formulaire:", error);
       console.error(
@@ -578,6 +576,28 @@ const ProfilsDogs = () => {
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
     setEditPhoto(true); // Indique qu'une nouvelle photo est sélectionnée pour l'édition
+  };
+
+  const resetForm = () => {
+    setNewDog({
+      name_dog: "",
+      breed: "",
+      birth_date: "",
+      weight: "",
+      sex: "",
+      medical_info: "",
+      qr_code: "",
+      user_id: user.id,
+    });
+    setSelectedDog(null);
+    setSelectedFile(null);
+  };
+
+  const handleAddButtonClick = () => {
+    setShowAddForm(!showAddForm);
+    if (!showAddForm) {
+      resetForm();
+    }
   };
 
   if (isLoading) return <div>Chargement...</div>;
@@ -603,7 +623,7 @@ const ProfilsDogs = () => {
       ))}
 
       <button
-        onClick={() => setShowAddForm(!showAddForm)}
+        onClick={handleAddButtonClick}
         className="bg-orange-500 text-white dark:text-white font-bold mt-8 py-4 px-4 rounded-md flex items-center justify-center hover:bg-orange-600 mx-auto"
       >
         {showAddForm ? (

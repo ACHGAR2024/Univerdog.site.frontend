@@ -6,27 +6,50 @@ const ConseilsIA = () => {
   const [response, setResponse] = useState(
     "La réponse de l’IA s’affichera ici après avoir posé votre question."
   );
-  const [loading, setLoading] = useState(false); // État pour gérer le chargement
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true); // Activer le chargement
-    // Remplacez 'YOUR_API_KEY' par votre véritable clé d'API
-    const apiKey = "AIzaSyAaLbczNysOPctRa4Xnhe9P72leOyMLpT0";
+    setLoading(true);
+    // Remplace 'YOUR_API_KEY'
+    const apiKey = "";
     const apiUrl =
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" +
       apiKey;
+    const contextAndPrompt = `
+      Vous êtes un assistant IA spécialisé dans le bien-être des chiens. 
+      Votre rôle est de fournir des informations et des conseils uniquement sur les sujets liés aux chiens, 
+      tels que la santé canine, l'alimentation, le comportement, l'exercice, le toilettage et les soins généraux. 
+      Si une question ne concerne pas les chiens, veuillez poliment rediriger la conversation vers des sujets canins.
 
+      Question de l'utilisateur : ${question}
+
+      Répondez de manière concise et pertinente, en vous concentrant exclusivement sur les aspects liés aux chiens.
+    `;
     const requestOptions = {
       method: "POST",
-      // Le mode 'cors' permet d'envoyer des requ tes en mode Cross-Origin.
-      // https://developer.mozilla.org/fr/docs/Web/HTTP/CORS
+
       mode: "cors",
 
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: question }] }],
+        contents: [
+          {
+            parts: [
+              {
+                text: contextAndPrompt,
+              },
+            ],
+          },
+        ],
+        safetySettings: [],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 1024,
+        },
       }),
     };
 
@@ -34,20 +57,19 @@ const ConseilsIA = () => {
       const apiResponse = await fetch(apiUrl, requestOptions);
       const data = await apiResponse.json();
 
-      // Vérifier si la structure attendue est bien reçue
       if (data && data.candidates && data.candidates.length > 0) {
-        const textResponse = data.candidates[0].content.parts[0].text; // Accéder au texte de la réponse
+        const textResponse = data.candidates[0].content.parts[0].text;
         setResponse(textResponse);
       } else {
         setResponse("La réponse de l’IA n’a pas pu être traitée.");
       }
 
-      console.log(data);
+      //(data);
     } catch (error) {
       console.error("Erreur lors de la requête à l’API :", error);
       setResponse("Une erreur est survenue. Veuillez réessayer plus tard.");
     } finally {
-      setLoading(false); // Désactiver le chargement
+      setLoading(false);
     }
   };
 
@@ -73,7 +95,7 @@ const ConseilsIA = () => {
           <button
             type="submit"
             className="bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-600 flex items-center justify-center"
-            disabled={loading} // Désactiver le bouton pendant le chargement
+            disabled={loading}
           >
             <i className="fa-solid fa-paper-plane "></i>
             <button
@@ -101,7 +123,14 @@ const ConseilsIA = () => {
             Nouvelle question
           </button>
         </form>
-        <div className={response === "La réponse de l’IA s’affichera ici après avoir posé votre question." ? "mt-4 bg-slate-200 p-4 rounded-lg text-gray-700" : "mt-4 bg-red-200 p-4 rounded-lg text-gray-700"}>
+        <div
+          className={
+            response ===
+            "La réponse de l’IA s’affichera ici après avoir posé votre question."
+              ? "mt-4 bg-slate-200 p-4 rounded-lg text-gray-700"
+              : "mt-4 bg-red-200 p-4 rounded-lg text-gray-700"
+          }
+        >
           <h4 className="font-bold flex items-center mb-4">
             <i className="fa-solid fa-lightbulb mr-2 "></i>
             Réponse de l’IA :
@@ -112,7 +141,7 @@ const ConseilsIA = () => {
               __html: response.replace(/\*\*([\s\S]+?)\*\*/g, "<b>$1</b>"),
             }}
           ></p>
-          {/* Ajout de whitespace-pre-line pour conserver la mise en forme */}
+          {/* Add whitespace-pre-line */}
         </div>
       </div>
       <div className="dashboard-card mt-6 p-6 shadow-lg rounded-lg overflow-hidden transform  transition-transform duration-300 ease-in-out">
@@ -122,31 +151,16 @@ const ConseilsIA = () => {
         </h3>
         <ul className="space-y-2">
           <li>
-            <a
-              href="#"
-              className="text-blue-600 hover:underline flex items-center"
-            >
-              <i className="fa-solid fa-chevron-right mr-2"></i>
-              Comment habituer mon chiot à sa nouvelle maison ?
-            </a>
+            <i className="fa-solid fa-chevron-right mr-2"></i>
+            Comment habituer mon chiot à sa nouvelle maison ?
           </li>
           <li>
-            <a
-              href="#"
-              className="text-blue-600 hover:underline flex items-center"
-            >
-              <i className="fa-solid fa-chevron-right mr-2"></i>
-              Quels sont les aliments dangereux pour les chiens ?
-            </a>
+            <i className="fa-solid fa-chevron-right mr-2"></i>
+            Quels sont les aliments dangereux pour les chiens ?
           </li>
           <li>
-            <a
-              href="#"
-              className="text-blue-600 hover:underline flex items-center"
-            >
-              <i className="fa-solid fa-chevron-right mr-2"></i>
-              Comment préparer mon chien à l’arrivée d’un bébé ?
-            </a>
+            <i className="fa-solid fa-chevron-right mr-2"></i>
+            Comment préparer mon chien à l’arrivée d’un bébé ?
           </li>
         </ul>
       </div>

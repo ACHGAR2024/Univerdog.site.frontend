@@ -4,7 +4,7 @@ function SignIn() {
   const [loginUrl, setLoginUrl] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/auth/google", {
+    fetch("https://api.univerdog.site/api/auth/google", {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -24,7 +24,7 @@ function SignIn() {
 
   // Handle redirection after successful login
   const handleRedirect = () => {
-    fetch("http://127.0.0.1:8000/api/auth/callback", {
+    fetch("https://api.univerdog.site/api/auth/callback", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

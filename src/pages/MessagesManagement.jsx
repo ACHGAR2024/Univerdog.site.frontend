@@ -18,9 +18,12 @@ const MessagesManagement = () => {
 
   const fetchMessages = useCallback(async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/messages", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const response = await axios.get(
+        "https://api.univerdog.site/api/messages",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       setMessages(response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des messages", error);
@@ -32,9 +35,12 @@ const MessagesManagement = () => {
 
   const fetchPlaces = useCallback(async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/places", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const response = await axios.get(
+        "https://api.univerdog.site/api/places",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       setPlaces(response.data.places || response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des places", error);
@@ -50,10 +56,11 @@ const MessagesManagement = () => {
   }, [fetchMessages, fetchPlaces]);
 
   const filteredMessages = messages.filter((message) => {
-    const place = places.find((a) => a.id === message.place_id);
+    console.log("message.place_id", message.user_id);
+    //const place = places.find((a) => a.id === message.place_id);
     const isSent = U_id && U_id.id === message.user_id;
     const adminAll = U_id && U_id.role === "admin";
-    const isReceived = U_id && place && U_id.id === place.user_id;
+    const isReceived = U_id && U_id.id !== message.user_id;
 
     if (filter === "favorite") return message.is_favorite;
     if (filter === "reported") return message.is_report;
@@ -65,7 +72,7 @@ const MessagesManagement = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/messages/${id}`, {
+      await axios.delete(`https://api.univerdog.site/api/messages/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setMessages(messages.filter((message) => message.id !== id));
@@ -92,7 +99,7 @@ const MessagesManagement = () => {
         handleDelete(id);
       },
       () => {
-        // Action à prendre si l'utilisateur annule la suppression
+        // Action to take if the user cancels the deletion
       },
       {
         width: "320px",
@@ -117,9 +124,8 @@ const MessagesManagement = () => {
     e.preventDefault();
     if (replyContent.trim()) {
       try {
-        //console.log('Submitting reply...');
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/messages",
+          "https://api.univerdog.site/api/messages",
           {
             place_id: messages.find((m) => m.id === replyToId)?.place_id,
             content: replyContent,
@@ -131,7 +137,7 @@ const MessagesManagement = () => {
             },
           }
         );
-        //console.log('Reply submitted:', response.data);
+
         setMessages([...messages, response.data]);
         setReplyToId(null);
         setReplyContent("");
@@ -158,11 +164,13 @@ const MessagesManagement = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-20 dark:text-gray-900">
-      <Link to="/dashboard">
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-4">
-          <i className="fa-solid fa-arrow-left"></i> Retour
-        </button>
-      </Link>
+      {location.pathname !== "/dashboard" && (
+        <Link to="/dashboard">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-4">
+            <i className="fa-solid fa-arrow-left"></i> Retour
+          </button>
+        </Link>
+      )}
       {notification && (
         <Notification type={notification.type} message={notification.message} />
       )}
@@ -190,9 +198,6 @@ const MessagesManagement = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ID
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Place
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -213,9 +218,6 @@ const MessagesManagement = () => {
               return (
                 <React.Fragment key={message.id}>
                   <tr className="animate-fadeIn">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {message.id}
-                    </td>
                     <td className="px-6 py-4">
                       <a
                         href={`/fiche-place/${place.id}`}
@@ -225,16 +227,13 @@ const MessagesManagement = () => {
                           <div className="flex-shrink-0 h-10 w-10">
                             <img
                               className="h-12 w-12 rounded"
-                              src={`http://127.0.0.1:8000${place.photo}`}
+                              src={`https://api.univerdog.site${place.photo}`}
                               alt={place.title}
                             />
                           </div>
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900">
                               {place.title}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              ID: {message.place_id}
                             </div>
                           </div>
                         </div>
